@@ -22,7 +22,7 @@ export function Navbar() {
   const navLinks = [
     { name: 'الرئيسية', path: '/' },
     { name: 'كل المنتجات', path: '/products' },
-    { name: 'المنزل والتنظيم', path: '/category/home-and-organization' },
+    { name: 'المنزل والتنظيم', path: '/category/home-organization' },
     { name: 'المنتجات الرقمية', path: '/category/digital-products' },
     { name: 'المنتجات التقنية', path: '/category/tech-products' },
     { name: 'إكسسوارات السيارات', path: '/category/car-accessories' },

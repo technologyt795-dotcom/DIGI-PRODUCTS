@@ -45,7 +45,7 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-bold text-white mb-6">الفئات</h3>
             <ul className="space-y-3 text-sm text-primary-foreground/70">
-              <li><Link href="/category/home-and-organization" className="hover:text-secondary transition-colors">المنزل والتنظيم</Link></li>
+              <li><Link href="/category/home-organization" className="hover:text-secondary transition-colors">المنزل والتنظيم</Link></li>
               <li><Link href="/category/digital-products" className="hover:text-secondary transition-colors">المنتجات الرقمية</Link></li>
               <li><Link href="/category/tech-products" className="hover:text-secondary transition-colors">المنتجات التقنية</Link></li>
               <li><Link href="/category/car-accessories" className="hover:text-secondary transition-colors">إكسسوارات السيارات</Link></li>
