@@ -2,7 +2,7 @@ import { Link } from 'wouter';
 import { useCart } from '@/hooks/use-cart';
 import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Lock } from 'lucide-react';
 
 export default function Cart() {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
