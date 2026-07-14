@@ -1,0 +1,2 @@
+- [Serving generated/seed images without object storage](serving-images-without-object-storage.md) — serve them as static files from the api-server under `/api/images/...`; store that path in the DB.
+- [Design subagent invalid dynamic-hook pattern](design-subagent-dynamic-hook-bug.md) — watch for `import('react').then(({useEffect}) => useEffect(...))`, an invalid-hook-call bug the design subagent can introduce.
