@@ -168,12 +168,12 @@ export default function AdminProducts() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">المنتجات</h1>
           <p className="text-sm text-muted-foreground">إدارة منتجات المتجر، الأسعار والصور</p>
         </div>
-        <Button onClick={openCreate} className="gap-2">
+        <Button onClick={openCreate} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           منتج جديد
         </Button>
@@ -185,6 +185,7 @@ export default function AdminProducts() {
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -236,6 +237,7 @@ export default function AdminProducts() {
               )}
             </TableBody>
           </Table>
+          </div>
         )}
       </div>
 
