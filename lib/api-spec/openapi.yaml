@@ -16,6 +16,8 @@ tags:
     description: Product catalog operations
   - name: admin
     description: Admin dashboard operations
+  - name: settings
+    description: Store settings operations
 paths:
   /healthz:
     get:
@@ -401,6 +403,52 @@ paths:
                 items:
                   $ref: "#/components/schemas/Product"
 
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get current store settings (public)
+      responses:
+        "200":
+          description: Store settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreSettings"
+
+  /admin/settings:
+    put:
+      operationId: updateSettings
+      tags: [admin]
+      summary: Update store settings (admin)
+      security:
+        - adminToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreSettingsUpdate"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreSettings"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   securitySchemes:
     adminToken:
@@ -615,3 +663,97 @@ components:
         createdAt:
           type: string
           format: date-time
+
+    StoreSettings:
+      type: object
+      required:
+        - storeName
+        - tagline
+        - logoUrl
+        - activeTheme
+        - contactEmail
+        - contactPhone
+        - address
+        - freeShippingThreshold
+        - flatShippingRate
+        - taxRate
+        - taxInclusive
+        - facebookUrl
+        - instagramUrl
+        - twitterUrl
+        - whatsappNumber
+      properties:
+        storeName:
+          type: string
+        tagline:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        activeTheme:
+          type: string
+          enum: [classic, modern, minimal]
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+        address:
+          type: string
+        freeShippingThreshold:
+          type: ["number", "null"]
+          description: Minimum order amount for free shipping (null = no free shipping)
+        flatShippingRate:
+          type: number
+          description: Default shipping cost
+        taxRate:
+          type: number
+          description: Tax percentage (e.g. 15 for 15%)
+        taxInclusive:
+          type: boolean
+          description: Whether prices include tax
+        facebookUrl:
+          type: ["string", "null"]
+        instagramUrl:
+          type: ["string", "null"]
+        twitterUrl:
+          type: ["string", "null"]
+        whatsappNumber:
+          type: ["string", "null"]
+
+    StoreSettingsUpdate:
+      type: object
+      properties:
+        storeName:
+          type: string
+          minLength: 1
+        tagline:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        activeTheme:
+          type: string
+          enum: [classic, modern, minimal]
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+        address:
+          type: string
+        freeShippingThreshold:
+          type: ["number", "null"]
+        flatShippingRate:
+          type: number
+          minimum: 0
+        taxRate:
+          type: number
+          minimum: 0
+          maximum: 100
+        taxInclusive:
+          type: boolean
+        facebookUrl:
+          type: ["string", "null"]
+        instagramUrl:
+          type: ["string", "null"]
+        twitterUrl:
+          type: ["string", "null"]
+        whatsappNumber:
+          type: ["string", "null"]

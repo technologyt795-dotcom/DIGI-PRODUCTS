@@ -1,7 +1,12 @@
 import { Link } from 'wouter';
 import { ShoppingBag, Lock, Mail, Phone, MapPin, Instagram, Twitter, Facebook } from 'lucide-react';
+import { useStoreSettings } from '@/contexts/StoreSettingsContext';
+import { FaWhatsapp } from 'react-icons/fa';
 
 export function Footer() {
+  const { settings } = useStoreSettings();
+  const storeName = settings?.storeName || 'My Store';
+
   return (
     <footer className="bg-primary text-primary-foreground mt-auto">
       <div className="container mx-auto px-4 py-16">
@@ -10,22 +15,39 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2 mb-6">
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-primary">
-                <ShoppingBag className="h-7 w-7 absolute" />
-                <Lock className="h-3 w-3 absolute mt-2 ml-1 text-primary" />
-              </div>
+              {settings?.logoUrl ? (
+                <img src={settings.logoUrl} alt={storeName} className="h-12 w-auto object-contain rounded bg-white p-1" />
+              ) : (
+                <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-primary">
+                  <ShoppingBag className="h-7 w-7 absolute" />
+                  <Lock className="h-3 w-3 absolute mt-2 ml-1 text-primary" />
+                </div>
+              )}
               <div className="flex flex-col">
-                <span className="text-2xl font-bold leading-none tracking-tight text-white">My Store</span>
-                <span className="text-xs uppercase tracking-wider text-secondary font-medium">الجودة والثقة</span>
+                <span className="text-2xl font-bold leading-none tracking-tight text-white">{storeName}</span>
+                {settings?.tagline && (
+                  <span className="text-xs uppercase tracking-wider text-secondary font-medium mt-1">
+                    {settings.tagline}
+                  </span>
+                )}
               </div>
             </Link>
             <p className="text-primary-foreground/70 text-sm leading-relaxed max-w-xs">
-              وجهتك الموثوقة للتسوق الإلكتروني. نجمع لك أفضل المنتجات في المنزل، التقنية، والسيارات تحت سقف واحد بمعايير جودة عالية.
+              وجهتك الموثوقة للتسوق الإلكتروني. نجمع لك أفضل المنتجات تحت سقف واحد بمعايير جودة عالية.
             </p>
             <div className="flex gap-4 pt-2">
-              <a href="#" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Instagram className="h-5 w-5" /></a>
-              <a href="#" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Twitter className="h-5 w-5" /></a>
-              <a href="#" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Facebook className="h-5 w-5" /></a>
+              {settings?.instagramUrl && (
+                <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Instagram className="h-5 w-5" /></a>
+              )}
+              {settings?.twitterUrl && (
+                <a href={settings.twitterUrl} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Twitter className="h-5 w-5" /></a>
+              )}
+              {settings?.facebookUrl && (
+                <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Facebook className="h-5 w-5" /></a>
+              )}
+              {settings?.whatsappNumber && (
+                <a href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-secondary transition-colors"><FaWhatsapp className="h-5 w-5" /></a>
+              )}
             </div>
           </div>
 
@@ -56,25 +78,31 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-bold text-white mb-6">تواصل معنا</h3>
             <ul className="space-y-4 text-sm text-primary-foreground/70">
-              <li className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-secondary" />
-                <span>الرياض، المملكة العربية السعودية</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-secondary" />
-                <span dir="ltr">+966 50 123 4567</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-secondary" />
-                <span>support@mystore.com</span>
-              </li>
+              {settings?.address && (
+                <li className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-secondary shrink-0" />
+                  <span>{settings.address}</span>
+                </li>
+              )}
+              {settings?.contactPhone && (
+                <li className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-secondary shrink-0" />
+                  <span dir="ltr">{settings.contactPhone}</span>
+                </li>
+              )}
+              {settings?.contactEmail && (
+                <li className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-secondary shrink-0" />
+                  <span>{settings.contactEmail}</span>
+                </li>
+              )}
             </ul>
           </div>
           
         </div>
         
         <div className="mt-16 pt-8 border-t border-primary-foreground/10 text-center text-sm text-primary-foreground/50">
-          <p>جميع الحقوق محفوظة &copy; {new Date().getFullYear()} My Store</p>
+          <p>جميع الحقوق محفوظة &copy; {new Date().getFullYear()} {storeName}</p>
         </div>
       </div>
     </footer>

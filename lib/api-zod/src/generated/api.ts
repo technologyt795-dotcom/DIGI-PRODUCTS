@@ -342,3 +342,73 @@ export const ListRelatedProductsResponseItem = zod.object({
 export const ListRelatedProductsResponse = zod.array(ListRelatedProductsResponseItem)
 
 
+/**
+ * @summary Get current store settings (public)
+ */
+export const GetSettingsResponse = zod.object({
+  "storeName": zod.string(),
+  "tagline": zod.string(),
+  "logoUrl": zod.string().nullable(),
+  "activeTheme": zod.enum(['classic', 'modern', 'minimal']),
+  "contactEmail": zod.string(),
+  "contactPhone": zod.string(),
+  "address": zod.string(),
+  "freeShippingThreshold": zod.number().nullable().describe('Minimum order amount for free shipping (null = no free shipping)'),
+  "flatShippingRate": zod.number().describe('Default shipping cost'),
+  "taxRate": zod.number().describe('Tax percentage (e.g. 15 for 15%)'),
+  "taxInclusive": zod.boolean().describe('Whether prices include tax'),
+  "facebookUrl": zod.string().nullable(),
+  "instagramUrl": zod.string().nullable(),
+  "twitterUrl": zod.string().nullable(),
+  "whatsappNumber": zod.string().nullable()
+})
+
+
+/**
+ * @summary Update store settings (admin)
+ */
+
+export const updateSettingsBodyFlatShippingRateMin = 0;
+
+export const updateSettingsBodyTaxRateMin = 0;
+export const updateSettingsBodyTaxRateMax = 100;
+
+
+
+export const UpdateSettingsBody = zod.object({
+  "storeName": zod.string().min(1).optional(),
+  "tagline": zod.string().optional(),
+  "logoUrl": zod.string().nullish(),
+  "activeTheme": zod.enum(['classic', 'modern', 'minimal']).optional(),
+  "contactEmail": zod.string().optional(),
+  "contactPhone": zod.string().optional(),
+  "address": zod.string().optional(),
+  "freeShippingThreshold": zod.number().nullish(),
+  "flatShippingRate": zod.number().min(updateSettingsBodyFlatShippingRateMin).optional(),
+  "taxRate": zod.number().min(updateSettingsBodyTaxRateMin).max(updateSettingsBodyTaxRateMax).optional(),
+  "taxInclusive": zod.boolean().optional(),
+  "facebookUrl": zod.string().nullish(),
+  "instagramUrl": zod.string().nullish(),
+  "twitterUrl": zod.string().nullish(),
+  "whatsappNumber": zod.string().nullish()
+})
+
+export const UpdateSettingsResponse = zod.object({
+  "storeName": zod.string(),
+  "tagline": zod.string(),
+  "logoUrl": zod.string().nullable(),
+  "activeTheme": zod.enum(['classic', 'modern', 'minimal']),
+  "contactEmail": zod.string(),
+  "contactPhone": zod.string(),
+  "address": zod.string(),
+  "freeShippingThreshold": zod.number().nullable().describe('Minimum order amount for free shipping (null = no free shipping)'),
+  "flatShippingRate": zod.number().describe('Default shipping cost'),
+  "taxRate": zod.number().describe('Tax percentage (e.g. 15 for 15%)'),
+  "taxInclusive": zod.boolean().describe('Whether prices include tax'),
+  "facebookUrl": zod.string().nullable(),
+  "instagramUrl": zod.string().nullable(),
+  "twitterUrl": zod.string().nullable(),
+  "whatsappNumber": zod.string().nullable()
+})
+
+

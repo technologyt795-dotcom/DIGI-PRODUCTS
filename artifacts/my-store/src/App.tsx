@@ -7,6 +7,7 @@ import { CartProvider } from '@/hooks/use-cart';
 import { AdminAuthProvider } from '@/hooks/use-admin-auth';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { StoreSettingsProvider, ThemeApplier } from '@/contexts/StoreSettingsContext';
 
 // Pages
 import Home from '@/pages/Home';
@@ -17,6 +18,7 @@ import Cart from '@/pages/Cart';
 import AdminLogin from '@/pages/admin/AdminLogin';
 import AdminProducts from '@/pages/admin/AdminProducts';
 import AdminCategories from '@/pages/admin/AdminCategories';
+import AdminSettings from '@/pages/admin/AdminSettings';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,35 +45,45 @@ function StoreRouter() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AdminAuthProvider>
-        <CartProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-            <Switch>
-              <Route path="/admin/login" component={AdminLogin} />
-              <Route path="/admin">
-                <AdminGuard>
-                  <AdminLayout>
-                    <AdminProducts />
-                  </AdminLayout>
-                </AdminGuard>
-              </Route>
-              <Route path="/admin/categories">
-                <AdminGuard>
-                  <AdminLayout>
-                    <AdminCategories />
-                  </AdminLayout>
-                </AdminGuard>
-              </Route>
-              <Route>
-                <Layout>
-                  <StoreRouter />
-                </Layout>
-              </Route>
-            </Switch>
-          </WouterRouter>
-          <Toaster richColors position="bottom-left" dir="rtl" />
-        </CartProvider>
-      </AdminAuthProvider>
+      <StoreSettingsProvider>
+        <ThemeApplier />
+        <AdminAuthProvider>
+          <CartProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+              <Switch>
+                <Route path="/admin/login" component={AdminLogin} />
+                <Route path="/admin">
+                  <AdminGuard>
+                    <AdminLayout>
+                      <AdminProducts />
+                    </AdminLayout>
+                  </AdminGuard>
+                </Route>
+                <Route path="/admin/categories">
+                  <AdminGuard>
+                    <AdminLayout>
+                      <AdminCategories />
+                    </AdminLayout>
+                  </AdminGuard>
+                </Route>
+                <Route path="/admin/settings">
+                  <AdminGuard>
+                    <AdminLayout>
+                      <AdminSettings />
+                    </AdminLayout>
+                  </AdminGuard>
+                </Route>
+                <Route>
+                  <Layout>
+                    <StoreRouter />
+                  </Layout>
+                </Route>
+              </Switch>
+            </WouterRouter>
+            <Toaster richColors position="bottom-left" dir="rtl" />
+          </CartProvider>
+        </AdminAuthProvider>
+      </StoreSettingsProvider>
     </QueryClientProvider>
   );
 }

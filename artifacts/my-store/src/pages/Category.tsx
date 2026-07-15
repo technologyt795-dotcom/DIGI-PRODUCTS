@@ -1,5 +1,5 @@
 import { useRoute } from 'wouter';
-import { useGetCategory, useListProducts } from '@workspace/api-client-react';
+import { useGetCategory, useListProducts, getGetCategoryQueryKey, getListProductsQueryKey } from '@workspace/api-client-react';
 import { ProductCard } from '@/components/ProductCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'wouter';
@@ -10,13 +10,13 @@ export default function Category() {
   const slug = params?.slug || '';
 
   const { data: category, isLoading: isLoadingCategory } = useGetCategory(slug, {
-    query: { enabled: !!slug }
+    query: { enabled: !!slug, queryKey: getGetCategoryQueryKey(slug) }
   });
 
   const { data: products, isLoading: isLoadingProducts } = useListProducts({
     categorySlug: slug
   }, {
-    query: { enabled: !!slug }
+    query: { enabled: !!slug, queryKey: getListProductsQueryKey({ categorySlug: slug }) }
   });
 
   if (isLoadingCategory) {

@@ -113,6 +113,84 @@ export interface Product {
   createdAt: string;
 }
 
+export type StoreSettingsActiveTheme = typeof StoreSettingsActiveTheme[keyof typeof StoreSettingsActiveTheme];
+
+
+export const StoreSettingsActiveTheme = {
+  classic: 'classic',
+  modern: 'modern',
+  minimal: 'minimal',
+} as const;
+
+export interface StoreSettings {
+  storeName: string;
+  tagline: string;
+  /** @nullable */
+  logoUrl: string | null;
+  activeTheme: StoreSettingsActiveTheme;
+  contactEmail: string;
+  contactPhone: string;
+  address: string;
+  /**
+     * Minimum order amount for free shipping (null = no free shipping)
+     * @nullable
+     */
+  freeShippingThreshold: number | null;
+  /** Default shipping cost */
+  flatShippingRate: number;
+  /** Tax percentage (e.g. 15 for 15%) */
+  taxRate: number;
+  /** Whether prices include tax */
+  taxInclusive: boolean;
+  /** @nullable */
+  facebookUrl: string | null;
+  /** @nullable */
+  instagramUrl: string | null;
+  /** @nullable */
+  twitterUrl: string | null;
+  /** @nullable */
+  whatsappNumber: string | null;
+}
+
+export type StoreSettingsUpdateActiveTheme = typeof StoreSettingsUpdateActiveTheme[keyof typeof StoreSettingsUpdateActiveTheme];
+
+
+export const StoreSettingsUpdateActiveTheme = {
+  classic: 'classic',
+  modern: 'modern',
+  minimal: 'minimal',
+} as const;
+
+export interface StoreSettingsUpdate {
+  /** @minLength 1 */
+  storeName?: string;
+  tagline?: string;
+  /** @nullable */
+  logoUrl?: string | null;
+  activeTheme?: StoreSettingsUpdateActiveTheme;
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: string;
+  /** @nullable */
+  freeShippingThreshold?: number | null;
+  /** @minimum 0 */
+  flatShippingRate?: number;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  taxRate?: number;
+  taxInclusive?: boolean;
+  /** @nullable */
+  facebookUrl?: string | null;
+  /** @nullable */
+  instagramUrl?: string | null;
+  /** @nullable */
+  twitterUrl?: string | null;
+  /** @nullable */
+  whatsappNumber?: string | null;
+}
+
 export type ListProductsParams = {
 categorySlug?: string;
 search?: string;

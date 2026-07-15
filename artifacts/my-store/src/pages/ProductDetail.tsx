@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRoute, Link } from 'wouter';
-import { useGetProduct, useListRelatedProducts } from '@workspace/api-client-react';
+import { useGetProduct, useListRelatedProducts, getGetProductQueryKey, getListRelatedProductsQueryKey } from '@workspace/api-client-react';
 import { useCart } from '@/hooks/use-cart';
 import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -17,11 +17,11 @@ export default function ProductDetail() {
   const { addItem } = useCart();
 
   const { data: product, isLoading } = useGetProduct(id, {
-    query: { enabled: !!id }
+    query: { enabled: !!id, queryKey: getGetProductQueryKey(id) }
   });
 
   const { data: relatedProducts, isLoading: isLoadingRelated } = useListRelatedProducts(id, {
-    query: { enabled: !!id }
+    query: { enabled: !!id, queryKey: getListRelatedProductsQueryKey(id) }
   });
 
   if (isLoading) {

@@ -18,3 +18,7 @@ export * from './listProductsSort';
 export * from './product';
 export * from './productInput';
 export * from './productUpdate';
+export * from './storeSettings';
+export * from './storeSettingsActiveTheme';
+export * from './storeSettingsUpdate';
+export * from './storeSettingsUpdateActiveTheme';

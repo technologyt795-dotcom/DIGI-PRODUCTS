@@ -4,12 +4,14 @@ import { useCart } from '@/hooks/use-cart';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 
 export function Navbar() {
   const { totalItems } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+  const { settings } = useStoreSettings();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +30,8 @@ export function Navbar() {
     { name: 'إكسسوارات السيارات', path: '/category/car-accessories' },
   ];
 
+  const storeName = settings?.storeName || 'My Store';
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
@@ -42,13 +46,21 @@ export function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-secondary">
-              <ShoppingBag className="h-6 w-6 absolute" />
-              <Lock className="h-3 w-3 absolute mt-2 ml-1 text-background" />
-            </div>
+            {settings?.logoUrl ? (
+              <img src={settings.logoUrl} alt={storeName} className="h-10 w-auto object-contain rounded" />
+            ) : (
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-secondary">
+                <ShoppingBag className="h-6 w-6 absolute" />
+                <Lock className="h-3 w-3 absolute mt-2 ml-1 text-background" />
+              </div>
+            )}
             <div className="hidden sm:flex flex-col">
-              <span className="text-xl font-bold leading-none tracking-tight text-primary">My Store</span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Quality & Trust</span>
+              <span className="text-xl font-bold leading-none tracking-tight text-primary">{storeName}</span>
+              {settings?.tagline && (
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mt-1">
+                  {settings.tagline}
+                </span>
+              )}
             </div>
           </Link>
 
@@ -96,10 +108,14 @@ export function Navbar() {
           <div className="fixed inset-y-0 right-0 w-full max-w-xs border-l bg-background p-6 shadow-xl flex flex-col">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-secondary">
-                  <ShoppingBag className="h-5 w-5" />
-                </div>
-                <span className="text-lg font-bold text-primary">My Store</span>
+                {settings?.logoUrl ? (
+                  <img src={settings.logoUrl} alt={storeName} className="h-8 w-auto object-contain rounded" />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-secondary">
+                    <ShoppingBag className="h-5 w-5" />
+                  </div>
+                )}
+                <span className="text-lg font-bold text-primary">{storeName}</span>
               </div>
               <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
                 <X className="h-5 w-5" />
