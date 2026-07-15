@@ -40,28 +40,6 @@ function StoreRouter() {
   );
 }
 
-function AdminRouter() {
-  return (
-    <Switch>
-      <Route path="/admin/login" component={AdminLogin} />
-      <Route path="/admin">
-        <AdminGuard>
-          <AdminLayout>
-            <AdminProducts />
-          </AdminLayout>
-        </AdminGuard>
-      </Route>
-      <Route path="/admin/categories">
-        <AdminGuard>
-          <AdminLayout>
-            <AdminCategories />
-          </AdminLayout>
-        </AdminGuard>
-      </Route>
-    </Switch>
-  );
-}
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -69,8 +47,20 @@ function App() {
         <CartProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
             <Switch>
-              <Route path="/admin/:rest*">
-                <AdminRouter />
+              <Route path="/admin/login" component={AdminLogin} />
+              <Route path="/admin">
+                <AdminGuard>
+                  <AdminLayout>
+                    <AdminProducts />
+                  </AdminLayout>
+                </AdminGuard>
+              </Route>
+              <Route path="/admin/categories">
+                <AdminGuard>
+                  <AdminLayout>
+                    <AdminCategories />
+                  </AdminLayout>
+                </AdminGuard>
               </Route>
               <Route>
                 <Layout>
