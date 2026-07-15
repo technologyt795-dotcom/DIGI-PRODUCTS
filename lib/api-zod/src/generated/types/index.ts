@@ -6,9 +6,15 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './adminLoginInput';
+export * from './adminSession';
 export * from './category';
+export * from './categoryInput';
+export * from './categoryUpdate';
 export * from './errorResponse';
 export * from './healthStatus';
 export * from './listProductsParams';
 export * from './listProductsSort';
 export * from './product';
+export * from './productInput';
+export * from './productUpdate';

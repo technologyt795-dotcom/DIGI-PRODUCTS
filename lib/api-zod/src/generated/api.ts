@@ -32,6 +32,31 @@ export const ListCategoriesResponse = zod.array(ListCategoriesResponseItem)
 
 
 /**
+ * @summary Create a category (admin)
+ */
+
+
+
+
+
+export const CreateCategoryBody = zod.object({
+  "slug": zod.string().min(1),
+  "name": zod.string().min(1),
+  "description": zod.string(),
+  "image": zod.string().min(1)
+})
+
+export const CreateCategoryResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "image": zod.string(),
+  "productCount": zod.number()
+})
+
+
+/**
  * @summary Get a category by slug
  */
 export const GetCategoryParams = zod.object({
@@ -46,6 +71,45 @@ export const GetCategoryResponse = zod.object({
   "image": zod.string(),
   "productCount": zod.number()
 })
+
+
+/**
+ * @summary Update a category by id (admin)
+ */
+export const UpdateCategoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+
+
+
+
+export const UpdateCategoryBody = zod.object({
+  "slug": zod.string().min(1).optional(),
+  "name": zod.string().min(1).optional(),
+  "description": zod.string().optional(),
+  "image": zod.string().min(1).optional()
+})
+
+export const UpdateCategoryResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "image": zod.string(),
+  "productCount": zod.number()
+})
+
+
+/**
+ * @summary Delete a category by id (admin)
+ */
+export const DeleteCategoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteCategoryResponse = zod.void()
 
 
 /**
@@ -77,6 +141,50 @@ export const ListProductsResponseItem = zod.object({
   "createdAt": zod.coerce.date()
 })
 export const ListProductsResponse = zod.array(ListProductsResponseItem)
+
+
+/**
+ * @summary Create a product (admin)
+ */
+
+
+
+
+export const CreateProductBody = zod.object({
+  "slug": zod.string().min(1),
+  "name": zod.string().min(1),
+  "categoryId": zod.number(),
+  "price": zod.number(),
+  "compareAtPrice": zod.number().nullish(),
+  "description": zod.string(),
+  "images": zod.array(zod.string()),
+  "rating": zod.number().optional(),
+  "reviewCount": zod.number().optional(),
+  "stock": zod.number(),
+  "isFeatured": zod.boolean().optional(),
+  "isNew": zod.boolean().optional(),
+  "badge": zod.string().nullish()
+})
+
+export const CreateProductResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.number(),
+  "categorySlug": zod.string(),
+  "categoryName": zod.string(),
+  "price": zod.number(),
+  "compareAtPrice": zod.number().nullable(),
+  "description": zod.string(),
+  "images": zod.array(zod.string()),
+  "rating": zod.number(),
+  "reviewCount": zod.number(),
+  "stock": zod.number(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "badge": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
 
 
 /**
@@ -129,6 +237,79 @@ export const GetProductResponse = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update a product by id (admin)
+ */
+export const UpdateProductParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+
+
+
+export const UpdateProductBody = zod.object({
+  "slug": zod.string().min(1).optional(),
+  "name": zod.string().min(1).optional(),
+  "categoryId": zod.number().optional(),
+  "price": zod.number().optional(),
+  "compareAtPrice": zod.number().nullish(),
+  "description": zod.string().optional(),
+  "images": zod.array(zod.string()).optional(),
+  "rating": zod.number().optional(),
+  "reviewCount": zod.number().optional(),
+  "stock": zod.number().optional(),
+  "isFeatured": zod.boolean().optional(),
+  "isNew": zod.boolean().optional(),
+  "badge": zod.string().nullish()
+})
+
+export const UpdateProductResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.number(),
+  "categorySlug": zod.string(),
+  "categoryName": zod.string(),
+  "price": zod.number(),
+  "compareAtPrice": zod.number().nullable(),
+  "description": zod.string(),
+  "images": zod.array(zod.string()),
+  "rating": zod.number(),
+  "reviewCount": zod.number(),
+  "stock": zod.number(),
+  "isFeatured": zod.boolean(),
+  "isNew": zod.boolean(),
+  "badge": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a product by id (admin)
+ */
+export const DeleteProductParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteProductResponse = zod.void()
+
+
+/**
+ * @summary Log in to the admin dashboard with the admin password
+ */
+
+
+
+export const AdminLoginBody = zod.object({
+  "password": zod.string().min(1)
+})
+
+export const AdminLoginResponse = zod.object({
+  "token": zod.string()
 })
 
 

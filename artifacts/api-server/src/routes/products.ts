@@ -5,9 +5,72 @@ import {
   ListProductsQueryParams,
   GetProductParams,
   ListRelatedProductsParams,
+  CreateProductBody,
+  UpdateProductBody,
+  UpdateProductParams,
+  DeleteProductParams,
 } from "@workspace/api-zod";
+import { requireAdmin } from "../middlewares/adminAuth";
 
 const router: IRouter = Router();
+
+function toInsertValues(data: {
+  slug: string;
+  name: string;
+  categoryId: number;
+  price: number;
+  compareAtPrice?: number | null;
+  description: string;
+  images: string[];
+  rating?: number;
+  reviewCount?: number;
+  stock: number;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  badge?: string | null;
+}) {
+  return {
+    slug: data.slug,
+    name: data.name,
+    categoryId: data.categoryId,
+    price: data.price.toString(),
+    compareAtPrice:
+      data.compareAtPrice == null ? null : data.compareAtPrice.toString(),
+    description: data.description,
+    images: data.images,
+    ...(data.rating != null ? { rating: data.rating.toString() } : {}),
+    ...(data.reviewCount != null ? { reviewCount: data.reviewCount } : {}),
+    stock: data.stock,
+    ...(data.isFeatured != null ? { isFeatured: data.isFeatured } : {}),
+    ...(data.isNew != null ? { isNew: data.isNew } : {}),
+    ...(data.badge !== undefined ? { badge: data.badge } : {}),
+  };
+}
+
+function toUpdateValues(data: {
+  slug?: string;
+  name?: string;
+  categoryId?: number;
+  price?: number;
+  compareAtPrice?: number | null;
+  description?: string;
+  images?: string[];
+  rating?: number;
+  reviewCount?: number;
+  stock?: number;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  badge?: string | null;
+}) {
+  const values: Record<string, unknown> = { ...data };
+  if (data.price != null) values.price = data.price.toString();
+  if (data.compareAtPrice !== undefined) {
+    values.compareAtPrice =
+      data.compareAtPrice == null ? null : data.compareAtPrice.toString();
+  }
+  if (data.rating != null) values.rating = data.rating.toString();
+  return values;
+}
 
 const productSelection = {
   id: productsTable.id,
@@ -66,6 +129,48 @@ router.get("/products", async (req, res): Promise<void> => {
   res.json(rows);
 });
 
+router.post("/products", requireAdmin, async (req, res): Promise<void> => {
+  const parsed = CreateProductBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const [category] = await db
+    .select({ id: categoriesTable.id })
+    .from(categoriesTable)
+    .where(eq(categoriesTable.id, parsed.data.categoryId));
+  if (!category) {
+    res.status(400).json({ error: "Category does not exist" });
+    return;
+  }
+
+  const [existing] = await db
+    .select({ id: productsTable.id })
+    .from(productsTable)
+    .where(eq(productsTable.slug, parsed.data.slug));
+  if (existing) {
+    res.status(400).json({ error: "A product with this slug already exists" });
+    return;
+  }
+
+  const [created] = await db
+    .insert(productsTable)
+    .values(toInsertValues(parsed.data))
+    .returning();
+
+  const [row] = await db
+    .select(productSelection)
+    .from(productsTable)
+    .innerJoin(
+      categoriesTable,
+      eq(productsTable.categoryId, categoriesTable.id),
+    )
+    .where(eq(productsTable.id, created.id));
+
+  res.status(201).json(row);
+});
+
 router.get("/products/featured", async (_req, res): Promise<void> => {
   const rows = await db
     .select(productSelection)
@@ -103,6 +208,94 @@ router.get("/products/:id", async (req, res): Promise<void> => {
 
   res.json(row);
 });
+
+router.patch(
+  "/products/id/:id",
+  requireAdmin,
+  async (req, res): Promise<void> => {
+    const params = UpdateProductParams.safeParse(req.params);
+    if (!params.success) {
+      res.status(400).json({ error: params.error.message });
+      return;
+    }
+
+    const parsed = UpdateProductBody.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+
+    if (parsed.data.categoryId != null) {
+      const [category] = await db
+        .select({ id: categoriesTable.id })
+        .from(categoriesTable)
+        .where(eq(categoriesTable.id, parsed.data.categoryId));
+      if (!category) {
+        res.status(400).json({ error: "Category does not exist" });
+        return;
+      }
+    }
+
+    if (parsed.data.slug) {
+      const [existing] = await db
+        .select({ id: productsTable.id })
+        .from(productsTable)
+        .where(eq(productsTable.slug, parsed.data.slug));
+      if (existing && existing.id !== params.data.id) {
+        res
+          .status(400)
+          .json({ error: "A product with this slug already exists" });
+        return;
+      }
+    }
+
+    const [updated] = await db
+      .update(productsTable)
+      .set(toUpdateValues(parsed.data))
+      .where(eq(productsTable.id, params.data.id))
+      .returning();
+
+    if (!updated) {
+      res.status(404).json({ error: "Product not found" });
+      return;
+    }
+
+    const [row] = await db
+      .select(productSelection)
+      .from(productsTable)
+      .innerJoin(
+        categoriesTable,
+        eq(productsTable.categoryId, categoriesTable.id),
+      )
+      .where(eq(productsTable.id, updated.id));
+
+    res.json(row);
+  },
+);
+
+router.delete(
+  "/products/id/:id",
+  requireAdmin,
+  async (req, res): Promise<void> => {
+    const params = DeleteProductParams.safeParse(req.params);
+    if (!params.success) {
+      res.status(400).json({ error: params.error.message });
+      return;
+    }
+
+    const [deleted] = await db
+      .delete(productsTable)
+      .where(eq(productsTable.id, params.data.id))
+      .returning();
+
+    if (!deleted) {
+      res.status(404).json({ error: "Product not found" });
+      return;
+    }
+
+    res.sendStatus(204);
+  },
+);
 
 router.get("/products/:id/related", async (req, res): Promise<void> => {
   const params = ListRelatedProductsParams.safeParse(req.params);

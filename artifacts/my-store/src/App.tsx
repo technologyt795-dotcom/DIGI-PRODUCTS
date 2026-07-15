@@ -4,6 +4,9 @@ import NotFound from '@/pages/not-found';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { Layout } from '@/components/layout/Layout';
 import { CartProvider } from '@/hooks/use-cart';
+import { AdminAuthProvider } from '@/hooks/use-admin-auth';
+import { AdminGuard } from '@/components/admin/AdminGuard';
+import { AdminLayout } from '@/components/admin/AdminLayout';
 
 // Pages
 import Home from '@/pages/Home';
@@ -11,6 +14,9 @@ import Products from '@/pages/Products';
 import Category from '@/pages/Category';
 import ProductDetail from '@/pages/ProductDetail';
 import Cart from '@/pages/Cart';
+import AdminLogin from '@/pages/admin/AdminLogin';
+import AdminProducts from '@/pages/admin/AdminProducts';
+import AdminCategories from '@/pages/admin/AdminCategories';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,7 +27,7 @@ const queryClient = new QueryClient({
   },
 });
 
-function Router() {
+function StoreRouter() {
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -34,17 +40,48 @@ function Router() {
   );
 }
 
+function AdminRouter() {
+  return (
+    <Switch>
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin">
+        <AdminGuard>
+          <AdminLayout>
+            <AdminProducts />
+          </AdminLayout>
+        </AdminGuard>
+      </Route>
+      <Route path="/admin/categories">
+        <AdminGuard>
+          <AdminLayout>
+            <AdminCategories />
+          </AdminLayout>
+        </AdminGuard>
+      </Route>
+    </Switch>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Layout>
-            <Router />
-          </Layout>
-        </WouterRouter>
-        <Toaster richColors position="bottom-left" dir="rtl" />
-      </CartProvider>
+      <AdminAuthProvider>
+        <CartProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+            <Switch>
+              <Route path="/admin/:rest*">
+                <AdminRouter />
+              </Route>
+              <Route>
+                <Layout>
+                  <StoreRouter />
+                </Layout>
+              </Route>
+            </Switch>
+          </WouterRouter>
+          <Toaster richColors position="bottom-left" dir="rtl" />
+        </CartProvider>
+      </AdminAuthProvider>
     </QueryClientProvider>
   );
 }

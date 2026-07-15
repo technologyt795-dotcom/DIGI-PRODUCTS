@@ -22,6 +22,75 @@ export interface Category {
   productCount: number;
 }
 
+export interface CategoryInput {
+  /** @minLength 1 */
+  slug: string;
+  /** @minLength 1 */
+  name: string;
+  description: string;
+  /** @minLength 1 */
+  image: string;
+}
+
+export interface CategoryUpdate {
+  /** @minLength 1 */
+  slug?: string;
+  /** @minLength 1 */
+  name?: string;
+  description?: string;
+  /** @minLength 1 */
+  image?: string;
+}
+
+export interface ProductInput {
+  /** @minLength 1 */
+  slug: string;
+  /** @minLength 1 */
+  name: string;
+  categoryId: number;
+  price: number;
+  /** @nullable */
+  compareAtPrice?: number | null;
+  description: string;
+  images: string[];
+  rating?: number;
+  reviewCount?: number;
+  stock: number;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  /** @nullable */
+  badge?: string | null;
+}
+
+export interface ProductUpdate {
+  /** @minLength 1 */
+  slug?: string;
+  /** @minLength 1 */
+  name?: string;
+  categoryId?: number;
+  price?: number;
+  /** @nullable */
+  compareAtPrice?: number | null;
+  description?: string;
+  images?: string[];
+  rating?: number;
+  reviewCount?: number;
+  stock?: number;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  /** @nullable */
+  badge?: string | null;
+}
+
+export interface AdminLoginInput {
+  /** @minLength 1 */
+  password: string;
+}
+
+export interface AdminSession {
+  token: string;
+}
+
 export interface Product {
   id: number;
   slug: string;
