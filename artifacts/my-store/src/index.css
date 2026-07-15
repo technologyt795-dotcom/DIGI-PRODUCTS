@@ -122,6 +122,26 @@
   --radius: 2px;
 }
 
+[data-theme="luxury"] {
+  --background: 30 20% 8%;
+  --foreground: 45 60% 88%;
+  --primary: 45 85% 55%;
+  --primary-foreground: 30 20% 8%;
+  --secondary: 160 40% 30%;
+  --secondary-foreground: 45 60% 88%;
+  --card: 30 20% 12%;
+  --card-foreground: 45 60% 88%;
+  --card-border: 45 40% 25%;
+  --muted: 30 15% 18%;
+  --muted-foreground: 45 25% 60%;
+  --border: 45 30% 22%;
+  --input: 45 30% 22%;
+  --ring: 45 85% 55%;
+  --accent: 45 85% 55%;
+  --accent-foreground: 30 20% 8%;
+  --radius: 0.75rem;
+}
+
 .dark {
   --background: 222 47% 11%;
   --foreground: 210 40% 98%;

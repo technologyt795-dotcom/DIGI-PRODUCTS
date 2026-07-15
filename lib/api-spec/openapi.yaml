@@ -691,7 +691,7 @@ components:
           type: ["string", "null"]
         activeTheme:
           type: string
-          enum: [classic, modern, minimal]
+          enum: [classic, modern, minimal, luxury]
         contactEmail:
           type: string
         contactPhone:
@@ -731,7 +731,7 @@ components:
           type: ["string", "null"]
         activeTheme:
           type: string
-          enum: [classic, modern, minimal]
+          enum: [classic, modern, minimal, luxury]
         contactEmail:
           type: string
         contactPhone:

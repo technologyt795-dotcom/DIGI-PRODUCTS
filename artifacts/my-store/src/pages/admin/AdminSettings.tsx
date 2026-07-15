@@ -123,6 +123,14 @@ export default function AdminSettings() {
       preview: 'bg-white border-[#e5e7eb]',
       primary: 'bg-[#1e293b]',
       secondary: 'bg-[#f1f5f9]'
+    },
+    {
+      id: 'luxury' as StoreSettingsUpdateActiveTheme,
+      name: 'فاخر (Luxury)',
+      description: 'خلفية داكنة مع ذهبي فاخر',
+      preview: 'bg-[#1a1208] border-[#7a6020]',
+      primary: 'bg-[#c9952a]',
+      secondary: 'bg-[#2d6b4a]'
     }
   ];
 

@@ -120,6 +120,7 @@ export const StoreSettingsActiveTheme = {
   classic: 'classic',
   modern: 'modern',
   minimal: 'minimal',
+  luxury: 'luxury',
 } as const;
 
 export interface StoreSettings {
@@ -159,6 +160,7 @@ export const StoreSettingsUpdateActiveTheme = {
   classic: 'classic',
   modern: 'modern',
   minimal: 'minimal',
+  luxury: 'luxury',
 } as const;
 
 export interface StoreSettingsUpdate {
