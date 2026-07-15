@@ -60,6 +60,7 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
 router.get("/settings", async (_req, res): Promise<void> => {
   try {
     const row = await ensureSettings();
+    res.set("Cache-Control", "no-store");
     res.json(toApiSettings(row!));
   } catch (err) {
     res.status(500).json({ error: "Failed to load settings" });
