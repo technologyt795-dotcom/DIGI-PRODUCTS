@@ -1,5 +1,6 @@
 import path from "path";
 import crypto from "crypto";
+import { mkdirSync } from "fs";
 import { Router, type IRouter } from "express";
 import multer from "multer";
 import { AdminLoginBody } from "@workspace/api-zod";
@@ -26,14 +27,18 @@ router.post("/admin/login", (req, res): void => {
   res.json({ token: issueAdminToken() });
 });
 
+// After esbuild bundling, import.meta.dirname resolves to dist/
+// so one ".." reaches the artifact root where public/ lives.
 const uploadDir = path.resolve(
   import.meta.dirname,
-  "..",
   "..",
   "public",
   "images",
   "uploads",
 );
+
+// Ensure the directory exists (important for fresh deployments)
+mkdirSync(uploadDir, { recursive: true });
 
 const upload = multer({
   storage: multer.diskStorage({
