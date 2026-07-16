@@ -18,7 +18,22 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * @summary List all categories
+ * @summary List all categories including hidden (admin)
+ */
+export const ListAdminCategoriesResponseItem = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "name": zod.string(),
+  "description": zod.string(),
+  "image": zod.string(),
+  "productCount": zod.number(),
+  "isHidden": zod.boolean()
+})
+export const ListAdminCategoriesResponse = zod.array(ListAdminCategoriesResponseItem)
+
+
+/**
+ * @summary List visible categories (public)
  */
 export const ListCategoriesResponseItem = zod.object({
   "id": zod.number(),
@@ -26,7 +41,8 @@ export const ListCategoriesResponseItem = zod.object({
   "name": zod.string(),
   "description": zod.string(),
   "image": zod.string(),
-  "productCount": zod.number()
+  "productCount": zod.number(),
+  "isHidden": zod.boolean()
 })
 export const ListCategoriesResponse = zod.array(ListCategoriesResponseItem)
 
@@ -52,7 +68,8 @@ export const CreateCategoryResponse = zod.object({
   "name": zod.string(),
   "description": zod.string(),
   "image": zod.string(),
-  "productCount": zod.number()
+  "productCount": zod.number(),
+  "isHidden": zod.boolean()
 })
 
 
@@ -69,7 +86,8 @@ export const GetCategoryResponse = zod.object({
   "name": zod.string(),
   "description": zod.string(),
   "image": zod.string(),
-  "productCount": zod.number()
+  "productCount": zod.number(),
+  "isHidden": zod.boolean()
 })
 
 
@@ -89,7 +107,8 @@ export const UpdateCategoryBody = zod.object({
   "slug": zod.string().min(1).optional(),
   "name": zod.string().min(1).optional(),
   "description": zod.string().optional(),
-  "image": zod.string().min(1).optional()
+  "image": zod.string().min(1).optional(),
+  "isHidden": zod.boolean().optional()
 })
 
 export const UpdateCategoryResponse = zod.object({
@@ -98,7 +117,8 @@ export const UpdateCategoryResponse = zod.object({
   "name": zod.string(),
   "description": zod.string(),
   "image": zod.string(),
-  "productCount": zod.number()
+  "productCount": zod.number(),
+  "isHidden": zod.boolean()
 })
 
 

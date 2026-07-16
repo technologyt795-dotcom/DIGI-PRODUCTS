@@ -13,4 +13,5 @@ export interface Category {
   description: string;
   image: string;
   productCount: number;
+  isHidden: boolean;
 }

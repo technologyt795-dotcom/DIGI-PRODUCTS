@@ -14,4 +14,5 @@ export interface CategoryUpdate {
   description?: string;
   /** @minLength 1 */
   image?: string;
+  isHidden?: boolean;
 }

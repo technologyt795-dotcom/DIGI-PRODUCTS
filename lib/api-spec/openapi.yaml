@@ -33,11 +33,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
 
+  /admin/categories:
+    get:
+      operationId: listAdminCategories
+      tags: [admin]
+      summary: List all categories including hidden (admin)
+      security:
+        - adminToken: []
+      responses:
+        "200":
+          description: List of all categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /categories:
     get:
       operationId: listCategories
       tags: [categories]
-      summary: List all categories
+      summary: List visible categories (public)
       responses:
         "200":
           description: List of categories
@@ -473,7 +496,7 @@ components:
 
     Category:
       type: object
-      required: [id, slug, name, description, image, productCount]
+      required: [id, slug, name, description, image, productCount, isHidden]
       properties:
         id:
           type: integer
@@ -487,6 +510,8 @@ components:
           type: string
         productCount:
           type: integer
+        isHidden:
+          type: boolean
 
     CategoryInput:
       type: object
@@ -518,6 +543,8 @@ components:
         image:
           type: string
           minLength: 1
+        isHidden:
+          type: boolean
 
     ProductInput:
       type: object

@@ -20,6 +20,7 @@ export interface Category {
   description: string;
   image: string;
   productCount: number;
+  isHidden: boolean;
 }
 
 export interface CategoryInput {
@@ -40,6 +41,7 @@ export interface CategoryUpdate {
   description?: string;
   /** @minLength 1 */
   image?: string;
+  isHidden?: boolean;
 }
 
 export interface ProductInput {

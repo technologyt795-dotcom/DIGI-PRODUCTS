@@ -19,10 +19,25 @@ const categorySelection = {
   name: categoriesTable.name,
   description: categoriesTable.description,
   image: categoriesTable.image,
+  isHidden: categoriesTable.isHidden,
   productCount: sql<number>`count(${productsTable.id})`.mapWith(Number),
 };
 
+// Public: only visible categories
 router.get("/categories", async (_req, res): Promise<void> => {
+  const rows = await db
+    .select(categorySelection)
+    .from(categoriesTable)
+    .leftJoin(productsTable, eq(productsTable.categoryId, categoriesTable.id))
+    .where(eq(categoriesTable.isHidden, false))
+    .groupBy(categoriesTable.id)
+    .orderBy(categoriesTable.id);
+
+  res.json(rows);
+});
+
+// Admin: all categories including hidden
+router.get("/admin/categories", requireAdmin, async (_req, res): Promise<void> => {
   const rows = await db
     .select(categorySelection)
     .from(categoriesTable)
@@ -143,17 +158,26 @@ router.delete(
       return;
     }
 
-    const [productInCategory] = await db
-      .select({ id: productsTable.id })
-      .from(productsTable)
-      .where(eq(productsTable.categoryId, params.data.id))
-      .limit(1);
+    const withProducts = req.query.withProducts === "true";
 
-    if (productInCategory) {
-      res.status(409).json({
-        error: "Cannot delete a category that still has products",
-      });
-      return;
+    if (withProducts) {
+      // Delete all products in the category first, then the category
+      await db
+        .delete(productsTable)
+        .where(eq(productsTable.categoryId, params.data.id));
+    } else {
+      const [productInCategory] = await db
+        .select({ id: productsTable.id })
+        .from(productsTable)
+        .where(eq(productsTable.categoryId, params.data.id))
+        .limit(1);
+
+      if (productInCategory) {
+        res.status(409).json({
+          error: "Cannot delete a category that still has products",
+        });
+        return;
+      }
     }
 
     const [deleted] = await db
