@@ -73,9 +73,11 @@ export default function Category() {
 
       <div className="container mx-auto px-4">
         {isLoadingProducts ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap justify-center gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-[400px] rounded-2xl" />
+              <div key={i} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                <Skeleton className="h-[400px] rounded-2xl" />
+              </div>
             ))}
           </div>
         ) : products?.length === 0 ? (
@@ -84,9 +86,11 @@ export default function Category() {
             <p className="text-muted-foreground">سنقوم بإضافة منتجات لهذه الفئة قريباً.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap justify-center gap-6">
             {products?.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <div key={product.id} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
         )}
