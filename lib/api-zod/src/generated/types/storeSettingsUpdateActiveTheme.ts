@@ -14,4 +14,5 @@ export const StoreSettingsUpdateActiveTheme = {
   modern: 'modern',
   minimal: 'minimal',
   luxury: 'luxury',
+  ocean: 'ocean',
 } as const;

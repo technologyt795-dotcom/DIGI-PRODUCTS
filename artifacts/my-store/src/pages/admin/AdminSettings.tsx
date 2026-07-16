@@ -131,6 +131,14 @@ export default function AdminSettings() {
       preview: 'bg-[#1a1208] border-[#7a6020]',
       primary: 'bg-[#c9952a]',
       secondary: 'bg-[#2d6b4a]'
+    },
+    {
+      id: 'ocean' as StoreSettingsUpdateActiveTheme,
+      name: 'بحري (Ocean)',
+      description: 'خلفية زرقاء داكنة مع فيروزي مضيء',
+      preview: 'bg-[#0b1929] border-[#1e3a5f]',
+      primary: 'bg-[#00b4d8]',
+      secondary: 'bg-[#1e3a5f]'
     }
   ];
 
