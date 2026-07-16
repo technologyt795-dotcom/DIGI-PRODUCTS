@@ -101,8 +101,11 @@ export function Footer() {
           
         </div>
         
-        <div className="mt-16 pt-8 border-t border-primary-foreground/10 text-center text-sm text-primary-foreground/50">
+        <div className="mt-16 pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-primary-foreground/50">
           <p>جميع الحقوق محفوظة &copy; {new Date().getFullYear()} {storeName}</p>
+          <Link href="/admin" className="hover:text-secondary/70 transition-colors text-xs opacity-40 hover:opacity-100">
+            لوحة التحكم
+          </Link>
         </div>
       </div>
     </footer>
