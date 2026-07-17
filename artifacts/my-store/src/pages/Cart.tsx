@@ -1,11 +1,81 @@
-import { Link } from 'wouter';
+import { useState } from 'react';
+import { Link, useLocation } from 'wouter';
 import { useCart } from '@/hooks/use-cart';
 import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Lock } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Lock, Loader2, CheckCircle, Tag, MapPin } from 'lucide-react';
+import { useValidateDiscount, useCreateOrder } from '@workspace/api-client-react';
+import { toast } from 'sonner';
 
 export default function Cart() {
+  const [, setLocation] = useLocation();
   const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
+  const validateDiscount = useValidateDiscount();
+  const createOrder = useCreateOrder();
+
+  const [discountCode, setDiscountCode] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number } | null>(null);
+  
+  const [form, setForm] = useState({
+    customerName: '',
+    customerEmail: '',
+    customerPhone: '',
+    address: '',
+    notes: ''
+  });
+
+  const taxAmount = totalPrice * 0.15;
+  const subtotalWithTax = totalPrice + taxAmount;
+  const finalTotal = subtotalWithTax - (appliedDiscount?.amount || 0);
+
+  const handleApplyDiscount = async () => {
+    if (!discountCode) return;
+    try {
+      const res = await validateDiscount.mutateAsync({ data: { code: discountCode, orderTotal: subtotalWithTax } });
+      setAppliedDiscount({ code: discountCode, amount: res.discountAmount });
+      toast.success('تم تطبيق كود الخصم بنجاح');
+    } catch (err: any) {
+      toast.error(err.message || 'كود الخصم غير صالح');
+      setAppliedDiscount(null);
+    }
+  };
+
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (items.length === 0) return;
+    
+    try {
+      const orderItems = items.map(item => ({
+        productId: item.product.id,
+        name: item.product.name,
+        image: item.product.images[0] || '',
+        price: item.product.price,
+        quantity: item.quantity
+      }));
+
+      const payload = {
+        ...form,
+        items: orderItems,
+        discountCode: appliedDiscount?.code,
+      };
+
+      const res = await createOrder.mutateAsync({ data: payload });
+      clearCart();
+      toast.success(
+        <div className="flex flex-col gap-1">
+          <span className="font-bold text-lg">تم تأكيد طلبك بنجاح!</span>
+          <span>رقم الطلب: #{res.orderNumber}</span>
+        </div>,
+        { duration: 5000 }
+      );
+      setLocation('/');
+    } catch (err: any) {
+      toast.error(err.message || 'حدث خطأ أثناء إتمام الطلب');
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -28,146 +98,173 @@ export default function Cart() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-black mb-10">سلة المشتريات</h1>
+      <h1 className="text-4xl font-black mb-10">إتمام الشراء</h1>
       
       <div className="flex flex-col lg:flex-row gap-10">
-        {/* Cart Items */}
-        <div className="flex-1 space-y-6">
+        {/* Left Column: Cart Items & Form */}
+        <div className="flex-1 space-y-10">
+          
+          {/* Cart Items Box */}
           <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
-            <div className="hidden sm:grid grid-cols-12 gap-4 p-6 bg-muted/30 border-b border-border text-sm font-bold text-muted-foreground">
-              <div className="col-span-6">المنتج</div>
-              <div className="col-span-2 text-center">السعر</div>
-              <div className="col-span-2 text-center">الكمية</div>
-              <div className="col-span-2 text-left pl-4">المجموع</div>
+            <div className="p-6 bg-muted/30 border-b border-border flex justify-between items-center">
+              <h2 className="text-xl font-bold flex items-center gap-2"><ShoppingBag className="h-5 w-5" /> منتجات السلة</h2>
+              <span className="text-muted-foreground font-medium">{items.length} منتجات</span>
             </div>
             
             <div className="divide-y divide-border">
               {items.map((item) => (
-                <div key={item.product.id} className="p-6 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-                  {/* Product Info */}
-                  <div className="col-span-1 sm:col-span-6 flex items-center gap-4">
-                    <Link href={`/product/${item.product.id}`} className="shrink-0">
-                      <div className="w-24 h-24 rounded-xl overflow-hidden bg-muted border border-border/50">
-                        <img 
-                          src={item.product.images[0]} 
-                          alt={item.product.name} 
-                          className="w-full h-full object-cover hover:scale-110 transition-transform"
-                        />
-                      </div>
-                    </Link>
+                <div key={item.product.id} className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                  <div className="flex items-center gap-4 flex-1 w-full">
+                    <div className="w-20 h-20 rounded-xl overflow-hidden bg-muted border border-border/50 shrink-0">
+                      <img 
+                        src={item.product.images[0]} 
+                        alt={item.product.name} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <div className="flex flex-col flex-1">
-                      <Link href={`/category/${item.product.categorySlug}`} className="text-xs text-muted-foreground hover:text-primary mb-1 transition-colors">
-                        {item.product.categoryName}
-                      </Link>
-                      <Link href={`/product/${item.product.id}`} className="font-bold text-foreground hover:text-primary transition-colors line-clamp-2 leading-snug">
-                        {item.product.name}
-                      </Link>
-                      
-                      {/* Mobile Price & Total */}
-                      <div className="sm:hidden mt-2 flex items-center justify-between">
-                        <span className="font-bold text-primary">{formatPrice(item.product.price)}</span>
-                      </div>
+                      <h3 className="font-bold text-foreground line-clamp-1">{item.product.name}</h3>
+                      <span className="text-primary font-bold mt-1">{formatPrice(item.product.price)}</span>
                     </div>
                   </div>
                   
-                  {/* Desktop Price */}
-                  <div className="hidden sm:block col-span-2 text-center font-bold text-foreground/80">
-                    {formatPrice(item.product.price)}
-                  </div>
-                  
-                  {/* Quantity Controls */}
-                  <div className="col-span-1 sm:col-span-2 flex justify-center">
-                    <div className="flex items-center border border-border rounded-lg bg-background w-32 h-10">
+                  <div className="flex items-center justify-between w-full sm:w-auto mt-4 sm:mt-0 gap-6">
+                    <div className="flex items-center border border-border rounded-lg bg-background w-28 h-9">
                       <button 
                         onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                         disabled={item.quantity >= item.product.stock}
-                        className="w-10 h-full flex items-center justify-center hover:bg-muted text-foreground transition-colors disabled:opacity-50"
+                        className="w-8 h-full flex items-center justify-center hover:bg-muted text-foreground transition-colors disabled:opacity-50"
                       >
-                        <Plus className="h-4 w-4" />
+                        <Plus className="h-3 w-3" />
                       </button>
                       <div className="flex-1 h-full flex items-center justify-center font-bold text-sm border-x border-border">
                         {item.quantity}
                       </div>
                       <button 
                         onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                        className="w-10 h-full flex items-center justify-center hover:bg-muted text-foreground transition-colors"
+                        className="w-8 h-full flex items-center justify-center hover:bg-muted text-foreground transition-colors"
                       >
-                        <Minus className="h-4 w-4" />
+                        <Minus className="h-3 w-3" />
                       </button>
                     </div>
-                  </div>
-                  
-                  {/* Total & Remove */}
-                  <div className="hidden sm:flex col-span-2 items-center justify-end gap-4 pl-2">
-                    <span className="font-bold text-lg text-primary">{formatPrice(item.product.price * item.quantity)}</span>
+                    <div className="font-bold w-20 text-left">
+                      {formatPrice(item.product.price * item.quantity)}
+                    </div>
                     <button 
                       onClick={() => removeItem(item.product.id)}
-                      className="text-muted-foreground hover:text-destructive transition-colors p-2 rounded-lg hover:bg-destructive/10"
-                      aria-label="إزالة المنتج"
+                      className="text-muted-foreground hover:text-destructive transition-colors p-2"
                     >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
-                  </div>
-                  
-                  {/* Mobile Remove */}
-                  <div className="sm:hidden flex justify-end w-full border-t border-border/50 pt-4 mt-2">
-                     <button 
-                      onClick={() => removeItem(item.product.id)}
-                      className="text-destructive font-bold text-sm flex items-center gap-2"
-                    >
-                      <Trash2 className="h-4 w-4" /> إزالة
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-            
-            <div className="p-6 bg-muted/20 border-t border-border flex justify-between items-center">
-              <Button variant="ghost" className="text-muted-foreground hover:text-destructive" onClick={clearCart}>
-                إفراغ السلة
-              </Button>
-              <Button asChild variant="outline" className="font-bold">
-                <Link href="/products">متابعة التسوق <ArrowLeft className="mr-2 h-4 w-4" /></Link>
-              </Button>
-            </div>
+          </div>
+
+          {/* Checkout Form Box */}
+          <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm p-6 sm:p-8">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><MapPin className="h-5 w-5" /> بيانات التوصيل</h2>
+            <form id="checkout-form" onSubmit={handleCheckout} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>الاسم الكامل *</Label>
+                  <Input required value={form.customerName} onChange={e => setForm({...form, customerName: e.target.value})} placeholder="الاسم الأول والأخير" />
+                </div>
+                <div className="space-y-2">
+                  <Label>رقم الهاتف *</Label>
+                  <Input required value={form.customerPhone} onChange={e => setForm({...form, customerPhone: e.target.value})} placeholder="05xxxxxxxx" dir="ltr" className="text-right" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>البريد الإلكتروني *</Label>
+                <Input type="email" required value={form.customerEmail} onChange={e => setForm({...form, customerEmail: e.target.value})} placeholder="example@email.com" dir="ltr" className="text-right" />
+              </div>
+              <div className="space-y-2">
+                <Label>عنوان التوصيل بالتفصيل *</Label>
+                <Textarea required value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="المدينة، الحي، الشارع، رقم المبنى" className="resize-none" rows={3} />
+              </div>
+              <div className="space-y-2">
+                <Label>ملاحظات إضافية (اختياري)</Label>
+                <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="أي تعليمات خاصة للمندوب..." className="resize-none" rows={2} />
+              </div>
+            </form>
           </div>
         </div>
 
-        {/* Order Summary */}
+        {/* Right Column: Order Summary */}
         <div className="w-full lg:w-96 shrink-0">
-          <div className="bg-card border border-border rounded-3xl p-8 sticky top-28 shadow-sm">
-            <h2 className="text-2xl font-black mb-6 border-b border-border pb-4">ملخص الطلب</h2>
+          <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 sticky top-28 shadow-sm">
+            <h2 className="text-xl font-black mb-6 border-b border-border pb-4">ملخص الطلب</h2>
             
+            {/* Discount Code */}
+            <div className="mb-6 space-y-3 pb-6 border-b border-border">
+              <Label className="flex items-center gap-1.5"><Tag className="h-4 w-4" /> كود الخصم</Label>
+              <div className="flex gap-2">
+                <Input 
+                  value={discountCode} 
+                  onChange={e => setDiscountCode(e.target.value.toUpperCase())} 
+                  placeholder="أدخل الكود" 
+                  dir="ltr" 
+                  disabled={!!appliedDiscount || validateDiscount.isPending}
+                  className="font-bold text-center uppercase" 
+                />
+                {!appliedDiscount ? (
+                  <Button variant="secondary" onClick={handleApplyDiscount} disabled={!discountCode || validateDiscount.isPending}>
+                    {validateDiscount.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'تطبيق'}
+                  </Button>
+                ) : (
+                  <Button variant="outline" className="text-destructive border-destructive/50 hover:bg-destructive/10" onClick={() => { setAppliedDiscount(null); setDiscountCode(''); }}>
+                    إلغاء
+                  </Button>
+                )}
+              </div>
+              {appliedDiscount && (
+                <div className="text-sm text-green-600 font-medium flex items-center gap-1.5 mt-2">
+                  <CheckCircle className="h-4 w-4" /> تم تطبيق خصم {formatPrice(appliedDiscount.amount)}
+                </div>
+              )}
+            </div>
+
             <div className="space-y-4 mb-6">
-              <div className="flex justify-between text-muted-foreground">
+              <div className="flex justify-between text-muted-foreground text-sm">
                 <span>المجموع الفرعي</span>
                 <span className="font-bold text-foreground">{formatPrice(totalPrice)}</span>
               </div>
-              <div className="flex justify-between text-muted-foreground">
+              <div className="flex justify-between text-muted-foreground text-sm">
                 <span>الشحن</span>
                 <span className="font-bold text-foreground">مجاني</span>
               </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>الضريبة (15%)</span>
-                <span className="font-bold text-foreground">{formatPrice(totalPrice * 0.15)}</span>
+              <div className="flex justify-between text-muted-foreground text-sm">
+                <span>ضريبة القيمة المضافة (15%)</span>
+                <span className="font-bold text-foreground">{formatPrice(taxAmount)}</span>
               </div>
+              {appliedDiscount && (
+                <div className="flex justify-between text-green-600 text-sm font-medium">
+                  <span>الخصم</span>
+                  <span>-{formatPrice(appliedDiscount.amount)}</span>
+                </div>
+              )}
             </div>
             
             <div className="border-t border-border pt-6 mb-8 flex justify-between items-end">
-              <div>
-                <span className="block text-sm text-muted-foreground mb-1">الإجمالي الكلي</span>
-                <span className="text-xs text-muted-foreground">شامل ضريبة القيمة المضافة</span>
-              </div>
-              <span className="text-3xl font-black text-primary">{formatPrice(totalPrice * 1.15)}</span>
+              <span className="font-bold">الإجمالي الكلي</span>
+              <span className="text-3xl font-black text-primary">{formatPrice(finalTotal)}</span>
             </div>
             
-            <Button size="lg" className="w-full h-14 text-lg font-bold rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-md">
-              إتمام الطلب
+            <Button 
+              type="submit" 
+              form="checkout-form"
+              size="lg" 
+              disabled={createOrder.isPending}
+              className="w-full h-14 text-lg font-bold rounded-xl shadow-md"
+            >
+              {createOrder.isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'تأكيد الطلب'}
             </Button>
             
             <div className="mt-6 flex items-center justify-center gap-2 text-muted-foreground text-sm">
               <Lock className="h-4 w-4" />
-              <span>دفع آمن ومشفر 100%</span>
+              <span>دفع آمن عند الاستلام</span>
             </div>
           </div>
         </div>

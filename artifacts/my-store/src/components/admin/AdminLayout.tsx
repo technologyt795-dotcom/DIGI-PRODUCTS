@@ -1,14 +1,37 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { LayoutGrid, Package, LogOut, ExternalLink, ShoppingBag, Settings2, Menu, X } from 'lucide-react';
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  Users,
+  Package,
+  LayoutGrid,
+  Tag,
+  Star,
+  BarChart2,
+  Wallet,
+  Settings2,
+  LogOut,
+  ExternalLink,
+  ShoppingBag,
+  Menu,
+  X
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { cn } from '@/lib/utils';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 
 const navItems = [
-  { name: 'المنتجات', path: '/admin', icon: Package },
+  { name: 'لوحة التحكم', path: '/admin', icon: LayoutDashboard },
+  { name: 'الطلبات', path: '/admin/orders', icon: ShoppingCart },
+  { name: 'العملاء', path: '/admin/customers', icon: Users },
+  { name: 'المنتجات', path: '/admin/products', icon: Package },
   { name: 'التصنيفات', path: '/admin/categories', icon: LayoutGrid },
+  { name: 'الخصومات', path: '/admin/discounts', icon: Tag },
+  { name: 'التقييمات', path: '/admin/reviews', icon: Star },
+  { name: 'التحليلات', path: '/admin/analytics', icon: BarChart2 },
+  { name: 'المالية', path: '/admin/finance', icon: Wallet },
   { name: 'الإعدادات', path: '/admin/settings', icon: Settings2 },
 ];
 
@@ -38,9 +61,10 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* Nav Items */}
-      <nav className="flex flex-col flex-1 gap-1 p-4">
+      <nav className="flex flex-col flex-1 gap-1 p-4 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = location === item.path;
+          const isActive =
+            item.path === '/admin' ? location === '/admin' : location.startsWith(item.path);
           const Icon = item.icon;
           return (
             <Link
@@ -62,7 +86,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       </nav>
 
       {/* Bottom Actions */}
-      <div className="p-4 flex flex-col gap-1 border-t border-border">
+      <div className="p-4 flex flex-col gap-1 border-t border-border shrink-0">
         <a
           href={import.meta.env.BASE_URL}
           className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
@@ -86,7 +110,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
     <div className="min-h-[100dvh] flex flex-col md:flex-row bg-muted/30 text-foreground font-sans" dir="rtl">
 
       {/* ── Desktop Sidebar ── */}
-      <aside className="hidden md:flex md:w-64 shrink-0 border-l border-border bg-background flex-col">
+      <aside className="hidden md:flex md:w-64 shrink-0 border-l border-border bg-background flex-col h-[100dvh] sticky top-0">
         <NavContent />
       </aside>
 
@@ -127,15 +151,13 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           mobileOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
           <span className="font-semibold text-foreground">القائمة</span>
           <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)}>
             <X className="h-5 w-5" />
           </Button>
         </div>
-        <div className="flex flex-col flex-1 overflow-y-auto">
-          <NavContent />
-        </div>
+        <NavContent />
       </div>
 
       {/* ── Main Content ── */}

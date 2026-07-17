@@ -15,9 +15,18 @@ import Products from '@/pages/Products';
 import Category from '@/pages/Category';
 import ProductDetail from '@/pages/ProductDetail';
 import Cart from '@/pages/Cart';
+
+// Admin Pages
 import AdminLogin from '@/pages/admin/AdminLogin';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import AdminOrders from '@/pages/admin/AdminOrders';
+import AdminCustomers from '@/pages/admin/AdminCustomers';
 import AdminProducts from '@/pages/admin/AdminProducts';
 import AdminCategories from '@/pages/admin/AdminCategories';
+import AdminDiscounts from '@/pages/admin/AdminDiscounts';
+import AdminReviews from '@/pages/admin/AdminReviews';
+import AdminAnalytics from '@/pages/admin/AdminAnalytics';
+import AdminFinance from '@/pages/admin/AdminFinance';
 import AdminSettings from '@/pages/admin/AdminSettings';
 
 const queryClient = new QueryClient({
@@ -42,6 +51,28 @@ function StoreRouter() {
   );
 }
 
+function AdminRouter() {
+  return (
+    <AdminGuard>
+      <AdminLayout>
+        <Switch>
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/admin/orders" component={AdminOrders} />
+          <Route path="/admin/customers" component={AdminCustomers} />
+          <Route path="/admin/products" component={AdminProducts} />
+          <Route path="/admin/categories" component={AdminCategories} />
+          <Route path="/admin/discounts" component={AdminDiscounts} />
+          <Route path="/admin/reviews" component={AdminReviews} />
+          <Route path="/admin/analytics" component={AdminAnalytics} />
+          <Route path="/admin/finance" component={AdminFinance} />
+          <Route path="/admin/settings" component={AdminSettings} />
+          <Route component={NotFound} />
+        </Switch>
+      </AdminLayout>
+    </AdminGuard>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -52,26 +83,8 @@ function App() {
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
               <Switch>
                 <Route path="/admin/login" component={AdminLogin} />
-                <Route path="/admin">
-                  <AdminGuard>
-                    <AdminLayout>
-                      <AdminProducts />
-                    </AdminLayout>
-                  </AdminGuard>
-                </Route>
-                <Route path="/admin/categories">
-                  <AdminGuard>
-                    <AdminLayout>
-                      <AdminCategories />
-                    </AdminLayout>
-                  </AdminGuard>
-                </Route>
-                <Route path="/admin/settings">
-                  <AdminGuard>
-                    <AdminLayout>
-                      <AdminSettings />
-                    </AdminLayout>
-                  </AdminGuard>
+                <Route path="/admin" nested>
+                  <AdminRouter />
                 </Route>
                 <Route>
                   <Layout>

@@ -432,3 +432,490 @@ export const UpdateSettingsResponse = zod.object({
 })
 
 
+/**
+ * @summary Place a new order (public checkout)
+ */
+
+
+
+
+
+export const CreateOrderBody = zod.object({
+  "customerName": zod.string().min(1),
+  "customerEmail": zod.string().min(1),
+  "customerPhone": zod.string(),
+  "address": zod.string(),
+  "items": zod.array(zod.object({
+  "productId": zod.number(),
+  "name": zod.string(),
+  "image": zod.string(),
+  "price": zod.number(),
+  "quantity": zod.number()
+})).min(1),
+  "discountCode": zod.string().optional(),
+  "notes": zod.string().optional()
+})
+
+export const CreateOrderResponse = zod.object({
+  "id": zod.number(),
+  "orderNumber": zod.string(),
+  "customerName": zod.string(),
+  "customerEmail": zod.string(),
+  "customerPhone": zod.string(),
+  "address": zod.string(),
+  "status": zod.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
+  "items": zod.array(zod.object({
+  "productId": zod.number(),
+  "name": zod.string(),
+  "image": zod.string(),
+  "price": zod.number(),
+  "quantity": zod.number()
+})),
+  "subtotal": zod.number(),
+  "shippingCost": zod.number(),
+  "tax": zod.number(),
+  "discountCode": zod.string().nullable(),
+  "discountAmount": zod.number(),
+  "total": zod.number(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary List all orders (admin)
+ */
+export const ListOrdersQueryParams = zod.object({
+  "status": zod.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).optional()
+})
+
+export const ListOrdersResponseItem = zod.object({
+  "id": zod.number(),
+  "orderNumber": zod.string(),
+  "customerName": zod.string(),
+  "customerEmail": zod.string(),
+  "customerPhone": zod.string(),
+  "address": zod.string(),
+  "status": zod.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
+  "items": zod.array(zod.object({
+  "productId": zod.number(),
+  "name": zod.string(),
+  "image": zod.string(),
+  "price": zod.number(),
+  "quantity": zod.number()
+})),
+  "subtotal": zod.number(),
+  "shippingCost": zod.number(),
+  "tax": zod.number(),
+  "discountCode": zod.string().nullable(),
+  "discountAmount": zod.number(),
+  "total": zod.number(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+export const ListOrdersResponse = zod.array(ListOrdersResponseItem)
+
+
+/**
+ * @summary Get a single order (admin)
+ */
+export const GetOrderParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetOrderResponse = zod.object({
+  "id": zod.number(),
+  "orderNumber": zod.string(),
+  "customerName": zod.string(),
+  "customerEmail": zod.string(),
+  "customerPhone": zod.string(),
+  "address": zod.string(),
+  "status": zod.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
+  "items": zod.array(zod.object({
+  "productId": zod.number(),
+  "name": zod.string(),
+  "image": zod.string(),
+  "price": zod.number(),
+  "quantity": zod.number()
+})),
+  "subtotal": zod.number(),
+  "shippingCost": zod.number(),
+  "tax": zod.number(),
+  "discountCode": zod.string().nullable(),
+  "discountAmount": zod.number(),
+  "total": zod.number(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update order status or notes (admin)
+ */
+export const UpdateOrderParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateOrderBody = zod.object({
+  "status": zod.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).optional(),
+  "notes": zod.string().optional()
+})
+
+export const UpdateOrderResponse = zod.object({
+  "id": zod.number(),
+  "orderNumber": zod.string(),
+  "customerName": zod.string(),
+  "customerEmail": zod.string(),
+  "customerPhone": zod.string(),
+  "address": zod.string(),
+  "status": zod.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
+  "items": zod.array(zod.object({
+  "productId": zod.number(),
+  "name": zod.string(),
+  "image": zod.string(),
+  "price": zod.number(),
+  "quantity": zod.number()
+})),
+  "subtotal": zod.number(),
+  "shippingCost": zod.number(),
+  "tax": zod.number(),
+  "discountCode": zod.string().nullable(),
+  "discountAmount": zod.number(),
+  "total": zod.number(),
+  "notes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete an order (admin)
+ */
+export const DeleteOrderParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteOrderResponse = zod.void()
+
+
+/**
+ * @summary List all customers (admin)
+ */
+export const ListCustomersResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string(),
+  "totalOrders": zod.number(),
+  "totalSpent": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+export const ListCustomersResponse = zod.array(ListCustomersResponseItem)
+
+
+/**
+ * @summary Get customer with their orders (admin)
+ */
+export const GetCustomerParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetCustomerResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string(),
+  "totalOrders": zod.number(),
+  "totalSpent": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update customer info (admin)
+ */
+export const UpdateCustomerParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+
+
+
+export const UpdateCustomerBody = zod.object({
+  "name": zod.string().min(1).optional(),
+  "email": zod.string().min(1).optional(),
+  "phone": zod.string().optional()
+})
+
+export const UpdateCustomerResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string(),
+  "totalOrders": zod.number(),
+  "totalSpent": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a customer (admin)
+ */
+export const DeleteCustomerParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteCustomerResponse = zod.void()
+
+
+/**
+ * @summary List all discount codes (admin)
+ */
+export const ListDiscountsResponseItem = zod.object({
+  "id": zod.number(),
+  "code": zod.string(),
+  "type": zod.enum(['percentage', 'fixed']),
+  "value": zod.number(),
+  "minOrderAmount": zod.number().nullable(),
+  "maxUses": zod.number().nullable(),
+  "usedCount": zod.number(),
+  "expiresAt": zod.coerce.date().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+export const ListDiscountsResponse = zod.array(ListDiscountsResponseItem)
+
+
+/**
+ * @summary Create a discount code (admin)
+ */
+
+export const createDiscountBodyValueMin = 0;
+
+
+
+export const CreateDiscountBody = zod.object({
+  "code": zod.string().min(1),
+  "type": zod.enum(['percentage', 'fixed']),
+  "value": zod.number().min(createDiscountBodyValueMin),
+  "minOrderAmount": zod.number().nullish(),
+  "maxUses": zod.number().nullish(),
+  "expiresAt": zod.coerce.date().nullish(),
+  "isActive": zod.boolean().optional()
+})
+
+export const CreateDiscountResponse = zod.object({
+  "id": zod.number(),
+  "code": zod.string(),
+  "type": zod.enum(['percentage', 'fixed']),
+  "value": zod.number(),
+  "minOrderAmount": zod.number().nullable(),
+  "maxUses": zod.number().nullable(),
+  "usedCount": zod.number(),
+  "expiresAt": zod.coerce.date().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update a discount code (admin)
+ */
+export const UpdateDiscountParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+export const updateDiscountBodyValueMin = 0;
+
+
+
+export const UpdateDiscountBody = zod.object({
+  "code": zod.string().min(1).optional(),
+  "type": zod.enum(['percentage', 'fixed']).optional(),
+  "value": zod.number().min(updateDiscountBodyValueMin).optional(),
+  "minOrderAmount": zod.number().nullish(),
+  "maxUses": zod.number().nullish(),
+  "expiresAt": zod.coerce.date().nullish(),
+  "isActive": zod.boolean().optional()
+})
+
+export const UpdateDiscountResponse = zod.object({
+  "id": zod.number(),
+  "code": zod.string(),
+  "type": zod.enum(['percentage', 'fixed']),
+  "value": zod.number(),
+  "minOrderAmount": zod.number().nullable(),
+  "maxUses": zod.number().nullable(),
+  "usedCount": zod.number(),
+  "expiresAt": zod.coerce.date().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a discount code (admin)
+ */
+export const DeleteDiscountParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteDiscountResponse = zod.void()
+
+
+/**
+ * @summary Validate a coupon code (public)
+ */
+
+export const validateDiscountBodyOrderTotalMin = 0;
+
+
+
+export const ValidateDiscountBody = zod.object({
+  "code": zod.string().min(1),
+  "orderTotal": zod.number().min(validateDiscountBodyOrderTotalMin)
+})
+
+export const ValidateDiscountResponse = zod.object({
+  "id": zod.number(),
+  "code": zod.string(),
+  "type": zod.enum(['percentage', 'fixed']),
+  "value": zod.number(),
+  "minOrderAmount": zod.number().nullable(),
+  "maxUses": zod.number().nullable(),
+  "usedCount": zod.number(),
+  "expiresAt": zod.coerce.date().nullable(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Submit a product review (public)
+ */
+
+export const createReviewBodyRatingMax = 5;
+
+
+
+export const CreateReviewBody = zod.object({
+  "productId": zod.number(),
+  "customerName": zod.string().min(1),
+  "rating": zod.number().min(1).max(createReviewBodyRatingMax),
+  "comment": zod.string().optional()
+})
+
+export const createReviewResponseRatingMax = 5;
+
+
+
+export const CreateReviewResponse = zod.object({
+  "id": zod.number(),
+  "productId": zod.number(),
+  "customerName": zod.string(),
+  "rating": zod.number().min(1).max(createReviewResponseRatingMax),
+  "comment": zod.string(),
+  "isApproved": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary List all reviews (admin)
+ */
+export const ListReviewsQueryParams = zod.object({
+  "approved": zod.coerce.boolean().optional()
+})
+
+export const listReviewsResponseRatingMax = 5;
+
+
+
+export const ListReviewsResponseItem = zod.object({
+  "id": zod.number(),
+  "productId": zod.number(),
+  "customerName": zod.string(),
+  "rating": zod.number().min(1).max(listReviewsResponseRatingMax),
+  "comment": zod.string(),
+  "isApproved": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+export const ListReviewsResponse = zod.array(ListReviewsResponseItem)
+
+
+/**
+ * @summary Approve or reject a review (admin)
+ */
+export const UpdateReviewParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateReviewBody = zod.object({
+  "isApproved": zod.boolean().optional(),
+  "comment": zod.string().optional()
+})
+
+export const updateReviewResponseRatingMax = 5;
+
+
+
+export const UpdateReviewResponse = zod.object({
+  "id": zod.number(),
+  "productId": zod.number(),
+  "customerName": zod.string(),
+  "rating": zod.number().min(1).max(updateReviewResponseRatingMax),
+  "comment": zod.string(),
+  "isApproved": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a review (admin)
+ */
+export const DeleteReviewParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteReviewResponse = zod.void()
+
+
+/**
+ * @summary Get store analytics summary (admin)
+ */
+export const GetAnalyticsResponse = zod.object({
+  "totalOrders": zod.number(),
+  "totalRevenue": zod.number(),
+  "totalCustomers": zod.number(),
+  "pendingOrders": zod.number(),
+  "totalProducts": zod.number(),
+  "revenueByDay": zod.array(zod.object({
+  "date": zod.string(),
+  "revenue": zod.number(),
+  "orders": zod.number()
+})),
+  "ordersByStatus": zod.array(zod.object({
+  "status": zod.string(),
+  "count": zod.number()
+}))
+})
+
+
+/**
+ * @summary Get financial summary (admin)
+ */
+export const GetFinanceResponse = zod.object({
+  "totalRevenue": zod.number(),
+  "thisMonthRevenue": zod.number(),
+  "lastMonthRevenue": zod.number(),
+  "avgOrderValue": zod.number(),
+  "totalOrders": zod.number(),
+  "revenueByMonth": zod.array(zod.object({
+  "month": zod.string(),
+  "revenue": zod.number(),
+  "orders": zod.number()
+}))
+})
+
+

@@ -197,6 +197,237 @@ export interface StoreSettingsUpdate {
   whatsappNumber?: string | null;
 }
 
+export interface OrderItem {
+  productId: number;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+}
+
+export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+
+export const OrderStatus = {
+  pending: 'pending',
+  processing: 'processing',
+  shipped: 'shipped',
+  delivered: 'delivered',
+  cancelled: 'cancelled',
+} as const;
+
+export interface Order {
+  id: number;
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  address: string;
+  status: OrderStatus;
+  items: OrderItem[];
+  subtotal: number;
+  shippingCost: number;
+  tax: number;
+  /** @nullable */
+  discountCode: string | null;
+  discountAmount: number;
+  total: number;
+  /** @nullable */
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface OrderInput {
+  /** @minLength 1 */
+  customerName: string;
+  /** @minLength 1 */
+  customerEmail: string;
+  customerPhone: string;
+  address: string;
+  /** @minItems 1 */
+  items: OrderItem[];
+  discountCode?: string;
+  notes?: string;
+}
+
+export type OrderUpdateStatus = typeof OrderUpdateStatus[keyof typeof OrderUpdateStatus];
+
+
+export const OrderUpdateStatus = {
+  pending: 'pending',
+  processing: 'processing',
+  shipped: 'shipped',
+  delivered: 'delivered',
+  cancelled: 'cancelled',
+} as const;
+
+export interface OrderUpdate {
+  status?: OrderUpdateStatus;
+  notes?: string;
+}
+
+export interface CustomerWithStats {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  totalOrders: number;
+  totalSpent: number;
+  createdAt: string;
+}
+
+export interface CustomerUpdate {
+  /** @minLength 1 */
+  name?: string;
+  /** @minLength 1 */
+  email?: string;
+  phone?: string;
+}
+
+export type DiscountType = typeof DiscountType[keyof typeof DiscountType];
+
+
+export const DiscountType = {
+  percentage: 'percentage',
+  fixed: 'fixed',
+} as const;
+
+export interface Discount {
+  id: number;
+  code: string;
+  type: DiscountType;
+  value: number;
+  /** @nullable */
+  minOrderAmount: number | null;
+  /** @nullable */
+  maxUses: number | null;
+  usedCount: number;
+  /** @nullable */
+  expiresAt: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export type DiscountInputType = typeof DiscountInputType[keyof typeof DiscountInputType];
+
+
+export const DiscountInputType = {
+  percentage: 'percentage',
+  fixed: 'fixed',
+} as const;
+
+export interface DiscountInput {
+  /** @minLength 1 */
+  code: string;
+  type: DiscountInputType;
+  /** @minimum 0 */
+  value: number;
+  /** @nullable */
+  minOrderAmount?: number | null;
+  /** @nullable */
+  maxUses?: number | null;
+  /** @nullable */
+  expiresAt?: string | null;
+  isActive?: boolean;
+}
+
+export type DiscountUpdateType = typeof DiscountUpdateType[keyof typeof DiscountUpdateType];
+
+
+export const DiscountUpdateType = {
+  percentage: 'percentage',
+  fixed: 'fixed',
+} as const;
+
+export interface DiscountUpdate {
+  /** @minLength 1 */
+  code?: string;
+  type?: DiscountUpdateType;
+  /** @minimum 0 */
+  value?: number;
+  /** @nullable */
+  minOrderAmount?: number | null;
+  /** @nullable */
+  maxUses?: number | null;
+  /** @nullable */
+  expiresAt?: string | null;
+  isActive?: boolean;
+}
+
+export interface DiscountValidateInput {
+  /** @minLength 1 */
+  code: string;
+  /** @minimum 0 */
+  orderTotal: number;
+}
+
+export interface Review {
+  id: number;
+  productId: number;
+  customerName: string;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  rating: number;
+  comment: string;
+  isApproved: boolean;
+  createdAt: string;
+}
+
+export interface ReviewInput {
+  productId: number;
+  /** @minLength 1 */
+  customerName: string;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  rating: number;
+  comment?: string;
+}
+
+export interface ReviewUpdate {
+  isApproved?: boolean;
+  comment?: string;
+}
+
+export interface RevenueByDay {
+  date: string;
+  revenue: number;
+  orders: number;
+}
+
+export interface OrdersByStatus {
+  status: string;
+  count: number;
+}
+
+export interface AnalyticsSummary {
+  totalOrders: number;
+  totalRevenue: number;
+  totalCustomers: number;
+  pendingOrders: number;
+  totalProducts: number;
+  revenueByDay: RevenueByDay[];
+  ordersByStatus: OrdersByStatus[];
+}
+
+export interface RevenueByMonth {
+  month: string;
+  revenue: number;
+  orders: number;
+}
+
+export interface FinanceSummary {
+  totalRevenue: number;
+  thisMonthRevenue: number;
+  lastMonthRevenue: number;
+  avgOrderValue: number;
+  totalOrders: number;
+  revenueByMonth: RevenueByMonth[];
+}
+
 export type ListProductsParams = {
 categorySlug?: string;
 search?: string;
@@ -212,4 +443,23 @@ export const ListProductsSort = {
   price_desc: 'price_desc',
   rating: 'rating',
 } as const;
+
+export type ListOrdersParams = {
+status?: ListOrdersStatus;
+};
+
+export type ListOrdersStatus = typeof ListOrdersStatus[keyof typeof ListOrdersStatus];
+
+
+export const ListOrdersStatus = {
+  pending: 'pending',
+  processing: 'processing',
+  shipped: 'shipped',
+  delivered: 'delivered',
+  cancelled: 'cancelled',
+} as const;
+
+export type ListReviewsParams = {
+approved?: boolean;
+};
 

@@ -18,6 +18,16 @@ tags:
     description: Admin dashboard operations
   - name: settings
     description: Store settings operations
+  - name: orders
+    description: Order operations
+  - name: customers
+    description: Customer operations
+  - name: discounts
+    description: Discount & coupon operations
+  - name: reviews
+    description: Product review operations
+  - name: analytics
+    description: Analytics & reporting operations
 paths:
   /healthz:
     get:
@@ -472,6 +482,595 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  # ── Orders ──────────────────────────────────────────────────────────────────
+
+  /orders:
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Place a new order (public checkout)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Order placed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List all orders (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, processing, shipped, delivered, cancelled]
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get a single order (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateOrder
+      tags: [orders]
+      summary: Update order status or notes (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderUpdate"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteOrder
+      tags: [orders]
+      summary: Delete an order (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Customers ────────────────────────────────────────────────────────────────
+
+  /admin/customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: List all customers (admin)
+      security:
+        - adminToken: []
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomerWithStats"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      summary: Get customer with their orders (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customer with stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerWithStats"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateCustomer
+      tags: [customers]
+      summary: Update customer info (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerUpdate"
+      responses:
+        "200":
+          description: Updated customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerWithStats"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteCustomer
+      tags: [customers]
+      summary: Delete a customer (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Discounts ────────────────────────────────────────────────────────────────
+
+  /admin/discounts:
+    get:
+      operationId: listDiscounts
+      tags: [discounts]
+      summary: List all discount codes (admin)
+      security:
+        - adminToken: []
+      responses:
+        "200":
+          description: List of discounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Discount"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createDiscount
+      tags: [discounts]
+      summary: Create a discount code (admin)
+      security:
+        - adminToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DiscountInput"
+      responses:
+        "201":
+          description: Created discount
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Discount"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/discounts/{id}:
+    patch:
+      operationId: updateDiscount
+      tags: [discounts]
+      summary: Update a discount code (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DiscountUpdate"
+      responses:
+        "200":
+          description: Updated discount
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Discount"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteDiscount
+      tags: [discounts]
+      summary: Delete a discount code (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /discounts/validate:
+    post:
+      operationId: validateDiscount
+      tags: [discounts]
+      summary: Validate a coupon code (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DiscountValidateInput"
+      responses:
+        "200":
+          description: Discount details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Discount"
+        "400":
+          description: Invalid or expired code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Reviews ──────────────────────────────────────────────────────────────────
+
+  /reviews:
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Submit a product review (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewInput"
+      responses:
+        "201":
+          description: Review submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/reviews:
+    get:
+      operationId: listReviews
+      tags: [reviews]
+      summary: List all reviews (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: approved
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/reviews/{id}:
+    patch:
+      operationId: updateReview
+      tags: [reviews]
+      summary: Approve or reject a review (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewUpdate"
+      responses:
+        "200":
+          description: Updated review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteReview
+      tags: [reviews]
+      summary: Delete a review (admin)
+      security:
+        - adminToken: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Analytics & Finance ──────────────────────────────────────────────────────
+
+  /admin/analytics:
+    get:
+      operationId: getAnalytics
+      tags: [analytics]
+      summary: Get store analytics summary (admin)
+      security:
+        - adminToken: []
+      responses:
+        "200":
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsSummary"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/finance:
+    get:
+      operationId: getFinance
+      tags: [analytics]
+      summary: Get financial summary (admin)
+      security:
+        - adminToken: []
+      responses:
+        "200":
+          description: Finance data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinanceSummary"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   securitySchemes:
     adminToken:
@@ -784,3 +1383,346 @@ components:
           type: ["string", "null"]
         whatsappNumber:
           type: ["string", "null"]
+
+    # ── Order schemas ────────────────────────────────────────────────────────
+
+    OrderItem:
+      type: object
+      required: [productId, name, image, price, quantity]
+      properties:
+        productId:
+          type: integer
+        name:
+          type: string
+        image:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: integer
+
+    Order:
+      type: object
+      required:
+        [
+          id, orderNumber, customerName, customerEmail, customerPhone,
+          address, status, items, subtotal, shippingCost, tax,
+          discountCode, discountAmount, total, notes, createdAt
+        ]
+      properties:
+        id:
+          type: integer
+        orderNumber:
+          type: string
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+        address:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, shipped, delivered, cancelled]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        subtotal:
+          type: number
+        shippingCost:
+          type: number
+        tax:
+          type: number
+        discountCode:
+          type: ["string", "null"]
+        discountAmount:
+          type: number
+        total:
+          type: number
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    OrderInput:
+      type: object
+      required: [customerName, customerEmail, customerPhone, address, items]
+      properties:
+        customerName:
+          type: string
+          minLength: 1
+        customerEmail:
+          type: string
+          minLength: 1
+        customerPhone:
+          type: string
+        address:
+          type: string
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        discountCode:
+          type: string
+        notes:
+          type: string
+
+    OrderUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, processing, shipped, delivered, cancelled]
+        notes:
+          type: string
+
+    # ── Customer schemas ─────────────────────────────────────────────────────
+
+    CustomerWithStats:
+      type: object
+      required: [id, name, email, phone, totalOrders, totalSpent, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        totalOrders:
+          type: integer
+        totalSpent:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+
+    CustomerUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+
+    # ── Discount schemas ─────────────────────────────────────────────────────
+
+    Discount:
+      type: object
+      required: [id, code, type, value, minOrderAmount, maxUses, usedCount, expiresAt, isActive, createdAt]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        type:
+          type: string
+          enum: [percentage, fixed]
+        value:
+          type: number
+        minOrderAmount:
+          type: ["number", "null"]
+        maxUses:
+          type: ["integer", "null"]
+        usedCount:
+          type: integer
+        expiresAt:
+          type: ["string", "null"]
+          format: date-time
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    DiscountInput:
+      type: object
+      required: [code, type, value]
+      properties:
+        code:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          enum: [percentage, fixed]
+        value:
+          type: number
+          minimum: 0
+        minOrderAmount:
+          type: ["number", "null"]
+        maxUses:
+          type: ["integer", "null"]
+        expiresAt:
+          type: ["string", "null"]
+          format: date-time
+        isActive:
+          type: boolean
+
+    DiscountUpdate:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          enum: [percentage, fixed]
+        value:
+          type: number
+          minimum: 0
+        minOrderAmount:
+          type: ["number", "null"]
+        maxUses:
+          type: ["integer", "null"]
+        expiresAt:
+          type: ["string", "null"]
+          format: date-time
+        isActive:
+          type: boolean
+
+    DiscountValidateInput:
+      type: object
+      required: [code, orderTotal]
+      properties:
+        code:
+          type: string
+          minLength: 1
+        orderTotal:
+          type: number
+          minimum: 0
+
+    # ── Review schemas ───────────────────────────────────────────────────────
+
+    Review:
+      type: object
+      required: [id, productId, customerName, rating, comment, isApproved, createdAt]
+      properties:
+        id:
+          type: integer
+        productId:
+          type: integer
+        customerName:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        isApproved:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    ReviewInput:
+      type: object
+      required: [productId, customerName, rating]
+      properties:
+        productId:
+          type: integer
+        customerName:
+          type: string
+          minLength: 1
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+
+    ReviewUpdate:
+      type: object
+      properties:
+        isApproved:
+          type: boolean
+        comment:
+          type: string
+
+    # ── Analytics schemas ────────────────────────────────────────────────────
+
+    RevenueByDay:
+      type: object
+      required: [date, revenue, orders]
+      properties:
+        date:
+          type: string
+        revenue:
+          type: number
+        orders:
+          type: integer
+
+    OrdersByStatus:
+      type: object
+      required: [status, count]
+      properties:
+        status:
+          type: string
+        count:
+          type: integer
+
+    AnalyticsSummary:
+      type: object
+      required:
+        [totalOrders, totalRevenue, totalCustomers, pendingOrders,
+         totalProducts, revenueByDay, ordersByStatus]
+      properties:
+        totalOrders:
+          type: integer
+        totalRevenue:
+          type: number
+        totalCustomers:
+          type: integer
+        pendingOrders:
+          type: integer
+        totalProducts:
+          type: integer
+        revenueByDay:
+          type: array
+          items:
+            $ref: "#/components/schemas/RevenueByDay"
+        ordersByStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrdersByStatus"
+
+    RevenueByMonth:
+      type: object
+      required: [month, revenue, orders]
+      properties:
+        month:
+          type: string
+        revenue:
+          type: number
+        orders:
+          type: integer
+
+    FinanceSummary:
+      type: object
+      required:
+        [totalRevenue, thisMonthRevenue, lastMonthRevenue, avgOrderValue,
+         totalOrders, revenueByMonth]
+      properties:
+        totalRevenue:
+          type: number
+        thisMonthRevenue:
+          type: number
+        lastMonthRevenue:
+          type: number
+        avgOrderValue:
+          type: number
+        totalOrders:
+          type: integer
+        revenueByMonth:
+          type: array
+          items:
+            $ref: "#/components/schemas/RevenueByMonth"

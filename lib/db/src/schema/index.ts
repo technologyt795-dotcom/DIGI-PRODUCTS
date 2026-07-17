@@ -1,3 +1,7 @@
 export * from "./categories";
 export * from "./products";
 export * from "./settings";
+export * from "./customers";
+export * from "./orders";
+export * from "./discounts";
+export * from "./reviews";
