@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
+import { useListCategories } from '@workspace/api-client-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export function Navbar() {
   const { totalItems } = useCart();
@@ -12,6 +14,7 @@ export function Navbar() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const { settings } = useStoreSettings();
+  const { data: categories } = useListCategories();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,14 +24,16 @@ export function Navbar() {
     }
   };
 
-  const navLinks = [
+  // Static links always visible
+  const staticLinks = [
     { name: 'الرئيسية', path: '/' },
     { name: 'كل المنتجات', path: '/products' },
-    { name: 'المنزل والتنظيم', path: '/category/home-organization' },
-    { name: 'المنتجات الرقمية', path: '/category/digital-products' },
-    { name: 'المنتجات التقنية', path: '/category/tech-products' },
-    { name: 'إكسسوارات السيارات', path: '/category/car-accessories' },
   ];
+
+  // Dynamic category links — only visible, non-empty categories
+  const categoryLinks = (categories ?? [])
+    .filter((c) => !c.isHidden)
+    .map((c) => ({ name: c.name, path: `/category/${c.slug}` }));
 
   const storeName = settings?.storeName || 'My Store';
 
@@ -65,16 +70,44 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.path} 
+          <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-muted-foreground overflow-hidden">
+            {/* Static links — always shown, no animation needed */}
+            {staticLinks.map((link) => (
+              <Link
+                key={link.path}
                 href={link.path}
-                className="transition-colors hover:text-primary"
+                className="px-3 py-1.5 rounded-md transition-colors hover:text-primary hover:bg-muted/50 whitespace-nowrap"
               >
                 {link.name}
               </Link>
             ))}
+
+            {/* Animated category links */}
+            <AnimatePresence initial={false} mode="popLayout">
+              {categoryLinks.map((link) => (
+                <motion.div
+                  key={link.path}
+                  layout
+                  initial={{ opacity: 0, scale: 0.85, width: 0, marginLeft: 0 }}
+                  animate={{ opacity: 1, scale: 1, width: 'auto', marginLeft: 0 }}
+                  exit={{ opacity: 0, scale: 0.85, width: 0, marginLeft: 0 }}
+                  transition={{
+                    layout: { type: 'spring', stiffness: 400, damping: 35 },
+                    opacity: { duration: 0.2 },
+                    scale: { duration: 0.2 },
+                    width: { type: 'spring', stiffness: 400, damping: 35 },
+                  }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <Link
+                    href={link.path}
+                    className="block px-3 py-1.5 rounded-md transition-colors hover:text-primary hover:bg-muted/50 whitespace-nowrap"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </nav>
 
           {/* Search & Cart */}
@@ -133,17 +166,40 @@ export function Navbar() {
               />
             </form>
 
-            <nav className="flex flex-col gap-4 text-base font-medium">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.path} 
+            <nav className="flex flex-col gap-1 text-base font-medium">
+              {/* Static links */}
+              {staticLinks.map((link) => (
+                <Link
+                  key={link.path}
                   href={link.path}
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-foreground hover:text-primary"
+                  className="px-3 py-2 rounded-md text-foreground hover:text-primary hover:bg-muted/50 transition-colors"
                 >
                   {link.name}
                 </Link>
               ))}
+
+              {/* Animated category links in mobile */}
+              <AnimatePresence initial={false}>
+                {categoryLinks.map((link) => (
+                  <motion.div
+                    key={link.path}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.22, ease: 'easeInOut' }}
+                    style={{ overflow: 'hidden' }}
+                  >
+                    <Link
+                      href={link.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-3 py-2 rounded-md text-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </nav>
           </div>
         </div>
