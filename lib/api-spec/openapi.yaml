@@ -636,6 +636,64 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  # ── Customer self-service ─────────────────────────────────────────────────────
+
+  /customer/orders:
+    get:
+      operationId: listMyOrders
+      tags: [orders]
+      summary: List the authenticated customer's own orders
+      security:
+        - customerToken: []
+      responses:
+        "200":
+          description: List of customer's orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /customer/orders/{orderNumber}:
+    get:
+      operationId: getMyOrder
+      tags: [orders]
+      summary: Get a single order belonging to the authenticated customer
+      security:
+        - customerToken: []
+      parameters:
+        - name: orderNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   # ── Customers ────────────────────────────────────────────────────────────────
 
   /admin/customers:
@@ -1076,6 +1134,9 @@ components:
     adminToken:
       type: http
       scheme: bearer
+    customerToken:
+      type: http
+      scheme: bearer
   schemas:
     HealthStatus:
       type: object
@@ -1179,6 +1240,10 @@ components:
           type: boolean
         badge:
           type: ["string", "null"]
+        isDigital:
+          type: boolean
+        downloadUrl:
+          type: ["string", "null"]
 
     ProductUpdate:
       type: object
@@ -1212,6 +1277,10 @@ components:
         isNew:
           type: boolean
         badge:
+          type: ["string", "null"]
+        isDigital:
+          type: boolean
+        downloadUrl:
           type: ["string", "null"]
 
     AdminLoginInput:
@@ -1249,6 +1318,8 @@ components:
           isFeatured,
           isNew,
           badge,
+          isDigital,
+          downloadUrl,
           createdAt,
         ]
       properties:
@@ -1285,6 +1356,10 @@ components:
         isNew:
           type: boolean
         badge:
+          type: ["string", "null"]
+        isDigital:
+          type: boolean
+        downloadUrl:
           type: ["string", "null"]
         createdAt:
           type: string
@@ -1400,6 +1475,10 @@ components:
           type: number
         quantity:
           type: integer
+        isDigital:
+          type: boolean
+        downloadUrl:
+          type: ["string", "null"]
 
     Order:
       type: object

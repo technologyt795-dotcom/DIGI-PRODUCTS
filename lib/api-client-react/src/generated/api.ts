@@ -1724,6 +1724,160 @@ export const useDeleteOrder = <TError = ErrorType<ErrorResponse>,
       return useMutation(getDeleteOrderMutationOptions(options));
     }
 
+export const getListMyOrdersUrl = () => {
+
+
+
+
+  return `/api/customer/orders`
+}
+
+/**
+ * @summary List the authenticated customer's own orders
+ */
+export const listMyOrders = async ( options?: RequestInit): Promise<Order[]> => {
+
+  return customFetch<Order[]>(getListMyOrdersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListMyOrdersQueryKey = () => {
+    return [
+    `/api/customer/orders`
+    ] as const;
+    }
+
+
+export const getListMyOrdersQueryOptions = <TData = Awaited<ReturnType<typeof listMyOrders>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyOrders>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListMyOrdersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyOrders>>> = ({ signal }) => listMyOrders({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listMyOrders>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListMyOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof listMyOrders>>>
+export type ListMyOrdersQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary List the authenticated customer's own orders
+ */
+
+export function useListMyOrders<TData = Awaited<ReturnType<typeof listMyOrders>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyOrders>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListMyOrdersQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetMyOrderUrl = (orderNumber: string,) => {
+
+
+
+
+  return `/api/customer/orders/${orderNumber}`
+}
+
+/**
+ * @summary Get a single order belonging to the authenticated customer
+ */
+export const getMyOrder = async (orderNumber: string, options?: RequestInit): Promise<Order> => {
+
+  return customFetch<Order>(getGetMyOrderUrl(orderNumber),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyOrderQueryKey = (orderNumber: string,) => {
+    return [
+    `/api/customer/orders/${orderNumber}`
+    ] as const;
+    }
+
+
+export const getGetMyOrderQueryOptions = <TData = Awaited<ReturnType<typeof getMyOrder>>, TError = ErrorType<ErrorResponse>>(orderNumber: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyOrder>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyOrderQueryKey(orderNumber);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyOrder>>> = ({ signal }) => getMyOrder(orderNumber, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: orderNumber !== null && orderNumber !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyOrder>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyOrderQueryResult = NonNullable<Awaited<ReturnType<typeof getMyOrder>>>
+export type GetMyOrderQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get a single order belonging to the authenticated customer
+ */
+
+export function useGetMyOrder<TData = Awaited<ReturnType<typeof getMyOrder>>, TError = ErrorType<ErrorResponse>>(
+ orderNumber: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyOrder>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyOrderQueryOptions(orderNumber,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
 export const getListCustomersUrl = () => {
 
 

@@ -16,6 +16,8 @@ export type OrderItem = {
   image: string;
   price: number;
   quantity: number;
+  isDigital?: boolean;
+  downloadUrl?: string | null;
 };
 
 export const ordersTable = pgTable("orders", {

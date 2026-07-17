@@ -62,6 +62,9 @@ export interface ProductInput {
   isNew?: boolean;
   /** @nullable */
   badge?: string | null;
+  isDigital?: boolean;
+  /** @nullable */
+  downloadUrl?: string | null;
 }
 
 export interface ProductUpdate {
@@ -82,6 +85,9 @@ export interface ProductUpdate {
   isNew?: boolean;
   /** @nullable */
   badge?: string | null;
+  isDigital?: boolean;
+  /** @nullable */
+  downloadUrl?: string | null;
 }
 
 export interface AdminLoginInput {
@@ -112,6 +118,9 @@ export interface Product {
   isNew: boolean;
   /** @nullable */
   badge: string | null;
+  isDigital: boolean;
+  /** @nullable */
+  downloadUrl: string | null;
   createdAt: string;
 }
 
@@ -203,6 +212,9 @@ export interface OrderItem {
   image: string;
   price: number;
   quantity: number;
+  isDigital?: boolean;
+  /** @nullable */
+  downloadUrl?: string | null;
 }
 
 export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];

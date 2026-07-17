@@ -152,6 +152,10 @@ export function Navbar() {
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuLabel>مرحباً {customer?.name?.split(' ')[0]}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link href="/my-orders">طلباتي</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout} className="text-destructive cursor-pointer focus:text-destructive focus:bg-destructive/10">
                     تسجيل الخروج
                   </DropdownMenuItem>

@@ -16,6 +16,8 @@ import Products from '@/pages/Products';
 import Category from '@/pages/Category';
 import ProductDetail from '@/pages/ProductDetail';
 import Cart from '@/pages/Cart';
+import MyOrders from '@/pages/MyOrders';
+import OrderDetail from '@/pages/OrderDetail';
 
 // Admin Pages
 import AdminLogin from '@/pages/admin/AdminLogin';
@@ -55,6 +57,8 @@ function StoreRouter() {
       <Route path="/category/:slug" component={Category} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/cart" component={Cart} />
+      <Route path="/my-orders/:orderNumber" component={OrderDetail} />
+      <Route path="/my-orders" component={MyOrders} />
       <Route component={NotFound} />
     </Switch>
   );

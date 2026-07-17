@@ -28,6 +28,8 @@ function toInsertValues(data: {
   isFeatured?: boolean;
   isNew?: boolean;
   badge?: string | null;
+  isDigital?: boolean;
+  downloadUrl?: string | null;
 }) {
   return {
     slug: data.slug,
@@ -44,6 +46,8 @@ function toInsertValues(data: {
     ...(data.isFeatured != null ? { isFeatured: data.isFeatured } : {}),
     ...(data.isNew != null ? { isNew: data.isNew } : {}),
     ...(data.badge !== undefined ? { badge: data.badge } : {}),
+    ...(data.isDigital != null ? { isDigital: data.isDigital } : {}),
+    ...(data.downloadUrl !== undefined ? { downloadUrl: data.downloadUrl } : {}),
   };
 }
 
@@ -61,6 +65,8 @@ function toUpdateValues(data: {
   isFeatured?: boolean;
   isNew?: boolean;
   badge?: string | null;
+  isDigital?: boolean;
+  downloadUrl?: string | null;
 }) {
   const values: Record<string, unknown> = { ...data };
   if (data.price != null) values.price = data.price.toString();
@@ -92,6 +98,8 @@ const productSelection = {
   isFeatured: productsTable.isFeatured,
   isNew: productsTable.isNew,
   badge: productsTable.badge,
+  isDigital: productsTable.isDigital,
+  downloadUrl: productsTable.downloadUrl,
   createdAt: productsTable.createdAt,
 };
 

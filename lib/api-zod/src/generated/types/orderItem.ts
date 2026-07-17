@@ -12,4 +12,7 @@ export interface OrderItem {
   image: string;
   price: number;
   quantity: number;
+  isDigital?: boolean;
+  /** @nullable */
+  downloadUrl?: string | null;
 }

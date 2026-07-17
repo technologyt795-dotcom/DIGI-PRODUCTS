@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
-import { eq, desc, and } from "drizzle-orm";
-import { db, ordersTable, discountsTable, customersTable } from "@workspace/db";
+import { eq, desc, inArray } from "drizzle-orm";
+import { db, ordersTable, discountsTable, customersTable, productsTable } from "@workspace/db";
 import { requireAdmin } from "../middlewares/adminAuth";
 import { z } from "zod";
 
@@ -168,7 +168,28 @@ router.post("/orders", async (req, res): Promise<void> => {
   }
 
   const data = parsed.data;
-  const subtotal = data.items.reduce(
+
+  // Fetch digital product info for all ordered items
+  const productIds = data.items.map((i) => i.productId);
+  const productRows = productIds.length
+    ? await db
+        .select({ id: productsTable.id, isDigital: productsTable.isDigital, downloadUrl: productsTable.downloadUrl })
+        .from(productsTable)
+        .where(inArray(productsTable.id, productIds))
+    : [];
+  const productMap = new Map(productRows.map((p) => [p.id, p]));
+
+  // Enrich items with isDigital / downloadUrl from DB
+  const enrichedItems = data.items.map((item) => {
+    const p = productMap.get(item.productId);
+    return {
+      ...item,
+      isDigital: p?.isDigital ?? false,
+      downloadUrl: p?.downloadUrl ?? null,
+    };
+  });
+
+  const subtotal = enrichedItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
@@ -233,7 +254,7 @@ router.post("/orders", async (req, res): Promise<void> => {
       customerPhone: data.customerPhone,
       address: data.address,
       status: "pending",
-      items: data.items,
+      items: enrichedItems,
       subtotal: subtotal.toFixed(2),
       shippingCost: shippingCost.toFixed(2),
       tax: tax.toFixed(2),

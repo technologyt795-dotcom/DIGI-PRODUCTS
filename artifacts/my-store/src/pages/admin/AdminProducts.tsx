@@ -63,6 +63,8 @@ interface ProductFormState {
   isFeatured: boolean;
   isNew: boolean;
   badge: string;
+  isDigital: boolean;
+  downloadUrl: string;
 }
 
 const emptyForm: ProductFormState = {
@@ -77,6 +79,8 @@ const emptyForm: ProductFormState = {
   isFeatured: false,
   isNew: false,
   badge: '',
+  isDigital: false,
+  downloadUrl: '',
 };
 
 export default function AdminProducts() {
@@ -115,6 +119,8 @@ export default function AdminProducts() {
       isFeatured: product.isFeatured,
       isNew: product.isNew,
       badge: product.badge || '',
+      isDigital: product.isDigital,
+      downloadUrl: product.downloadUrl || '',
     });
     setIsDialogOpen(true);
   };
@@ -134,6 +140,8 @@ export default function AdminProducts() {
       isFeatured: form.isFeatured,
       isNew: form.isNew,
       badge: form.badge || null,
+      isDigital: form.isDigital,
+      downloadUrl: form.isDigital && form.downloadUrl ? form.downloadUrl : null,
     };
 
     try {
@@ -344,7 +352,7 @@ export default function AdminProducts() {
               />
             </div>
 
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-8 flex-wrap">
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.isFeatured}
@@ -359,7 +367,27 @@ export default function AdminProducts() {
                 />
                 <Label>منتج جديد</Label>
               </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={form.isDigital}
+                  onCheckedChange={(checked) => setForm({ ...form, isDigital: checked, downloadUrl: checked ? form.downloadUrl : '' })}
+                />
+                <Label>منتج رقمي</Label>
+              </div>
             </div>
+
+            {form.isDigital && (
+              <div className="space-y-2">
+                <Label>رابط التحميل</Label>
+                <Input
+                  type="url"
+                  placeholder="https://..."
+                  value={form.downloadUrl}
+                  onChange={(e) => setForm({ ...form, downloadUrl: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground">الرابط الذي سيُتاح للعميل بعد تأكيد الطلب</p>
+              </div>
+            )}
 
             <DialogFooter>
               <Button type="submit" disabled={isSaving || !form.categoryId}>

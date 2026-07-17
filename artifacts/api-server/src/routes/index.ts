@@ -10,6 +10,7 @@ import discountsRouter from "./discounts";
 import reviewsRouter from "./reviews";
 import analyticsRouter from "./analytics";
 import customerAuthRouter from "./customerAuth";
+import customerOrdersRouter from "./customerOrders";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use(discountsRouter);
 router.use(reviewsRouter);
 router.use(analyticsRouter);
 router.use(customerAuthRouter);
+router.use(customerOrdersRouter);
 
 export default router;
