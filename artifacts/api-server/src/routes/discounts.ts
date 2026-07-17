@@ -198,7 +198,13 @@ router.post("/discounts/validate", async (req, res): Promise<void> => {
     return;
   }
 
-  res.json(mapDiscount(discount));
+  const discountValue = Number(discount.value);
+  const discountAmount =
+    discount.type === "percentage"
+      ? Math.min(orderTotal * (discountValue / 100), orderTotal)
+      : Math.min(discountValue, orderTotal);
+
+  res.json({ ...mapDiscount(discount), discountAmount: Math.round(discountAmount * 100) / 100 });
 });
 
 export default router;
