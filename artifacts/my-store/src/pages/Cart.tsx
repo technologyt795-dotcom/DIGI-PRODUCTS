@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useCart } from '@/hooks/use-cart';
 import { formatPrice } from '@/lib/utils';
@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Lock, Loader2, CheckCircle, Tag, MapPin } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, Lock, Loader2, CheckCircle, Tag, MapPin } from 'lucide-react';
 import { useValidateDiscount, useCreateOrder } from '@workspace/api-client-react';
+import { useCustomerAuth } from '@/hooks/use-customer-auth';
 import { toast } from 'sonner';
 
 export default function Cart() {
@@ -15,6 +16,7 @@ export default function Cart() {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
   const validateDiscount = useValidateDiscount();
   const createOrder = useCreateOrder();
+  const { customer, isAuthenticated } = useCustomerAuth();
 
   const [discountCode, setDiscountCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number } | null>(null);
@@ -26,6 +28,20 @@ export default function Cart() {
     address: '',
     notes: ''
   });
+
+  // Pre-fill form with logged-in customer data
+  useEffect(() => {
+    if (isAuthenticated && customer) {
+      setForm(prev => ({
+        ...prev,
+        customerName: customer.name || prev.customerName,
+        customerEmail: customer.email && !customer.email.endsWith('@phone.local')
+          ? customer.email
+          : prev.customerEmail,
+        customerPhone: customer.phone || prev.customerPhone,
+      }));
+    }
+  }, [isAuthenticated, customer]);
 
   const taxAmount = totalPrice * 0.15;
   const subtotalWithTax = totalPrice + taxAmount;
