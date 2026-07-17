@@ -48,3 +48,5 @@ export * from './storeSettings';
 export * from './storeSettingsActiveTheme';
 export * from './storeSettingsUpdate';
 export * from './storeSettingsUpdateActiveTheme';
+export * from './uploadUrlRequest';
+export * from './uploadUrlResponse';

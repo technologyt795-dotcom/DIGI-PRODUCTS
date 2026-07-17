@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { useParams, Link } from 'wouter';
-import { ArrowRight, Download, Printer, Package } from 'lucide-react';
+import { ArrowRight, Download, Loader2, Printer, Package } from 'lucide-react';
 import { useGetMyOrder } from '@workspace/api-client-react';
 import { useCustomerAuth } from '@/hooks/use-customer-auth';
+import { toast } from 'sonner';
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -29,7 +33,34 @@ export default function OrderDetail() {
     query: { enabled: !!token && !!orderNumber },
   });
 
+  const [downloading, setDownloading] = useState<Record<number, boolean>>({});
+
   const handlePrint = () => window.print();
+
+  const handleDownload = async (item: any, idx: number) => {
+    if (downloading[idx]) return;
+    setDownloading((prev) => ({ ...prev, [idx]: true }));
+    try {
+      const res = await fetch(
+        `${BASE}/customer/downloads/${order?.orderNumber}/${idx}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (!res.ok) throw new Error('فشل التحميل');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = item.name || 'download';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error('تعذّر تحميل الملف، حاول مرة أخرى');
+    } finally {
+      setDownloading((prev) => ({ ...prev, [idx]: false }));
+    }
+  };
 
   if (isLoading) {
     return (
@@ -152,21 +183,20 @@ export default function OrderDetail() {
                       <p className="font-semibold text-sm">{formatPrice(item.price * item.quantity)}</p>
                       {/* Download button */}
                       {item.isDigital && item.downloadUrl && canDownload && (
-                        <a
-                          href={item.downloadUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="no-print"
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="mt-2 gap-1.5 text-xs h-7 px-2.5 no-print"
+                          onClick={() => handleDownload(item, idx)}
+                          disabled={downloading[idx]}
                         >
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            className="mt-2 gap-1.5 text-xs h-7 px-2.5"
-                          >
+                          {downloading[idx] ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
                             <Download className="h-3 w-3" />
-                            تحميل
-                          </Button>
-                        </a>
+                          )}
+                          تحميل
+                        </Button>
                       )}
                       {item.isDigital && !canDownload && (
                         <p className="text-xs text-muted-foreground mt-1 no-print">

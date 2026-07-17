@@ -440,6 +440,32 @@ export interface FinanceSummary {
   revenueByMonth: RevenueByMonth[];
 }
 
+export interface UploadUrlRequest {
+  /**
+     * Original file name.
+     * @minLength 1
+     */
+  name: string;
+  /**
+     * File size in bytes.
+     * @minimum 1
+     */
+  size: number;
+  /**
+     * MIME type of the file.
+     * @minLength 1
+     */
+  contentType: string;
+}
+
+export interface UploadUrlResponse {
+  /** Presigned GCS URL for PUT upload. */
+  uploadURL: string;
+  /** Normalized object path to store in DB (e.g. /objects/uploads/uuid). */
+  objectPath: string;
+  metadata?: UploadUrlRequest;
+}
+
 export type ListProductsParams = {
 categorySlug?: string;
 search?: string;

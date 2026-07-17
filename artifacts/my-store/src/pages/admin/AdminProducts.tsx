@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Plus, Pencil, Trash2, Loader2, Upload, File as FileIcon, X } from 'lucide-react';
+import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -83,8 +84,11 @@ const emptyForm: ProductFormState = {
   downloadUrl: '',
 };
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
+
 export default function AdminProducts() {
   const queryClient = useQueryClient();
+  const { token: adminToken } = useAdminAuth();
   const { data: products, isLoading } = useListProducts();
   const { data: categories } = useListCategories();
   const createMutation = useCreateProduct();
@@ -95,6 +99,38 @@ export default function AdminProducts() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState<ProductFormState>(emptyForm);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDigitalFileUpload = async (file: File) => {
+    if (!adminToken) { toast.error('يجب تسجيل الدخول أولاً'); return; }
+    setIsUploadingFile(true);
+    try {
+      // Step 1: get presigned URL
+      const res = await fetch(`${BASE}/storage/uploads/request-url`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+        body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type || 'application/octet-stream' }),
+      });
+      if (!res.ok) throw new Error('فشل في الحصول على رابط الرفع');
+      const { uploadURL, objectPath } = await res.json();
+      // Step 2: upload file directly to GCS
+      const putRes = await fetch(uploadURL, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type || 'application/octet-stream' },
+      });
+      if (!putRes.ok) throw new Error('فشل رفع الملف');
+      setForm((prev) => ({ ...prev, downloadUrl: objectPath }));
+      setUploadedFileName(file.name);
+      toast.success('تم رفع الملف بنجاح');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'تعذّر رفع الملف');
+    } finally {
+      setIsUploadingFile(false);
+    }
+  };
 
   const invalidate = () =>
     queryClient.invalidateQueries({ queryKey: getListProductsQueryKey() });
@@ -378,14 +414,61 @@ export default function AdminProducts() {
 
             {form.isDigital && (
               <div className="space-y-2">
-                <Label>رابط التحميل</Label>
-                <Input
-                  type="url"
-                  placeholder="https://..."
-                  value={form.downloadUrl}
-                  onChange={(e) => setForm({ ...form, downloadUrl: e.target.value })}
+                <Label>ملف التحميل الرقمي</Label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleDigitalFileUpload(file);
+                    e.target.value = '';
+                  }}
                 />
-                <p className="text-xs text-muted-foreground">الرابط الذي سيُتاح للعميل بعد تأكيد الطلب</p>
+                {form.downloadUrl ? (
+                  <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-muted/40">
+                    <FileIcon className="h-4 w-4 text-primary shrink-0" />
+                    <span className="text-sm flex-1 truncate text-muted-foreground">
+                      {uploadedFileName || form.downloadUrl.split('/').pop() || 'ملف محفوظ'}
+                    </span>
+                    <div className="flex gap-2 shrink-0">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploadingFile}
+                      >
+                        تغيير
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0 text-destructive"
+                        onClick={() => { setForm((p) => ({ ...p, downloadUrl: '' })); setUploadedFileName(''); }}
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full gap-2 border-dashed"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingFile}
+                  >
+                    {isUploadingFile ? (
+                      <><Loader2 className="h-4 w-4 animate-spin" /> جاري الرفع...</>
+                    ) : (
+                      <><Upload className="h-4 w-4" /> اختر ملفاً للرفع</>
+                    )}
+                  </Button>
+                )}
+                <p className="text-xs text-muted-foreground">الملف سيُتاح للعميل بعد تأكيد الطلب — يُقبل أي نوع ملف</p>
               </div>
             )}
 
