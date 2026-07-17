@@ -18,7 +18,11 @@ export function issueAdminToken(): string {
 export function checkAdminPassword(password: string): boolean {
   const expected = process.env.ADMIN_PASSWORD;
   if (!expected) return false;
-  return crypto.timingSafeEqual(Buffer.from(password), Buffer.from(expected));
+  const a = Buffer.from(password);
+  const b = Buffer.from(expected);
+  // timingSafeEqual requires equal-length buffers; pad to avoid throwing
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
 }
 
 export function requireAdmin(
