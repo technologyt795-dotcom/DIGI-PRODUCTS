@@ -1,5 +1,5 @@
 import { Link } from 'wouter';
-import { ShoppingBag, Lock, Menu, Search, X } from 'lucide-react';
+import { ShoppingBag, Lock, Menu, Search, X, User } from 'lucide-react';
 import { useCart } from '@/hooks/use-cart';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -7,6 +7,16 @@ import { useLocation } from 'wouter';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 import { useListCategories } from '@workspace/api-client-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useCustomerAuth } from '@/hooks/use-customer-auth';
+import { CustomerAuthModal } from '@/components/auth/CustomerAuthModal';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 export function Navbar() {
   const { totalItems } = useCart();
@@ -15,6 +25,8 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const { settings } = useStoreSettings();
   const { data: categories } = useListCategories();
+  const { isAuthenticated, customer, logout } = useCustomerAuth();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +135,30 @@ export function Navbar() {
               />
             </form>
             
+            {!isAuthenticated ? (
+              <Button variant="ghost" className="font-medium" onClick={() => setIsAuthModalOpen(true)}>
+                دخول
+              </Button>
+            ) : (
+              <DropdownMenu dir="rtl">
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2 px-2">
+                    <User className="h-5 w-5" />
+                    <span className="hidden sm:inline-block">
+                      {customer?.name?.split(' ')[0]}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuLabel>مرحباً {customer?.name?.split(' ')[0]}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout} className="text-destructive cursor-pointer focus:text-destructive focus:bg-destructive/10">
+                    تسجيل الخروج
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
             <Link href="/cart" className="relative p-2 text-foreground transition-colors hover:text-primary group">
               <ShoppingBag className="h-6 w-6 group-hover:scale-110 transition-transform" />
               {totalItems > 0 && (
@@ -204,6 +240,8 @@ export function Navbar() {
           </div>
         </div>
       )}
+
+      <CustomerAuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
     </header>
   );
 }

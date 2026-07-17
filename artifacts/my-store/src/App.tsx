@@ -5,6 +5,7 @@ import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { Layout } from '@/components/layout/Layout';
 import { CartProvider } from '@/hooks/use-cart';
 import { AdminAuthProvider } from '@/hooks/use-admin-auth';
+import { CustomerAuthProvider } from '@/hooks/use-customer-auth';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { StoreSettingsProvider, ThemeApplier } from '@/contexts/StoreSettingsContext';
@@ -64,11 +65,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <StoreSettingsProvider>
         <ThemeApplier />
-        <AdminAuthProvider>
-          <CartProvider>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-              <Switch>
-                {/* Admin Login — no guard needed */}
+        <CustomerAuthProvider>
+          <AdminAuthProvider>
+            <CartProvider>
+              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+                <Switch>
+                  {/* Admin Login — no guard needed */}
                 <Route path="/admin/login" component={AdminLogin} />
 
                 {/* Admin pages — order matters: more specific first */}
@@ -112,8 +114,9 @@ function App() {
               </Switch>
             </WouterRouter>
             <Toaster richColors position="bottom-left" dir="rtl" />
-          </CartProvider>
-        </AdminAuthProvider>
+            </CartProvider>
+          </AdminAuthProvider>
+        </CustomerAuthProvider>
       </StoreSettingsProvider>
     </QueryClientProvider>
   );
