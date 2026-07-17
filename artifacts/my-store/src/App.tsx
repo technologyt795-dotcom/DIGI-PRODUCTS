@@ -38,6 +38,14 @@ const queryClient = new QueryClient({
   },
 });
 
+function AdminPage({ children }: { children: React.ReactNode }) {
+  return (
+    <AdminGuard>
+      <AdminLayout>{children}</AdminLayout>
+    </AdminGuard>
+  );
+}
+
 function StoreRouter() {
   return (
     <Switch>
@@ -51,28 +59,6 @@ function StoreRouter() {
   );
 }
 
-function AdminRouter() {
-  return (
-    <AdminGuard>
-      <AdminLayout>
-        <Switch>
-          <Route path="/admin" component={AdminDashboard} />
-          <Route path="/admin/orders" component={AdminOrders} />
-          <Route path="/admin/customers" component={AdminCustomers} />
-          <Route path="/admin/products" component={AdminProducts} />
-          <Route path="/admin/categories" component={AdminCategories} />
-          <Route path="/admin/discounts" component={AdminDiscounts} />
-          <Route path="/admin/reviews" component={AdminReviews} />
-          <Route path="/admin/analytics" component={AdminAnalytics} />
-          <Route path="/admin/finance" component={AdminFinance} />
-          <Route path="/admin/settings" component={AdminSettings} />
-          <Route component={NotFound} />
-        </Switch>
-      </AdminLayout>
-    </AdminGuard>
-  );
-}
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -82,10 +68,42 @@ function App() {
           <CartProvider>
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
               <Switch>
+                {/* Admin Login — no guard needed */}
                 <Route path="/admin/login" component={AdminLogin} />
-                <Route path="/admin" nested>
-                  <AdminRouter />
+
+                {/* Admin pages — order matters: more specific first */}
+                <Route path="/admin/orders">
+                  <AdminPage><AdminOrders /></AdminPage>
                 </Route>
+                <Route path="/admin/customers">
+                  <AdminPage><AdminCustomers /></AdminPage>
+                </Route>
+                <Route path="/admin/products">
+                  <AdminPage><AdminProducts /></AdminPage>
+                </Route>
+                <Route path="/admin/categories">
+                  <AdminPage><AdminCategories /></AdminPage>
+                </Route>
+                <Route path="/admin/discounts">
+                  <AdminPage><AdminDiscounts /></AdminPage>
+                </Route>
+                <Route path="/admin/reviews">
+                  <AdminPage><AdminReviews /></AdminPage>
+                </Route>
+                <Route path="/admin/analytics">
+                  <AdminPage><AdminAnalytics /></AdminPage>
+                </Route>
+                <Route path="/admin/finance">
+                  <AdminPage><AdminFinance /></AdminPage>
+                </Route>
+                <Route path="/admin/settings">
+                  <AdminPage><AdminSettings /></AdminPage>
+                </Route>
+                <Route path="/admin">
+                  <AdminPage><AdminDashboard /></AdminPage>
+                </Route>
+
+                {/* Store */}
                 <Route>
                   <Layout>
                     <StoreRouter />
