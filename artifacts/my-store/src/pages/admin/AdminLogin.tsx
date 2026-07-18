@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,15 @@ import { toast } from 'sonner';
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [, setLocation] = useLocation();
-  const { login } = useAdminAuth();
+  const { login, isAuthenticated } = useAdminAuth();
   const loginMutation = useAdminLogin();
+
+  // الانتقال بعد اكتمال تحديث حالة المصادقة
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLocation('/admin');
+    }
+  }, [isAuthenticated]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +26,6 @@ export default function AdminLogin() {
       const session = await loginMutation.mutateAsync({ data: { password } });
       login(session.token);
       toast.success('تم تسجيل الدخول بنجاح');
-      setLocation('/admin');
     } catch {
       toast.error('كلمة المرور غير صحيحة');
     }
