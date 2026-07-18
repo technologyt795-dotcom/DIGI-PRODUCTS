@@ -149,11 +149,16 @@ export default function AdminOrders() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="pending">معلق</SelectItem>
-                      <SelectItem value="processing">قيد المعالجة</SelectItem>
-                      <SelectItem value="shipped">مشحون</SelectItem>
-                      <SelectItem value="delivered">مكتمل</SelectItem>
-                      <SelectItem value="cancelled">ملغي</SelectItem>
+                      {(() => {
+                        const allDigital = (selectedOrder.items as any[]).every((i: any) => i.isDigital);
+                        return <>
+                          <SelectItem value="pending">معلق</SelectItem>
+                          <SelectItem value="processing">قيد المعالجة</SelectItem>
+                          {!allDigital && <SelectItem value="shipped">مشحون</SelectItem>}
+                          <SelectItem value="delivered">مكتمل</SelectItem>
+                          <SelectItem value="cancelled">ملغي</SelectItem>
+                        </>;
+                      })()}
                     </SelectContent>
                   </Select>
                 </div>
