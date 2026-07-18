@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { setAuthTokenGetter } from '@workspace/api-client-react';
 
 const STORAGE_KEY = 'my-store-admin-token';
+const CUSTOMER_STORAGE_KEY = 'my-store-customer-token';
 
 interface AdminAuthContextType {
   token: string | null;
@@ -22,6 +23,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = (newToken: string) => {
+    localStorage.removeItem(CUSTOMER_STORAGE_KEY); // لا يمكن أن يكون أدمن وعميل في نفس الوقت
     localStorage.setItem(STORAGE_KEY, newToken);
     setToken(newToken);
   };

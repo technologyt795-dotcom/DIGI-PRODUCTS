@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 const STORAGE_KEY = 'my-store-customer-token';
+const ADMIN_STORAGE_KEY = 'my-store-admin-token';
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
 
 export interface Customer {
@@ -60,6 +61,7 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
   }, [token]);
 
   const login = (newToken: string, newCustomer: Customer) => {
+    localStorage.removeItem(ADMIN_STORAGE_KEY); // لا يمكن أن يكون أدمن وعميل في نفس الوقت
     localStorage.setItem(STORAGE_KEY, newToken);
     setToken(newToken);
     setCustomer(newCustomer);
