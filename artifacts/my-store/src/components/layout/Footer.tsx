@@ -1,12 +1,10 @@
 import { Link } from 'wouter';
 import { ShoppingBag, Lock, Mail, Phone, MapPin, Instagram, Twitter, Facebook } from 'lucide-react';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
-import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { FaWhatsapp } from 'react-icons/fa';
 
 export function Footer() {
   const { settings } = useStoreSettings();
-  const { isAuthenticated: isAdminAuthenticated } = useAdminAuth();
   const storeName = settings?.storeName || 'My Store';
 
   return (
@@ -103,13 +101,8 @@ export function Footer() {
           
         </div>
         
-        <div className="mt-16 pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-primary-foreground/50">
+        <div className="mt-16 pt-8 border-t border-primary-foreground/10 flex items-center justify-center text-sm text-primary-foreground/50">
           <p>جميع الحقوق محفوظة &copy; {new Date().getFullYear()} {storeName}</p>
-          {isAdminAuthenticated && (
-            <Link href="/admin" className="hover:text-secondary/70 transition-colors text-xs opacity-40 hover:opacity-100">
-              لوحة التحكم
-            </Link>
-          )}
         </div>
       </div>
     </footer>
