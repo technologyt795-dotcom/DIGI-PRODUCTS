@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'wouter';
 import { ArrowRight, Download, Loader2, Printer, Package } from 'lucide-react';
-import { useGetMyOrder } from '@workspace/api-client-react';
+import { useGetMyOrder, getGetMyOrderQueryKey } from '@workspace/api-client-react';
 import { useCustomerAuth } from '@/hooks/use-customer-auth';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 import { toast } from 'sonner';
@@ -50,7 +50,7 @@ export default function OrderDetail() {
 
   const { data: order, isLoading, isError } = useGetMyOrder(orderNumber!, {
     request: token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
-    query: { enabled: !!token && !!orderNumber },
+    query: { enabled: !!token && !!orderNumber, queryKey: getGetMyOrderQueryKey(orderNumber!) },
   });
 
   const [downloading, setDownloading] = useState<Record<number, boolean>>({});

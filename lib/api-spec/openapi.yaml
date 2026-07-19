@@ -664,6 +664,33 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   /customer/orders/{orderNumber}:
+    delete:
+      operationId: deleteMyOrder
+      tags: [orders]
+      summary: Delete a specific order belonging to the authenticated customer
+      security:
+        - customerToken: []
+      parameters:
+        - name: orderNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Order deleted successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     get:
       operationId: getMyOrder
       tags: [orders]

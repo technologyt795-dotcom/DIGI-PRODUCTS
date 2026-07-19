@@ -41,6 +41,32 @@ router.get(
   },
 );
 
+// DELETE /customer/orders/:orderNumber — customer deletes their own order
+router.delete(
+  "/customer/orders/:orderNumber",
+  requireCustomer as any,
+  async (req: any, res): Promise<void> => {
+    const payload = req.customer as CustomerPayload;
+    const { orderNumber } = req.params as { orderNumber: string };
+
+    const [row] = await db
+      .select()
+      .from(ordersTable)
+      .where(eq(ordersTable.orderNumber, orderNumber));
+
+    if (!row || row.customerEmail !== payload.email) {
+      res.status(404).json({ error: "الطلب غير موجود" });
+      return;
+    }
+
+    await db
+      .delete(ordersTable)
+      .where(eq(ordersTable.orderNumber, orderNumber));
+
+    res.sendStatus(204);
+  },
+);
+
 // GET /customer/orders/:orderNumber — single order belonging to customer
 router.get(
   "/customer/orders/:orderNumber",

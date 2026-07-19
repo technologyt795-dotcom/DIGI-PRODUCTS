@@ -1803,6 +1803,77 @@ export function useListMyOrders<TData = Awaited<ReturnType<typeof listMyOrders>>
 
 
 
+export const getDeleteMyOrderUrl = (orderNumber: string,) => {
+
+
+
+
+  return `/api/customer/orders/${orderNumber}`
+}
+
+/**
+ * @summary Delete a specific order belonging to the authenticated customer
+ */
+export const deleteMyOrder = async (orderNumber: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteMyOrderUrl(orderNumber),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteMyOrderMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMyOrder>>, TError,{orderNumber: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteMyOrder>>, TError,{orderNumber: string}, TContext> => {
+
+const mutationKey = ['deleteMyOrder'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteMyOrder>>, {orderNumber: string}> = (props) => {
+          const {orderNumber} = props ?? {};
+
+          return  deleteMyOrder(orderNumber,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteMyOrderMutationResult = NonNullable<Awaited<ReturnType<typeof deleteMyOrder>>>
+
+    export type DeleteMyOrderMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Delete a specific order belonging to the authenticated customer
+ */
+export const useDeleteMyOrder = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMyOrder>>, TError,{orderNumber: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteMyOrder>>,
+        TError,
+        {orderNumber: string},
+        TContext
+      > => {
+      return useMutation(getDeleteMyOrderMutationOptions(options));
+    }
+
 export const getGetMyOrderUrl = (orderNumber: string,) => {
 
 
