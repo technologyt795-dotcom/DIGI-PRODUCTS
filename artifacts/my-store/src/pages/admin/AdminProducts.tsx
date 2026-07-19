@@ -189,8 +189,13 @@ export default function AdminProducts() {
       isNew: form.isNew,
       badge: form.badge || null,
       isDigital: form.isDigital,
+      // Keep only slots that have a URL, and carry their matching label at the same index
       downloadUrls: form.isDigital ? form.downloadUrls.filter(Boolean) : [],
-      downloadLabels: form.isDigital ? form.downloadLabels : [],
+      downloadLabels: form.isDigital
+        ? form.downloadUrls
+            .map((url, i) => (url ? form.downloadLabels[i] ?? '' : null))
+            .filter((l): l is string => l !== null)
+        : [],
     };
 
     try {
