@@ -112,15 +112,19 @@ router.get(
       products.forEach((p) => productMap.set(p.id, { downloadUrls: p.downloadUrls, downloadLabels: p.downloadLabels }));
     }
 
+    // Returns true only when the array has at least one non-blank string
+    const hasRealContent = (arr: unknown) =>
+      Array.isArray(arr) && (arr as string[]).some((s) => typeof s === "string" && s.trim() !== "");
+
     const enrichedItems = items.map((item) => {
       if (!item.isDigital || !item.productId) return item;
       const prod = productMap.get(item.productId);
       if (!prod) return item;
       return {
         ...item,
-        // Use current product files if the snapshot has none
-        downloadUrls: (item.downloadUrls?.length ? item.downloadUrls : prod.downloadUrls) ?? [],
-        downloadLabels: (item.downloadLabels?.length ? item.downloadLabels : prod.downloadLabels) ?? [],
+        // Always prefer current product data so labels/files added after the order are visible
+        downloadUrls: hasRealContent(prod.downloadUrls) ? prod.downloadUrls : (item.downloadUrls ?? []),
+        downloadLabels: hasRealContent(prod.downloadLabels) ? prod.downloadLabels : (item.downloadLabels ?? []),
       };
     });
 
