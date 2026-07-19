@@ -61,7 +61,6 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
   }, [token]);
 
   const login = (newToken: string, newCustomer: Customer) => {
-    localStorage.removeItem(ADMIN_STORAGE_KEY); // لا يمكن أن يكون أدمن وعميل في نفس الوقت
     localStorage.setItem(STORAGE_KEY, newToken);
     setToken(newToken);
     setCustomer(newCustomer);
