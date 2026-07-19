@@ -15,4 +15,5 @@ export const StoreSettingsActiveTheme = {
   minimal: 'minimal',
   luxury: 'luxury',
   ocean: 'ocean',
+  glass: 'glass',
 } as const;

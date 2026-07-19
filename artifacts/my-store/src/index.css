@@ -162,6 +162,126 @@
   --radius: 0.625rem;
 }
 
+/* ── Aurora Glass Theme ─────────────────────────────────────────────────── */
+[data-theme="glass"] {
+  --background: 255 60% 5%;
+  --foreground: 250 30% 96%;
+
+  --border: 265 45% 32%;
+  --input: 255 40% 14%;
+  --ring: 265 75% 65%;
+
+  --primary: 265 75% 65%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 188 90% 40%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 255 40% 14%;
+  --muted-foreground: 255 25% 65%;
+
+  --accent: 265 75% 65%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --radius: 1rem;
+
+  /* Override card/popover tokens with rgba for real glass transparency */
+  --color-card: rgba(25, 8, 65, 0.55);
+  --color-card-foreground: hsl(250, 30%, 96%);
+  --color-card-border: rgba(139, 92, 246, 0.35);
+  --color-popover: rgba(18, 5, 50, 0.88);
+  --color-popover-foreground: hsl(250, 30%, 96%);
+  --color-popover-border: rgba(139, 92, 246, 0.4);
+}
+
+/* Rich gradient backdrop */
+[data-theme="glass"] body {
+  background-image:
+    radial-gradient(ellipse at 18% 12%, rgba(139, 92, 246, 0.38) 0%, transparent 52%),
+    radial-gradient(ellipse at 82% 85%, rgba(6, 182, 212, 0.28) 0%, transparent 52%),
+    radial-gradient(ellipse at 50% 50%, rgba(109, 40, 217, 0.18) 0%, transparent 68%),
+    radial-gradient(ellipse at 75% 20%, rgba(236, 72, 153, 0.12) 0%, transparent 40%);
+}
+
+/* Glass surface — applied to any bordered, rounded element */
+[data-theme="glass"] .rounded-xl.border,
+[data-theme="glass"] .rounded-2xl.border,
+[data-theme="glass"] .rounded-lg.border,
+[data-theme="glass"] .rounded-md.border {
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  border-color: rgba(139, 92, 246, 0.28) !important;
+  box-shadow:
+    0 8px 32px rgba(88, 28, 235, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(139, 92, 246, 0.12);
+}
+
+/* Glowing navbar */
+[data-theme="glass"] nav,
+[data-theme="glass"] header {
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  background: rgba(12, 4, 35, 0.7) !important;
+  border-bottom-color: rgba(139, 92, 246, 0.25) !important;
+  box-shadow: 0 1px 40px rgba(88, 28, 235, 0.15);
+}
+
+/* Glowing primary buttons */
+[data-theme="glass"] .bg-primary {
+  background: linear-gradient(135deg, hsl(265, 75%, 65%), hsl(280, 80%, 60%)) !important;
+  box-shadow:
+    0 0 24px rgba(139, 92, 246, 0.5),
+    0 4px 16px rgba(139, 92, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="glass"] .bg-primary:hover {
+  box-shadow:
+    0 0 36px rgba(139, 92, 246, 0.65),
+    0 6px 20px rgba(139, 92, 246, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Badge / pill glass */
+[data-theme="glass"] .badge,
+[data-theme="glass"] [class*="rounded-full"] {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Input glass */
+[data-theme="glass"] input,
+[data-theme="glass"] textarea,
+[data-theme="glass"] select {
+  background: rgba(25, 8, 65, 0.5) !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="glass"] input:focus,
+[data-theme="glass"] textarea:focus {
+  border-color: rgba(139, 92, 246, 0.7) !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18), 0 0 20px rgba(139, 92, 246, 0.15) !important;
+}
+
+/* Hover glow on interactive cards */
+[data-theme="glass"] .rounded-xl.border:hover,
+[data-theme="glass"] .rounded-lg.border:hover {
+  border-color: rgba(139, 92, 246, 0.55) !important;
+  box-shadow:
+    0 12px 40px rgba(88, 28, 235, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(139, 92, 246, 0.18);
+  transition: all 0.3s ease;
+}
+
 .dark {
   --background: 222 47% 11%;
   --foreground: 210 40% 98%;

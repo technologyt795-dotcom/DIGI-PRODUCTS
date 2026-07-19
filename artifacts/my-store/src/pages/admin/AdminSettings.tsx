@@ -142,6 +142,14 @@ export default function AdminSettings() {
       preview: 'bg-[#0b1929] border-[#1e3a5f]',
       primary: 'bg-[#00b4d8]',
       secondary: 'bg-[#1e3a5f]'
+    },
+    {
+      id: 'glass' as StoreSettingsUpdateActiveTheme,
+      name: 'زجاجي (Glass)',
+      description: 'تأثير زجاجي احترافي مع تدرجات بنفسجية',
+      preview: 'bg-[#0c0423] border-[#5b21b6]',
+      primary: 'bg-[#8b5cf6]',
+      secondary: 'bg-[#06b6d4]'
     }
   ];
 
