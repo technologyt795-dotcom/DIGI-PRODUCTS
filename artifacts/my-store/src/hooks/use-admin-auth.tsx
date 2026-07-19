@@ -1,8 +1,11 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { setAuthTokenGetter } from '@workspace/api-client-react';
 
 const STORAGE_KEY = 'my-store-admin-token';
 const CUSTOMER_STORAGE_KEY = 'my-store-customer-token';
+
+// ضبط getter مباشرةً عند تحميل الموديول — لا يعتمد على useEffect
+setAuthTokenGetter(() => localStorage.getItem(STORAGE_KEY));
 
 interface AdminAuthContextType {
   token: string | null;
@@ -17,10 +20,6 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() =>
     localStorage.getItem(STORAGE_KEY)
   );
-
-  useEffect(() => {
-    setAuthTokenGetter(() => localStorage.getItem(STORAGE_KEY));
-  }, []);
 
   const login = (newToken: string) => {
     localStorage.removeItem(CUSTOMER_STORAGE_KEY); // لا يمكن أن يكون أدمن وعميل في نفس الوقت
