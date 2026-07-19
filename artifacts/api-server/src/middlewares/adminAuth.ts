@@ -18,11 +18,15 @@ export function issueAdminToken(): string {
 export function checkAdminPassword(password: string): boolean {
   const expected = process.env.ADMIN_PASSWORD;
   if (!expected) return false;
-  const a = Buffer.from(password.trim());
-  const b = Buffer.from(expected.trim());
-  // timingSafeEqual requires equal-length buffers; pad to avoid throwing
-  if (a.length !== b.length) return false;
-  return crypto.timingSafeEqual(a, b);
+  // Normalise both sides: trim whitespace and strip accidental surrounding quotes
+  const normalise = (s: string) =>
+    s.trim().replace(/^["']|["']$/g, "");
+  const a = normalise(password);
+  const b = normalise(expected);
+  // Use hex encoding so timingSafeEqual always gets equal-length ASCII buffers
+  const hashA = crypto.createHmac("sha256", "pwd-check").update(a).digest("hex");
+  const hashB = crypto.createHmac("sha256", "pwd-check").update(b).digest("hex");
+  return crypto.timingSafeEqual(Buffer.from(hashA), Buffer.from(hashB));
 }
 
 export function requireAdmin(

@@ -130,7 +130,9 @@ router.get(
         res.status(404).json({ error: "الملف غير موجود" });
         return;
       }
-      res.status(500).json({ error: "تعذّر تحميل الملف" });
+      const msg = err instanceof Error ? err.message : String(err);
+      req.log.error({ err, downloadUrl: item.downloadUrl }, `download error: ${msg}`);
+      res.status(500).json({ error: "تعذّر تحميل الملف", detail: msg });
     }
   },
 );
