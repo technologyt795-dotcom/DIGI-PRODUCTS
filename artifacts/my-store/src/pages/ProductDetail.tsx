@@ -84,19 +84,19 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16 mb-24">
           
           {/* Images */}
-          <div className="flex flex-col-reverse md:flex-row gap-4 h-full">
-            <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto pb-2 md:pb-0 md:w-24 shrink-0 no-scrollbar">
+          <div className="flex flex-col-reverse md:flex-row gap-4">
+            <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto pb-2 md:pb-0 md:w-28 shrink-0 no-scrollbar">
               {product.images.map((img, idx) => (
                 <button 
                   key={idx} 
                   onClick={() => setActiveImage(idx)}
-                  className={`relative aspect-square w-20 md:w-full shrink-0 rounded-xl overflow-hidden border-2 transition-all ${activeImage === idx ? 'border-primary ring-2 ring-primary/20 ring-offset-1' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                  className={`relative aspect-square w-24 md:w-full shrink-0 rounded-xl overflow-hidden border-2 transition-all ${activeImage === idx ? 'border-primary ring-2 ring-primary/20 ring-offset-1' : 'border-transparent opacity-70 hover:opacity-100'}`}
                 >
                   <img src={img} alt={`${product.name} - ${idx + 1}`} className="w-full h-full object-cover bg-muted" />
                 </button>
               ))}
             </div>
-            <div className="relative flex-1 aspect-square md:aspect-auto rounded-3xl overflow-hidden bg-muted/50 border border-border">
+            <div className="relative flex-1 min-h-[320px] sm:min-h-[420px] md:min-h-[540px] aspect-square rounded-3xl overflow-hidden bg-muted/50 border border-border">
               <img 
                 src={product.images[activeImage]} 
                 alt={product.name} 
