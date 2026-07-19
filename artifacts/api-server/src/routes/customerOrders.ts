@@ -1,7 +1,8 @@
 import { Readable } from "stream";
 import { Router, type IRouter } from "express";
 import { eq, desc } from "drizzle-orm";
-import { db, ordersTable } from "@workspace/db";
+import { db, ordersTable, productsTable } from "@workspace/db";
+import { inArray } from "drizzle-orm";
 import { requireCustomer } from "../middlewares/customerAuth";
 import type { CustomerPayload } from "../middlewares/customerAuth";
 import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
@@ -91,7 +92,39 @@ router.get(
       return;
     }
 
-    res.json(mapOrder(row));
+    // Enrich digital items with current downloadUrls/downloadLabels from the product,
+    // so files added after the order was placed are still accessible.
+    const items = row.items as any[];
+    const digitalProductIds = items
+      .filter((i) => i.isDigital && i.productId)
+      .map((i) => i.productId);
+
+    let productMap = new Map<number, { downloadUrls: string[]; downloadLabels: string[] }>();
+    if (digitalProductIds.length > 0) {
+      const products = await db
+        .select({
+          id: productsTable.id,
+          downloadUrls: productsTable.downloadUrls,
+          downloadLabels: productsTable.downloadLabels,
+        })
+        .from(productsTable)
+        .where(inArray(productsTable.id, digitalProductIds));
+      products.forEach((p) => productMap.set(p.id, { downloadUrls: p.downloadUrls, downloadLabels: p.downloadLabels }));
+    }
+
+    const enrichedItems = items.map((item) => {
+      if (!item.isDigital || !item.productId) return item;
+      const prod = productMap.get(item.productId);
+      if (!prod) return item;
+      return {
+        ...item,
+        // Use current product files if the snapshot has none
+        downloadUrls: (item.downloadUrls?.length ? item.downloadUrls : prod.downloadUrls) ?? [],
+        downloadLabels: (item.downloadLabels?.length ? item.downloadLabels : prod.downloadLabels) ?? [],
+      };
+    });
+
+    res.json(mapOrder({ ...row, items: enrichedItems }));
   },
 );
 
