@@ -48,14 +48,14 @@ export default function Category() {
     <div className="pb-24">
       {/* Category Header */}
       <div className="relative h-[300px] md:h-[400px] flex items-center justify-center overflow-hidden mb-12">
-        <div className="absolute inset-0 bg-primary">
+        <div className="absolute inset-0 bg-black">
           <img 
             src={category.image || `https://placehold.co/1200x400/1e293b/d4af37?text=${encodeURIComponent(category.name)}`}
             alt={category.name}
-            className="w-full h-full object-cover opacity-40 mix-blend-overlay"
+            className="w-full h-full object-cover opacity-50"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-primary to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
         <div className="container relative z-10 mx-auto px-4 text-center text-white pt-16">
           <div className="flex items-center justify-center gap-2 text-sm text-white/70 mb-4">
             <Link href="/" className="hover:text-white transition-colors">الرئيسية</Link>
