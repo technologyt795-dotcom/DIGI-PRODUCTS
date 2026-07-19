@@ -36,9 +36,17 @@ const uploadDir = path.resolve(
   "images",
   "uploads",
 );
+const digitalUploadDir = path.resolve(
+  import.meta.dirname,
+  "..",
+  "public",
+  "files",
+  "uploads",
+);
 
-// Ensure the directory exists (important for fresh deployments)
+// Ensure the directories exist (important for fresh deployments)
 mkdirSync(uploadDir, { recursive: true });
+mkdirSync(digitalUploadDir, { recursive: true });
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -56,6 +64,17 @@ const upload = multer({
     }
     cb(null, true);
   },
+});
+
+const digitalUpload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, digitalUploadDir),
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname) || ".bin";
+      cb(null, `${crypto.randomUUID()}${ext}`);
+    },
+  }),
+  limits: { fileSize: 200 * 1024 * 1024 }, // 200 MB
 });
 
 router.post(
@@ -77,6 +96,28 @@ router.post(
       return;
     }
     res.status(201).json({ url: `/api/images/uploads/${req.file.filename}` });
+  },
+);
+
+router.post(
+  "/admin/digital-uploads",
+  requireAdmin,
+  (req, res, next) => {
+    digitalUpload.single("file")(req, res, (err: unknown) => {
+      if (err) {
+        const message = err instanceof Error ? err.message : "Upload failed";
+        res.status(400).json({ error: message });
+        return;
+      }
+      next();
+    });
+  },
+  (req, res): void => {
+    if (!req.file) {
+      res.status(400).json({ error: "No file provided" });
+      return;
+    }
+    res.status(201).json({ url: `/api/files/uploads/${req.file.filename}` });
   },
 );
 

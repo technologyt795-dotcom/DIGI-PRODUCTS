@@ -109,22 +109,21 @@ export default function AdminProducts() {
     if (!adminToken) { toast.error('يجب تسجيل الدخول أولاً'); return; }
     setUploadingSlot(slotIndex);
     try {
-      const res = await fetch(`${BASE}/storage/uploads/request-url`, {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch(`${BASE}/admin/digital-uploads`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
-        body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type || 'application/octet-stream' }),
+        headers: { Authorization: `Bearer ${adminToken}` },
+        body: formData,
       });
-      if (!res.ok) throw new Error('فشل في الحصول على رابط الرفع');
-      const { uploadURL, objectPath } = await res.json();
-      const putRes = await fetch(uploadURL, {
-        method: 'PUT',
-        body: file,
-        headers: { 'Content-Type': file.type || 'application/octet-stream' },
-      });
-      if (!putRes.ok) throw new Error('فشل رفع الملف');
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || 'فشل رفع الملف');
+      }
+      const { url } = await res.json();
       setForm((prev) => {
         const urls = [...prev.downloadUrls];
-        urls[slotIndex] = objectPath;
+        urls[slotIndex] = url;
         return { ...prev, downloadUrls: urls };
       });
       setUploadedFileNames((prev) => {

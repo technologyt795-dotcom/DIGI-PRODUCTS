@@ -34,6 +34,10 @@ app.use(
   "/api/images",
   express.static(path.resolve(import.meta.dirname, "..", "public", "images")),
 );
+app.use(
+  "/api/files",
+  express.static(path.resolve(import.meta.dirname, "..", "public", "files")),
+);
 app.use("/api", router);
 
 export default app;
