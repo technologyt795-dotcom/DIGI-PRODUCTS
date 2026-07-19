@@ -150,6 +150,14 @@ export default function AdminSettings() {
       preview: 'bg-[#0c0423] border-[#5b21b6]',
       primary: 'bg-[#8b5cf6]',
       secondary: 'bg-[#06b6d4]'
+    },
+    {
+      id: 'digital' as StoreSettingsUpdateActiveTheme,
+      name: 'رقمي (Digital)',
+      description: 'مصمم للمنتجات الرقمية — سواد عميق مع سيان نيون',
+      preview: 'bg-[#030712] border-[#0e7490]',
+      primary: 'bg-[#00d4d4]',
+      secondary: 'bg-[#8b5cf6]'
     }
   ];
 

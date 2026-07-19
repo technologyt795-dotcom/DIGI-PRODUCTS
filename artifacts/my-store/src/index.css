@@ -162,6 +162,163 @@
   --radius: 0.625rem;
 }
 
+/* ── Digital Pulse Theme ────────────────────────────────────────────────── */
+[data-theme="digital"] {
+  --background: 228 72% 4%;         /* #030712 near-black navy */
+  --foreground: 210 22% 95%;        /* cool white */
+
+  --border: 186 80% 22%;            /* cyan-tinted border */
+  --input: 226 55% 9%;
+  --ring: 186 100% 42%;
+
+  --card: 226 65% 7%;               /* dark navy card */
+  --card-foreground: 210 22% 95%;
+  --card-border: 186 80% 22%;
+
+  --popover: 226 65% 9%;
+  --popover-foreground: 210 22% 95%;
+  --popover-border: 186 80% 28%;
+
+  --primary: 186 100% 40%;          /* electric cyan */
+  --primary-foreground: 228 72% 4%; /* dark text on cyan */
+
+  --secondary: 262 68% 66%;         /* soft violet */
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 226 50% 10%;
+  --muted-foreground: 220 18% 58%;
+
+  --accent: 186 100% 40%;
+  --accent-foreground: 228 72% 4%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --radius: 0.25rem;                /* sharp, technical corners */
+}
+
+/* Grid overlay — subtle circuit-board feel */
+[data-theme="digital"] body {
+  background-image:
+    linear-gradient(rgba(0, 212, 212, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 212, 0.035) 1px, transparent 1px),
+    radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 55%);
+  background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
+  background-attachment: local, local, fixed, fixed;
+}
+
+/* Neon card glow */
+[data-theme="digital"] .border {
+  border-color: rgba(0, 200, 200, 0.22) !important;
+}
+
+[data-theme="digital"] .rounded-xl.border,
+[data-theme="digital"] .rounded-2xl.border,
+[data-theme="digital"] .rounded-lg.border,
+[data-theme="digital"] .rounded-md.border {
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 212, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(0, 212, 212, 0.07);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+[data-theme="digital"] .rounded-xl.border:hover,
+[data-theme="digital"] .rounded-2xl.border:hover,
+[data-theme="digital"] .rounded-lg.border:hover,
+[data-theme="digital"] .rounded-md.border:hover {
+  border-color: rgba(0, 212, 212, 0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 212, 0.18),
+    0 0 28px rgba(0, 212, 212, 0.14),
+    0 8px 32px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(0, 212, 212, 0.1);
+}
+
+/* Navbar — dark strip with subtle cyan underline */
+[data-theme="digital"] nav,
+[data-theme="digital"] header {
+  background: rgba(3, 7, 18, 0.92) !important;
+  border-bottom: 1px solid rgba(0, 212, 212, 0.18) !important;
+  box-shadow: 0 1px 32px rgba(0, 0, 0, 0.7), 0 0 0 0 transparent;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Primary button — cyan with dark text + neon glow */
+[data-theme="digital"] .bg-primary {
+  background: linear-gradient(135deg, hsl(186, 100%, 42%), hsl(196, 100%, 38%)) !important;
+  color: hsl(228, 72%, 4%) !important;
+  font-weight: 700;
+  box-shadow:
+    0 0 18px rgba(0, 212, 212, 0.45),
+    0 4px 16px rgba(0, 212, 212, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="digital"] .bg-primary:hover {
+  box-shadow:
+    0 0 30px rgba(0, 212, 212, 0.65),
+    0 6px 22px rgba(0, 212, 212, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+/* Outline / ghost buttons with cyan border */
+[data-theme="digital"] .border-primary {
+  border-color: rgba(0, 212, 212, 0.6) !important;
+  color: hsl(186, 100%, 42%) !important;
+}
+
+[data-theme="digital"] .border-primary:hover {
+  background: rgba(0, 212, 212, 0.1) !important;
+  border-color: rgba(0, 212, 212, 0.9) !important;
+  box-shadow: 0 0 16px rgba(0, 212, 212, 0.25);
+}
+
+/* Input fields */
+[data-theme="digital"] input,
+[data-theme="digital"] textarea,
+[data-theme="digital"] select {
+  background: rgba(6, 10, 22, 0.9) !important;
+  border-color: rgba(0, 212, 212, 0.2) !important;
+  caret-color: hsl(186, 100%, 42%);
+}
+
+[data-theme="digital"] input:focus,
+[data-theme="digital"] textarea:focus {
+  border-color: rgba(0, 212, 212, 0.65) !important;
+  box-shadow:
+    0 0 0 3px rgba(0, 212, 212, 0.12),
+    0 0 16px rgba(0, 212, 212, 0.1) !important;
+  outline: none;
+}
+
+/* Badges — cyan or violet */
+[data-theme="digital"] .bg-secondary {
+  background: rgba(139, 92, 246, 0.2) !important;
+  color: hsl(262, 68%, 78%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+}
+
+/* Price text glow */
+[data-theme="digital"] .text-primary {
+  text-shadow: 0 0 18px rgba(0, 212, 212, 0.45);
+}
+
+/* Scrollbar */
+[data-theme="digital"] ::-webkit-scrollbar {
+  width: 6px;
+  background: hsl(228, 72%, 4%);
+}
+[data-theme="digital"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 212, 0.3);
+  border-radius: 3px;
+}
+[data-theme="digital"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 212, 0.55);
+}
+
 /* ── Aurora Glass Theme ─────────────────────────────────────────────────── */
 [data-theme="glass"] {
   --background: 255 60% 5%;

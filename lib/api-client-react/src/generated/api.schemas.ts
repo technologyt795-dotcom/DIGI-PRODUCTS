@@ -134,6 +134,7 @@ export const StoreSettingsActiveTheme = {
   luxury: 'luxury',
   ocean: 'ocean',
   glass: 'glass',
+  digital: 'digital',
 } as const;
 
 export interface StoreSettings {
@@ -176,6 +177,7 @@ export const StoreSettingsUpdateActiveTheme = {
   luxury: 'luxury',
   ocean: 'ocean',
   glass: 'glass',
+  digital: 'digital',
 } as const;
 
 export interface StoreSettingsUpdate {
