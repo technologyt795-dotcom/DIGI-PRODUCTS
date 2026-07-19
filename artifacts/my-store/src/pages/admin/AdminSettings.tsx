@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ImageUploadField } from '@/components/admin/ImageUploadField';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
+import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { useUpdateSettings } from '@workspace/api-client-react';
 import { toast } from 'sonner';
 import { Loader2, Palette, Info, Truck, Link as LinkIcon } from 'lucide-react';
@@ -16,6 +17,7 @@ import type { StoreSettingsUpdateActiveTheme } from '@workspace/api-client-react
 
 export default function AdminSettings() {
   const { settings, isLoading, refreshSettings } = useStoreSettings();
+  const { token: adminToken } = useAdminAuth();
   
   const [storeName, setStoreName] = useState('');
   const [tagline, setTagline] = useState('');
@@ -57,6 +59,7 @@ export default function AdminSettings() {
   }, [settings]);
 
   const updateMutation = useUpdateSettings({
+    request: adminToken ? { headers: { Authorization: `Bearer ${adminToken}` } } : undefined,
     mutation: {
       onSuccess: () => {
         toast.success('تم حفظ الإعدادات بنجاح');
