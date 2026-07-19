@@ -95,15 +95,18 @@ router.get(
   },
 );
 
-// GET /customer/downloads/:orderNumber/:productIndex — secure digital download
+// GET /customer/downloads/:orderNumber/:productIndex/:fileIndex — secure digital download
+// :productIndex = index of the item in the order's items array
+// :fileIndex    = index of the file within that item's downloadUrls array
 router.get(
-  "/customer/downloads/:orderNumber/:productIndex",
+  "/customer/downloads/:orderNumber/:productIndex/:fileIndex",
   requireCustomer as any,
   async (req: any, res): Promise<void> => {
     const payload = req.customer as CustomerPayload;
-    const { orderNumber, productIndex } = req.params as {
+    const { orderNumber, productIndex, fileIndex } = req.params as {
       orderNumber: string;
       productIndex: string;
+      fileIndex: string;
     };
 
     const [row] = await db
@@ -122,30 +125,41 @@ router.get(
     }
 
     const items = row.items as any[];
-    const idx = Number(productIndex);
-    const item = items[idx];
+    const pIdx = Number(productIndex);
+    const fIdx = Number(fileIndex);
+    const item = items[pIdx];
 
-    if (!item || !item.isDigital || !item.downloadUrl) {
+    if (!item || !item.isDigital) {
       res.status(404).json({ error: "المنتج غير متاح للتحميل" });
       return;
     }
 
-    const filename = encodeURIComponent(item.name || "download");
+    const downloadUrls: string[] = item.downloadUrls ?? (item.downloadUrl ? [item.downloadUrl] : []);
+    const fileUrl = downloadUrls[fIdx];
 
-    // Local static file (e.g. /api/images/products/file.pdf)
-    if (item.downloadUrl.startsWith("/api/")) {
+    if (!fileUrl) {
+      res.status(404).json({ error: "الملف غير موجود" });
+      return;
+    }
+
+    // Use label as filename if available, otherwise fall back to product name
+    const downloadLabels: string[] = item.downloadLabels ?? [];
+    const label = downloadLabels[fIdx];
+    const rawName = label || item.name || "download";
+    const filename = encodeURIComponent(rawName);
+
+    // Local static file (e.g. /api/files/uploads/...)
+    if (fileUrl.startsWith("/api/")) {
       res.setHeader("Content-Disposition", `attachment; filename*=UTF-8''${filename}`);
-      res.redirect(302, item.downloadUrl);
+      res.redirect(302, fileUrl);
       return;
     }
 
     try {
-      const file = await objectStorageService.getObjectEntityFile(item.downloadUrl);
+      const file = await objectStorageService.getObjectEntityFile(fileUrl);
       const response = await objectStorageService.downloadObject(file);
 
-      // Forward the filename as Content-Disposition
       res.setHeader("Content-Disposition", `attachment; filename*=UTF-8''${filename}`);
-
       res.status(response.status);
       response.headers.forEach((value: string, key: string) => {
         if (key.toLowerCase() !== "content-disposition") res.setHeader(key, value);
@@ -165,7 +179,7 @@ router.get(
         return;
       }
       const msg = err instanceof Error ? err.message : String(err);
-      req.log.error({ err, downloadUrl: item.downloadUrl }, `download error: ${msg}`);
+      req.log.error({ err, fileUrl }, `download error: ${msg}`);
       res.status(500).json({ error: "تعذّر تحميل الملف", detail: msg });
     }
   },

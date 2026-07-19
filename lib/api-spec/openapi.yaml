@@ -1308,6 +1308,10 @@ components:
           type: array
           items:
             type: string
+        downloadLabels:
+          type: array
+          items:
+            type: string
 
     ProductUpdate:
       type: object
@@ -1345,6 +1349,10 @@ components:
         isDigital:
           type: boolean
         downloadUrls:
+          type: array
+          items:
+            type: string
+        downloadLabels:
           type: array
           items:
             type: string
@@ -1386,6 +1394,7 @@ components:
           badge,
           isDigital,
           downloadUrls,
+          downloadLabels,
           createdAt,
         ]
       properties:
@@ -1426,6 +1435,10 @@ components:
         isDigital:
           type: boolean
         downloadUrls:
+          type: array
+          items:
+            type: string
+        downloadLabels:
           type: array
           items:
             type: string
@@ -1546,6 +1559,10 @@ components:
         isDigital:
           type: boolean
         downloadUrls:
+          type: array
+          items:
+            type: string
+        downloadLabels:
           type: array
           items:
             type: string

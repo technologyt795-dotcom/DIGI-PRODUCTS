@@ -68,6 +68,7 @@ interface ProductFormState {
   badge: string;
   isDigital: boolean;
   downloadUrls: string[];
+  downloadLabels: string[];
 }
 
 const emptyForm: ProductFormState = {
@@ -84,6 +85,7 @@ const emptyForm: ProductFormState = {
   badge: '',
   isDigital: false,
   downloadUrls: [],
+  downloadLabels: [],
 };
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
@@ -165,6 +167,7 @@ export default function AdminProducts() {
       badge: product.badge || '',
       isDigital: product.isDigital,
       downloadUrls: product.downloadUrls || [],
+      downloadLabels: product.downloadLabels || [],
     });
     setUploadedFileNames([]);
     setIsDialogOpen(true);
@@ -187,6 +190,7 @@ export default function AdminProducts() {
       badge: form.badge || null,
       isDigital: form.isDigital,
       downloadUrls: form.isDigital ? form.downloadUrls.filter(Boolean) : [],
+      downloadLabels: form.isDigital ? form.downloadLabels : [],
     };
 
     try {
@@ -415,7 +419,7 @@ export default function AdminProducts() {
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.isDigital}
-                  onCheckedChange={(checked) => setForm({ ...form, isDigital: checked, downloadUrl: checked ? form.downloadUrl : '' })}
+                  onCheckedChange={(checked) => setForm({ ...form, isDigital: checked, downloadUrls: checked ? form.downloadUrls : [], downloadLabels: checked ? form.downloadLabels : [] })}
                 />
                 <Label>منتج رقمي</Label>
               </div>
@@ -429,8 +433,23 @@ export default function AdminProducts() {
                     const url = form.downloadUrls[idx] || '';
                     const name = uploadedFileNames[idx] || (url ? url.split('/').pop() || 'ملف محفوظ' : '');
                     const isUploading = uploadingSlot === idx;
+                    const label = form.downloadLabels[idx] || '';
                     return (
-                      <div key={idx}>
+                      <div key={idx} className="space-y-1.5">
+                        {/* Label input */}
+                        <Input
+                          placeholder={`تسمية الملف ${idx + 1} (تظهر للعميل)`}
+                          value={label}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setForm((p) => {
+                              const labels = [...p.downloadLabels];
+                              labels[idx] = val;
+                              return { ...p, downloadLabels: labels };
+                            });
+                          }}
+                          className="h-8 text-xs"
+                        />
                         <input
                           ref={(el) => { fileInputRefs.current[idx] = el; }}
                           type="file"

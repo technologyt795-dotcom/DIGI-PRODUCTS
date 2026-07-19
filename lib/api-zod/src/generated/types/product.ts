@@ -27,5 +27,6 @@ export interface Product {
   badge: string | null;
   isDigital: boolean;
   downloadUrls: string[];
+  downloadLabels: string[];
   createdAt: Date;
 }

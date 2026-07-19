@@ -53,32 +53,34 @@ export default function OrderDetail() {
     query: { enabled: !!token && !!orderNumber, queryKey: getGetMyOrderQueryKey(orderNumber!) },
   });
 
-  const [downloading, setDownloading] = useState<Record<number, boolean>>({});
+  // key: `${itemIdx}-${fileIdx}`
+  const [downloading, setDownloading] = useState<Record<string, boolean>>({});
 
   const handlePrint = () => window.print();
 
-  const handleDownload = async (item: any, idx: number) => {
-    if (downloading[idx]) return;
-    setDownloading(prev => ({ ...prev, [idx]: true }));
+  const handleDownload = async (itemIdx: number, fileIdx: number) => {
+    const key = `${itemIdx}-${fileIdx}`;
+    if (downloading[key]) return;
+    setDownloading(prev => ({ ...prev, [key]: true }));
     try {
       const res = await fetch(
-        `${BASE}/customer/downloads/${order?.orderNumber}/${idx}`,
+        `${BASE}/customer/downloads/${order?.orderNumber}/${itemIdx}/${fileIdx}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
       if (!res.ok) throw new Error('فشل التحميل');
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+      const dlUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = item.name || 'download';
+      a.href = dlUrl;
+      a.download = '';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(dlUrl);
     } catch {
       toast.error('تعذّر تحميل الملف، حاول مرة أخرى');
     } finally {
-      setDownloading(prev => ({ ...prev, [idx]: false }));
+      setDownloading(prev => ({ ...prev, [key]: false }));
     }
   };
 
@@ -416,27 +418,44 @@ export default function OrderDetail() {
                     <td style={{ textAlign: 'center', fontWeight: 600 }}>{item.quantity}</td>
                     <td style={{ textAlign: 'left', direction: 'ltr' }}>{formatPrice(item.price)}</td>
                     <td style={{ textAlign: 'left', direction: 'ltr', fontWeight: 700 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
                         <span>{formatPrice(item.price * item.quantity)}</span>
-                        {/* Download button */}
-                        {item.isDigital && item.downloadUrl && canDownload && (
-                          <button
-                            className="no-print"
-                            onClick={() => handleDownload(item, idx)}
-                            disabled={downloading[idx]}
-                            style={{
-                              display: 'inline-flex', alignItems: 'center', gap: 4,
-                              fontSize: 11, fontWeight: 700, padding: '3px 10px',
-                              background: 'var(--inv-primary)', color: 'var(--inv-primary-fg)',
-                              border: 'none', borderRadius: 6, cursor: 'pointer', opacity: downloading[idx] ? 0.6 : 1,
-                            }}
-                          >
-                            {downloading[idx]
-                              ? <Loader2 style={{ width: 12, height: 12 }} className="animate-spin" />
-                              : <Download style={{ width: 12, height: 12 }} />}
-                            تحميل
-                          </button>
-                        )}
+                        {/* Individual download buttons — one per file */}
+                        {item.isDigital && canDownload && (() => {
+                          const urls: string[] = item.downloadUrls?.length
+                            ? item.downloadUrls
+                            : item.downloadUrl ? [item.downloadUrl] : [];
+                          const labels: string[] = item.downloadLabels ?? [];
+                          return urls.map((fileUrl: string, fIdx: number) => {
+                            if (!fileUrl) return null;
+                            const key = `${idx}-${fIdx}`;
+                            const dlLabel = labels[fIdx] || `ملف ${fIdx + 1}`;
+                            return (
+                              <button
+                                key={fIdx}
+                                className="no-print"
+                                onClick={() => handleDownload(idx, fIdx)}
+                                disabled={downloading[key]}
+                                style={{
+                                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                                  fontSize: 11, fontWeight: 700, padding: '3px 10px',
+                                  background: 'var(--inv-primary)', color: 'var(--inv-primary-fg)',
+                                  border: 'none', borderRadius: 6, cursor: 'pointer',
+                                  opacity: downloading[key] ? 0.6 : 1,
+                                  maxWidth: 160, overflow: 'hidden',
+                                }}
+                                title={dlLabel}
+                              >
+                                {downloading[key]
+                                  ? <Loader2 style={{ width: 12, height: 12, flexShrink: 0 }} className="animate-spin" />
+                                  : <Download style={{ width: 12, height: 12, flexShrink: 0 }} />}
+                                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {dlLabel}
+                                </span>
+                              </button>
+                            );
+                          });
+                        })()}
                         {item.isDigital && !canDownload && order.status !== 'cancelled' && (
                           <span className="no-print" style={{ fontSize: 10, color: 'var(--inv-muted-fg)' }}>
                             ينتظر التأكيد

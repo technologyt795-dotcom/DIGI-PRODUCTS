@@ -14,4 +14,5 @@ export interface OrderItem {
   quantity: number;
   isDigital?: boolean;
   downloadUrls?: string[];
+  downloadLabels?: string[];
 }

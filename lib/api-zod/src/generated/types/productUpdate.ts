@@ -26,4 +26,5 @@ export interface ProductUpdate {
   badge?: string | null;
   isDigital?: boolean;
   downloadUrls?: string[];
+  downloadLabels?: string[];
 }
