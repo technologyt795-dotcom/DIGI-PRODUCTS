@@ -13,8 +13,8 @@ export default function Home() {
     <div className="flex flex-col w-full">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-primary text-primary-foreground">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
-        <div className="absolute inset-0 bg-gradient-to-l from-primary/90 to-primary/40"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-30"></div>
+        <div className="absolute inset-0 bg-gradient-to-l from-primary/80 via-primary/60 to-primary/20"></div>
         
         <div className="container relative z-10 mx-auto px-4 py-24 md:py-32 lg:py-40 flex flex-col md:flex-row items-center">
           <div className="w-full md:w-1/2 space-y-8">
