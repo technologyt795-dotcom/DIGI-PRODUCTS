@@ -104,12 +104,20 @@ router.get(
       return;
     }
 
+    const filename = encodeURIComponent(item.name || "download");
+
+    // Local static file (e.g. /api/images/products/file.pdf)
+    if (item.downloadUrl.startsWith("/api/")) {
+      res.setHeader("Content-Disposition", `attachment; filename*=UTF-8''${filename}`);
+      res.redirect(302, item.downloadUrl);
+      return;
+    }
+
     try {
       const file = await objectStorageService.getObjectEntityFile(item.downloadUrl);
       const response = await objectStorageService.downloadObject(file);
 
       // Forward the filename as Content-Disposition
-      const filename = encodeURIComponent(item.name || "download");
       res.setHeader("Content-Disposition", `attachment; filename*=UTF-8''${filename}`);
 
       res.status(response.status);
