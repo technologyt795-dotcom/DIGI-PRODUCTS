@@ -13,6 +13,5 @@ export interface OrderItem {
   price: number;
   quantity: number;
   isDigital?: boolean;
-  /** @nullable */
-  downloadUrl?: string | null;
+  downloadUrls?: string[];
 }

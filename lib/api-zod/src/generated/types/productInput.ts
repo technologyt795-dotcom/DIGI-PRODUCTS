@@ -25,6 +25,5 @@ export interface ProductInput {
   /** @nullable */
   badge?: string | null;
   isDigital?: boolean;
-  /** @nullable */
-  downloadUrl?: string | null;
+  downloadUrls?: string[];
 }

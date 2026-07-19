@@ -52,6 +52,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 
+const MAX_DIGITAL_FILES = 4;
+
 interface ProductFormState {
   slug: string;
   name: string;
@@ -65,7 +67,7 @@ interface ProductFormState {
   isNew: boolean;
   badge: string;
   isDigital: boolean;
-  downloadUrl: string;
+  downloadUrls: string[];
 }
 
 const emptyForm: ProductFormState = {
@@ -81,7 +83,7 @@ const emptyForm: ProductFormState = {
   isNew: false,
   badge: '',
   isDigital: false,
-  downloadUrl: '',
+  downloadUrls: [],
 };
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
@@ -99,15 +101,14 @@ export default function AdminProducts() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState<ProductFormState>(emptyForm);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
-  const [isUploadingFile, setIsUploadingFile] = useState(false);
-  const [uploadedFileName, setUploadedFileName] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
+  const [uploadedFileNames, setUploadedFileNames] = useState<string[]>([]);
+  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const handleDigitalFileUpload = async (file: File) => {
+  const handleDigitalFileUpload = async (file: File, slotIndex: number) => {
     if (!adminToken) { toast.error('يجب تسجيل الدخول أولاً'); return; }
-    setIsUploadingFile(true);
+    setUploadingSlot(slotIndex);
     try {
-      // Step 1: get presigned URL
       const res = await fetch(`${BASE}/storage/uploads/request-url`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
@@ -115,20 +116,27 @@ export default function AdminProducts() {
       });
       if (!res.ok) throw new Error('فشل في الحصول على رابط الرفع');
       const { uploadURL, objectPath } = await res.json();
-      // Step 2: upload file directly to GCS
       const putRes = await fetch(uploadURL, {
         method: 'PUT',
         body: file,
         headers: { 'Content-Type': file.type || 'application/octet-stream' },
       });
       if (!putRes.ok) throw new Error('فشل رفع الملف');
-      setForm((prev) => ({ ...prev, downloadUrl: objectPath }));
-      setUploadedFileName(file.name);
+      setForm((prev) => {
+        const urls = [...prev.downloadUrls];
+        urls[slotIndex] = objectPath;
+        return { ...prev, downloadUrls: urls };
+      });
+      setUploadedFileNames((prev) => {
+        const names = [...prev];
+        names[slotIndex] = file.name;
+        return names;
+      });
       toast.success('تم رفع الملف بنجاح');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'تعذّر رفع الملف');
     } finally {
-      setIsUploadingFile(false);
+      setUploadingSlot(null);
     }
   };
 
@@ -138,6 +146,7 @@ export default function AdminProducts() {
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm);
+    setUploadedFileNames([]);
     setIsDialogOpen(true);
   };
 
@@ -156,8 +165,9 @@ export default function AdminProducts() {
       isNew: product.isNew,
       badge: product.badge || '',
       isDigital: product.isDigital,
-      downloadUrl: product.downloadUrl || '',
+      downloadUrls: product.downloadUrls || [],
     });
+    setUploadedFileNames([]);
     setIsDialogOpen(true);
   };
 
@@ -177,7 +187,7 @@ export default function AdminProducts() {
       isNew: form.isNew,
       badge: form.badge || null,
       isDigital: form.isDigital,
-      downloadUrl: form.isDigital && form.downloadUrl ? form.downloadUrl : null,
+      downloadUrls: form.isDigital ? form.downloadUrls.filter(Boolean) : [],
     };
 
     try {
@@ -413,62 +423,82 @@ export default function AdminProducts() {
             </div>
 
             {form.isDigital && (
-              <div className="space-y-2">
-                <Label>ملف التحميل الرقمي</Label>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleDigitalFileUpload(file);
-                    e.target.value = '';
-                  }}
-                />
-                {form.downloadUrl ? (
-                  <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-muted/40">
-                    <FileIcon className="h-4 w-4 text-primary shrink-0" />
-                    <span className="text-sm flex-1 truncate text-muted-foreground">
-                      {uploadedFileName || form.downloadUrl.split('/').pop() || 'ملف محفوظ'}
-                    </span>
-                    <div className="flex gap-2 shrink-0">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 px-2 text-xs"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={isUploadingFile}
-                      >
-                        تغيير
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 p-0 text-destructive"
-                        onClick={() => { setForm((p) => ({ ...p, downloadUrl: '' })); setUploadedFileName(''); }}
-                      >
-                        <X className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full gap-2 border-dashed"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploadingFile}
-                  >
-                    {isUploadingFile ? (
-                      <><Loader2 className="h-4 w-4 animate-spin" /> جاري الرفع...</>
-                    ) : (
-                      <><Upload className="h-4 w-4" /> اختر ملفاً للرفع</>
-                    )}
-                  </Button>
-                )}
-                <p className="text-xs text-muted-foreground">الملف سيُتاح للعميل بعد تأكيد الطلب — يُقبل أي نوع ملف</p>
+              <div className="space-y-3">
+                <Label>ملفات التحميل الرقمية (حتى {MAX_DIGITAL_FILES} ملفات)</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {Array.from({ length: MAX_DIGITAL_FILES }).map((_, idx) => {
+                    const url = form.downloadUrls[idx] || '';
+                    const name = uploadedFileNames[idx] || (url ? url.split('/').pop() || 'ملف محفوظ' : '');
+                    const isUploading = uploadingSlot === idx;
+                    return (
+                      <div key={idx}>
+                        <input
+                          ref={(el) => { fileInputRefs.current[idx] = el; }}
+                          type="file"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleDigitalFileUpload(file, idx);
+                            e.target.value = '';
+                          }}
+                        />
+                        {url ? (
+                          <div className="flex items-center gap-2 p-3 rounded-lg border border-border bg-muted/40">
+                            <FileIcon className="h-4 w-4 text-primary shrink-0" />
+                            <span className="text-xs flex-1 truncate text-muted-foreground">{name}</span>
+                            <div className="flex gap-1 shrink-0">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 px-2 text-xs"
+                                onClick={() => fileInputRefs.current[idx]?.click()}
+                                disabled={isUploading}
+                              >
+                                تغيير
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 text-destructive"
+                                onClick={() => {
+                                  setForm((p) => {
+                                    const urls = [...p.downloadUrls];
+                                    urls[idx] = '';
+                                    return { ...p, downloadUrls: urls };
+                                  });
+                                  setUploadedFileNames((p) => {
+                                    const names = [...p];
+                                    names[idx] = '';
+                                    return names;
+                                  });
+                                }}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full gap-2 border-dashed h-12 text-sm"
+                            onClick={() => fileInputRefs.current[idx]?.click()}
+                            disabled={isUploading}
+                          >
+                            {isUploading ? (
+                              <><Loader2 className="h-4 w-4 animate-spin" /> جاري الرفع...</>
+                            ) : (
+                              <><Upload className="h-4 w-4" /> ملف {idx + 1}</>
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-muted-foreground">الملفات ستُتاح للعميل بعد تأكيد الطلب — يُقبل أي نوع ملف</p>
               </div>
             )}
 

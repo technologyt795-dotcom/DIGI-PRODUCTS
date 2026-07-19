@@ -96,7 +96,7 @@ export default function ProductDetail() {
                 </button>
               ))}
             </div>
-            <div className="relative flex-1 min-h-[320px] sm:min-h-[420px] md:min-h-[540px] aspect-square rounded-3xl overflow-hidden bg-muted/50 border border-border">
+            <div className="relative flex-1 aspect-square rounded-3xl overflow-hidden bg-muted/50 border border-border">
               <img 
                 src={product.images[activeImage]} 
                 alt={product.name} 

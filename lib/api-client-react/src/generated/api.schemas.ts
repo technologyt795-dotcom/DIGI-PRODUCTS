@@ -63,8 +63,7 @@ export interface ProductInput {
   /** @nullable */
   badge?: string | null;
   isDigital?: boolean;
-  /** @nullable */
-  downloadUrl?: string | null;
+  downloadUrls?: string[];
 }
 
 export interface ProductUpdate {
@@ -86,8 +85,7 @@ export interface ProductUpdate {
   /** @nullable */
   badge?: string | null;
   isDigital?: boolean;
-  /** @nullable */
-  downloadUrl?: string | null;
+  downloadUrls?: string[];
 }
 
 export interface AdminLoginInput {
@@ -119,8 +117,7 @@ export interface Product {
   /** @nullable */
   badge: string | null;
   isDigital: boolean;
-  /** @nullable */
-  downloadUrl: string | null;
+  downloadUrls: string[];
   createdAt: string;
 }
 
@@ -217,8 +214,7 @@ export interface OrderItem {
   price: number;
   quantity: number;
   isDigital?: boolean;
-  /** @nullable */
-  downloadUrl?: string | null;
+  downloadUrls?: string[];
 }
 
 export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];

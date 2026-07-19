@@ -159,7 +159,7 @@ export const ListProductsResponseItem = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
-  "downloadUrl": zod.string().nullable(),
+  "downloadUrls": zod.array(zod.string()),
   "createdAt": zod.coerce.date()
 })
 export const ListProductsResponse = zod.array(ListProductsResponseItem)
@@ -187,7 +187,7 @@ export const CreateProductBody = zod.object({
   "isNew": zod.boolean().optional(),
   "badge": zod.string().nullish(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })
 
 export const CreateProductResponse = zod.object({
@@ -208,7 +208,7 @@ export const CreateProductResponse = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
-  "downloadUrl": zod.string().nullable(),
+  "downloadUrls": zod.array(zod.string()),
   "createdAt": zod.coerce.date()
 })
 
@@ -234,7 +234,7 @@ export const ListFeaturedProductsResponseItem = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
-  "downloadUrl": zod.string().nullable(),
+  "downloadUrls": zod.array(zod.string()),
   "createdAt": zod.coerce.date()
 })
 export const ListFeaturedProductsResponse = zod.array(ListFeaturedProductsResponseItem)
@@ -265,7 +265,7 @@ export const GetProductResponse = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
-  "downloadUrl": zod.string().nullable(),
+  "downloadUrls": zod.array(zod.string()),
   "createdAt": zod.coerce.date()
 })
 
@@ -296,7 +296,7 @@ export const UpdateProductBody = zod.object({
   "isNew": zod.boolean().optional(),
   "badge": zod.string().nullish(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })
 
 export const UpdateProductResponse = zod.object({
@@ -317,7 +317,7 @@ export const UpdateProductResponse = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
-  "downloadUrl": zod.string().nullable(),
+  "downloadUrls": zod.array(zod.string()),
   "createdAt": zod.coerce.date()
 })
 
@@ -372,7 +372,7 @@ export const ListRelatedProductsResponseItem = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
-  "downloadUrl": zod.string().nullable(),
+  "downloadUrls": zod.array(zod.string()),
   "createdAt": zod.coerce.date()
 })
 export const ListRelatedProductsResponse = zod.array(ListRelatedProductsResponseItem)
@@ -468,7 +468,7 @@ export const CreateOrderBody = zod.object({
   "price": zod.number(),
   "quantity": zod.number(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })).min(1),
   "discountCode": zod.string().optional(),
   "notes": zod.string().optional()
@@ -489,7 +489,7 @@ export const CreateOrderResponse = zod.object({
   "price": zod.number(),
   "quantity": zod.number(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })),
   "subtotal": zod.number(),
   "shippingCost": zod.number(),
@@ -524,7 +524,7 @@ export const ListOrdersResponseItem = zod.object({
   "price": zod.number(),
   "quantity": zod.number(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })),
   "subtotal": zod.number(),
   "shippingCost": zod.number(),
@@ -560,7 +560,7 @@ export const GetOrderResponse = zod.object({
   "price": zod.number(),
   "quantity": zod.number(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })),
   "subtotal": zod.number(),
   "shippingCost": zod.number(),
@@ -600,7 +600,7 @@ export const UpdateOrderResponse = zod.object({
   "price": zod.number(),
   "quantity": zod.number(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })),
   "subtotal": zod.number(),
   "shippingCost": zod.number(),
@@ -641,7 +641,7 @@ export const ListMyOrdersResponseItem = zod.object({
   "price": zod.number(),
   "quantity": zod.number(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })),
   "subtotal": zod.number(),
   "shippingCost": zod.number(),
@@ -687,7 +687,7 @@ export const GetMyOrderResponse = zod.object({
   "price": zod.number(),
   "quantity": zod.number(),
   "isDigital": zod.boolean().optional(),
-  "downloadUrl": zod.string().nullish()
+  "downloadUrls": zod.array(zod.string()).optional()
 })),
   "subtotal": zod.number(),
   "shippingCost": zod.number(),

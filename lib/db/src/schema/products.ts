@@ -29,7 +29,7 @@ export const productsTable = pgTable("products", {
   isNew: boolean("is_new").notNull().default(false),
   badge: text("badge"),
   isDigital: boolean("is_digital").notNull().default(false),
-  downloadUrl: text("download_url"),
+  downloadUrls: text("download_urls").array().notNull().default([]),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

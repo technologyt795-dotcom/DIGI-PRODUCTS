@@ -16,7 +16,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/product/${product.id}`} className="group flex flex-col bg-card rounded-2xl border border-border overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
       {/* Image Container */}
-      <div className="relative aspect-[4/3] sm:aspect-[3/4] overflow-hidden bg-muted/30">
+      <div className="relative aspect-square overflow-hidden bg-muted/30">
         <img
           src={product.images[0] || 'https://placehold.co/400x600/e2e8f0/1e293b?text=Product'}
           alt={product.name}

@@ -173,7 +173,7 @@ router.post("/orders", async (req, res): Promise<void> => {
   const productIds = data.items.map((i) => i.productId);
   const productRows = productIds.length
     ? await db
-        .select({ id: productsTable.id, isDigital: productsTable.isDigital, downloadUrl: productsTable.downloadUrl })
+        .select({ id: productsTable.id, isDigital: productsTable.isDigital, downloadUrls: productsTable.downloadUrls })
         .from(productsTable)
         .where(inArray(productsTable.id, productIds))
     : [];
@@ -185,7 +185,7 @@ router.post("/orders", async (req, res): Promise<void> => {
     return {
       ...item,
       isDigital: p?.isDigital ?? false,
-      downloadUrl: p?.downloadUrl ?? null,
+      downloadUrls: p?.downloadUrls ?? [],
     };
   });
 
