@@ -286,15 +286,13 @@ export default function Home() {
       {/* Categories */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <h2 className="text-3xl font-black text-foreground mb-3">
-                {isDigital ? 'تصفح حسب النوع' : 'تسوق حسب الفئة'}
-              </h2>
-              <p className="text-muted-foreground">
-                {isDigital ? 'اكتشف مجموعتنا من المحتوى الرقمي' : 'اكتشف مجموعتنا المتنوعة من المنتجات'}
-              </p>
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-black text-foreground mb-3">
+              تسوق حسب الفئة
+            </h2>
+            <p className="text-muted-foreground">
+              اكتشف مجموعتنا المتنوعة من المنتجات
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {isLoadingCategories
@@ -328,18 +326,13 @@ export default function Home() {
       {/* Featured Products */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <h2 className="text-3xl font-black text-foreground mb-3">
-                {isDigital ? 'أبرز المنتجات الرقمية' : 'منتجات مميزة'}
-              </h2>
-              <p className="text-muted-foreground">
-                {isDigital ? 'الأكثر تحميلاً وتقييماً هذا الشهر' : 'أفضل الاختيارات الموصى بها لك'}
-              </p>
-            </div>
-            <Button asChild variant="ghost" className="hidden sm:flex text-primary hover:text-primary hover:bg-primary/5 font-bold">
-              <Link href="/products">عرض الكل <ArrowLeft className="ml-2 h-4 w-4" /></Link>
-            </Button>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-black text-foreground mb-3">
+              منتجات مميزة
+            </h2>
+            <p className="text-muted-foreground">
+              أفضل الاختيارات الموصى بها لك
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {isLoadingFeatured
