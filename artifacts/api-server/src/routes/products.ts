@@ -115,7 +115,7 @@ router.get("/products", async (req, res): Promise<void> => {
   }
   const { categorySlug, search, sort } = params.data;
 
-  const conditions = [];
+  const conditions = [eq(categoriesTable.isHidden, false)];
   if (categorySlug) {
     conditions.push(eq(categoriesTable.slug, categorySlug));
   }
@@ -135,7 +135,7 @@ router.get("/products", async (req, res): Promise<void> => {
       categoriesTable,
       eq(productsTable.categoryId, categoriesTable.id),
     )
-    .where(conditions.length ? and(...conditions) : undefined)
+    .where(and(...conditions))
     .orderBy(orderBy);
 
   res.json(rows);
@@ -191,7 +191,7 @@ router.get("/products/featured", async (_req, res): Promise<void> => {
       categoriesTable,
       eq(productsTable.categoryId, categoriesTable.id),
     )
-    .where(eq(productsTable.isFeatured, true))
+    .where(and(eq(productsTable.isFeatured, true), eq(categoriesTable.isHidden, false)))
     .orderBy(desc(productsTable.createdAt));
 
   res.json(rows);
@@ -211,7 +211,7 @@ router.get("/products/:id", async (req, res): Promise<void> => {
       categoriesTable,
       eq(productsTable.categoryId, categoriesTable.id),
     )
-    .where(eq(productsTable.id, params.data.id));
+    .where(and(eq(productsTable.id, params.data.id), eq(categoriesTable.isHidden, false)));
 
   if (!row) {
     res.status(404).json({ error: "Product not found" });
