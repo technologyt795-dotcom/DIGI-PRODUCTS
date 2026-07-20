@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, asc } from "drizzle-orm";
 import { db, categoriesTable, productsTable } from "@workspace/db";
 import {
   GetCategoryParams,
@@ -20,6 +20,7 @@ const categorySelection = {
   description: categoriesTable.description,
   image: categoriesTable.image,
   isHidden: categoriesTable.isHidden,
+  sortOrder: categoriesTable.sortOrder,
   productCount: sql<number>`count(${productsTable.id})`.mapWith(Number),
 };
 
@@ -31,7 +32,7 @@ router.get("/categories", async (_req, res): Promise<void> => {
     .leftJoin(productsTable, eq(productsTable.categoryId, categoriesTable.id))
     .where(eq(categoriesTable.isHidden, false))
     .groupBy(categoriesTable.id)
-    .orderBy(categoriesTable.id);
+    .orderBy(asc(categoriesTable.sortOrder), asc(categoriesTable.id));
 
   res.json(rows);
 });
@@ -43,9 +44,24 @@ router.get("/admin/categories", requireAdmin, async (_req, res): Promise<void> =
     .from(categoriesTable)
     .leftJoin(productsTable, eq(productsTable.categoryId, categoriesTable.id))
     .groupBy(categoriesTable.id)
-    .orderBy(categoriesTable.id);
+    .orderBy(asc(categoriesTable.sortOrder), asc(categoriesTable.id));
 
   res.json(rows);
+});
+
+// Reorder categories
+router.patch("/admin/categories/reorder", requireAdmin, async (req, res): Promise<void> => {
+  const body = req.body;
+  if (!Array.isArray(body) || body.some((item: unknown) => typeof (item as { id: unknown }).id !== "number" || typeof (item as { sortOrder: unknown }).sortOrder !== "number")) {
+    res.status(400).json({ error: "Expected array of {id, sortOrder}" });
+    return;
+  }
+  await Promise.all(
+    (body as { id: number; sortOrder: number }[]).map(({ id, sortOrder }) =>
+      db.update(categoriesTable).set({ sortOrder }).where(eq(categoriesTable.id, id))
+    )
+  );
+  res.sendStatus(204);
 });
 
 router.post("/categories", requireAdmin, async (req, res): Promise<void> => {
