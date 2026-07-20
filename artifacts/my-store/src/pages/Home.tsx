@@ -334,10 +334,14 @@ export default function Home() {
               أفضل الاختيارات الموصى بها لك
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap justify-center gap-6">
             {isLoadingFeatured
-              ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[400px] rounded-2xl" />)
-              : featuredProducts?.map((product) => <ProductCard key={product.id} product={product} />)}
+              ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[400px] rounded-2xl w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]" />)
+              : featuredProducts?.map((product) => (
+                  <div key={product.id} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
           </div>
           <div className="mt-10 sm:hidden flex justify-center">
             <Button asChild variant="outline" className="w-full font-bold">
