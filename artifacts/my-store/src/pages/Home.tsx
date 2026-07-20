@@ -294,12 +294,12 @@ export default function Home() {
               اكتشف مجموعتنا المتنوعة من المنتجات
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex flex-wrap justify-center gap-6">
             {isLoadingCategories
-              ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="aspect-[4/5] rounded-3xl" />)
+              ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="aspect-[4/5] rounded-3xl w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]" />)
               : categories?.map((category) => (
                 <Link key={category.id} href={`/category/${category.slug}`}
-                  className="group relative overflow-hidden rounded-3xl aspect-[4/5] flex flex-col justify-end p-6">
+                  className="group relative overflow-hidden rounded-3xl aspect-[4/5] flex flex-col justify-end p-6 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
                   <div className="absolute inset-0 bg-muted">
                     <img
                       src={category.image || `https://placehold.co/600x800/1e293b/d4af37?text=${encodeURIComponent(category.name)}`}
