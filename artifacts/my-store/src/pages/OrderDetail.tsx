@@ -155,8 +155,11 @@ export default function OrderDetail() {
           .print-only { display: none !important; }
         }
 
+        /* ── Table wrapper (horizontal scroll on mobile) ─────── */
+        .inv-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
         /* ── Table ──────────────────────────────────────────── */
-        .inv-table { width: 100%; border-collapse: collapse; }
+        .inv-table { width: 100%; border-collapse: collapse; min-width: 420px; }
         .inv-table th {
           background: var(--inv-primary);
           color: var(--inv-primary-fg);
@@ -165,6 +168,7 @@ export default function OrderDetail() {
           font-weight: 700;
           text-align: right;
           letter-spacing: 0.03em;
+          white-space: nowrap;
         }
         .inv-table td {
           padding: 10px 14px;
@@ -207,6 +211,52 @@ export default function OrderDetail() {
           margin-top: 8px;
         }
         .inv-totals-row.total span { color: var(--inv-primary-fg) !important; }
+
+        /* ── Hero grid: 2 cols → 1 col on mobile ───────────── */
+        .inv-hero-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+          margin-top: 24px;
+        }
+        /* ── Totals section: side-by-side → stacked on mobile ── */
+        .inv-bottom-grid {
+          display: grid;
+          grid-template-columns: 1fr 320px;
+          gap: 24px;
+          padding: 24px 32px 28px;
+          border-top: 1px solid var(--inv-border);
+        }
+        /* ── Hero header padding ────────────────────────────── */
+        .inv-hero-pad {
+          padding: 28px 32px 32px;
+        }
+        /* ── Contact bar padding ────────────────────────────── */
+        .inv-contact-bar {
+          padding: 10px 24px;
+        }
+        /* ── Footer padding ─────────────────────────────────── */
+        .inv-footer-bar {
+          padding: 14px 32px;
+        }
+
+        /* ── Mobile overrides (≤ 520px) ─────────────────────── */
+        @media (max-width: 520px) {
+          .inv-hero-pad   { padding: 16px 14px 20px; }
+          .inv-contact-bar { padding: 8px 12px; font-size: 10px; }
+          .inv-footer-bar  { padding: 10px 14px; font-size: 11px; }
+          .inv-hero-grid  { grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+          .inv-bottom-grid {
+            grid-template-columns: 1fr;
+            padding: 16px 14px 20px;
+            gap: 16px;
+          }
+          /* Swap order: totals first, notes/decorations second */
+          .inv-bottom-grid .inv-notes-col  { order: 2; }
+          .inv-bottom-grid .inv-totals-col { order: 1; }
+          .inv-hero-title { font-size: 28px !important; }
+          .inv-xox-decor  { display: none; }
+        }
       `}</style>
 
       {/* ─── Screen actions ──────────────────────────────────── */}
@@ -232,10 +282,10 @@ export default function OrderDetail() {
 
           {/* ════ TOP CONTACT BAR ════════════════════════════════ */}
           <div
+            className="inv-contact-bar"
             style={{
               background: 'var(--inv-primary)',
               color: 'var(--inv-primary-fg)',
-              padding: '10px 24px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -270,10 +320,10 @@ export default function OrderDetail() {
 
           {/* ════ HERO HEADER ════════════════════════════════════ */}
           <div
+            className="inv-hero-pad"
             style={{
               background: 'var(--inv-primary)',
               color: 'var(--inv-primary-fg)',
-              padding: '28px 32px 32px',
               position: 'relative',
               overflow: 'hidden',
             }}
@@ -294,8 +344,8 @@ export default function OrderDetail() {
               {/* Big title */}
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
                 <div>
-                  <h1 style={{
-                    fontSize: 'clamp(36px, 6vw, 56px)',
+                  <h1 className="inv-hero-title" style={{
+                    fontSize: 'clamp(28px, 6vw, 56px)',
                     fontWeight: 900,
                     letterSpacing: '-0.02em',
                     margin: 0,
@@ -309,7 +359,7 @@ export default function OrderDetail() {
                   </p>
                 </div>
                 {/* X O X decorative */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: 0.35, fontSize: 28, fontWeight: 900, letterSpacing: 4 }}>
+                <div className="inv-xox-decor" style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: 0.35, fontSize: 28, fontWeight: 900, letterSpacing: 4 }}>
                   <span>×</span>
                   <span style={{ fontSize: 20, borderRadius: '50%', border: '3px solid currentColor', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
                   <span>×</span>
@@ -317,7 +367,7 @@ export default function OrderDetail() {
               </div>
 
               {/* 2-col: invoice meta + customer info */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '24px' }}>
+              <div className="inv-hero-grid">
                 {/* Invoice meta */}
                 <div style={{
                   background: 'rgba(255,255,255,0.12)',
@@ -373,7 +423,7 @@ export default function OrderDetail() {
           </div>
 
           {/* ════ ITEMS TABLE ════════════════════════════════════ */}
-          <div style={{ padding: '0' }}>
+          <div className="inv-table-wrap" style={{ padding: '0' }}>
             <table className="inv-table">
               <thead>
                 <tr>
@@ -470,16 +520,10 @@ export default function OrderDetail() {
           </div>
 
           {/* ════ TOTALS + NOTES ═════════════════════════════════ */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 320px',
-            gap: '24px',
-            padding: '24px 32px 28px',
-            borderTop: '1px solid var(--inv-border)',
-          }}>
+          <div className="inv-bottom-grid">
 
             {/* Left: notes / digital lock notice */}
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 12 }}>
+            <div className="inv-notes-col" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 12 }}>
               {order.notes && (
                 <div style={{
                   background: 'var(--inv-muted)', borderRadius: 8,
@@ -506,7 +550,7 @@ export default function OrderDetail() {
             </div>
 
             {/* Right: totals breakdown */}
-            <div>
+            <div className="inv-totals-col">
               <div className="inv-totals-row">
                 <span>المجموع الفرعي</span>
                 <span style={{ fontWeight: 600, direction: 'ltr' }}>{formatPrice(subtotal)}</span>
@@ -539,10 +583,10 @@ export default function OrderDetail() {
 
           {/* ════ FOOTER ═════════════════════════════════════════ */}
           <div
+            className="inv-footer-bar"
             style={{
               background: 'var(--inv-primary)',
               color: 'var(--inv-primary-fg)',
-              padding: '14px 32px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
