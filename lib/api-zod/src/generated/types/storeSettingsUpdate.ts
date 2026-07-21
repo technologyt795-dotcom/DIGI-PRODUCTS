@@ -45,4 +45,14 @@ export interface StoreSettingsUpdate {
      * @nullable
      */
   navbarTextColor?: string | null;
+  /**
+     * Custom hex color for the mobile drawer background
+     * @nullable
+     */
+  drawerBgColor?: string | null;
+  /**
+     * Custom hex color for the mobile drawer text
+     * @nullable
+     */
+  drawerTextColor?: string | null;
 }

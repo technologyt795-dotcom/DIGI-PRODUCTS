@@ -38,6 +38,9 @@ export default function AdminSettings() {
   const [navbarBgColor, setNavbarBgColor] = useState<string | null>(null);
   const [navbarTextColor, setNavbarTextColor] = useState<string | null>(null);
   const [navbarColorsEnabled, setNavbarColorsEnabled] = useState(false);
+  const [drawerBgColor, setDrawerBgColor] = useState<string | null>(null);
+  const [drawerTextColor, setDrawerTextColor] = useState<string | null>(null);
+  const [drawerColorsEnabled, setDrawerColorsEnabled] = useState(false);
 
   // Initialize form when settings load
   useEffect(() => {
@@ -61,6 +64,9 @@ export default function AdminSettings() {
       setNavbarBgColor(settings.navbarBgColor ?? null);
       setNavbarTextColor(settings.navbarTextColor ?? null);
       setNavbarColorsEnabled(!!(settings.navbarBgColor || settings.navbarTextColor));
+      setDrawerBgColor(settings.drawerBgColor ?? null);
+      setDrawerTextColor(settings.drawerTextColor ?? null);
+      setDrawerColorsEnabled(!!(settings.drawerBgColor || settings.drawerTextColor));
     }
   }, [settings]);
 
@@ -98,6 +104,8 @@ export default function AdminSettings() {
         whatsappNumber: whatsappNumber || null,
         navbarBgColor: navbarColorsEnabled ? (navbarBgColor || null) : null,
         navbarTextColor: navbarColorsEnabled ? (navbarTextColor || null) : null,
+        drawerBgColor: drawerColorsEnabled ? (drawerBgColor || null) : null,
+        drawerTextColor: drawerColorsEnabled ? (drawerTextColor || null) : null,
       }
     });
   };
@@ -364,6 +372,114 @@ export default function AdminSettings() {
                       style={{ background: navbarBgColor || undefined, color: navbarTextColor || undefined }}
                     >
                       نص تجريبي — اسم المتجر
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            )}
+          </Card>
+
+          {/* ── Drawer Colors ─────────────────────────────────── */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Palette className="h-5 w-5 text-primary" />
+                    ألوان القائمة الجانبية (الموبايل)
+                  </CardTitle>
+                  <CardDescription>تخصيص لون خلفية ونصوص نافذة التنقل على الجوال</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {drawerColorsEnabled ? 'مفعّل' : 'معطَّل'}
+                  </span>
+                  <Switch
+                    checked={drawerColorsEnabled}
+                    onCheckedChange={(checked) => {
+                      setDrawerColorsEnabled(checked);
+                      if (!checked) {
+                        setDrawerBgColor(null);
+                        setDrawerTextColor(null);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+
+            {drawerColorsEnabled && (
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Background color */}
+                  <div className="space-y-3">
+                    <Label>لون الخلفية</Label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={drawerBgColor || '#ffffff'}
+                        onChange={(e) => setDrawerBgColor(e.target.value)}
+                        className="h-10 w-14 cursor-pointer rounded-md border border-border bg-transparent p-0.5 shrink-0"
+                      />
+                      <Input
+                        value={drawerBgColor || ''}
+                        onChange={(e) => setDrawerBgColor(e.target.value || null)}
+                        placeholder="مثال: #ffffff"
+                        dir="ltr"
+                        className="text-left font-mono text-sm"
+                      />
+                      {drawerBgColor && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDrawerBgColor(null)}
+                          className="shrink-0 text-muted-foreground hover:text-destructive"
+                        >
+                          حذف
+                        </Button>
+                      )}
+                    </div>
+                    <div
+                      className="h-10 rounded-md border border-border flex items-center justify-center text-xs"
+                      style={{ background: drawerBgColor || undefined }}
+                    >
+                      <span style={{ color: drawerTextColor || undefined }}>معاينة الخلفية</span>
+                    </div>
+                  </div>
+
+                  {/* Text color */}
+                  <div className="space-y-3">
+                    <Label>لون النصوص</Label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={drawerTextColor || '#111111'}
+                        onChange={(e) => setDrawerTextColor(e.target.value)}
+                        className="h-10 w-14 cursor-pointer rounded-md border border-border bg-transparent p-0.5 shrink-0"
+                      />
+                      <Input
+                        value={drawerTextColor || ''}
+                        onChange={(e) => setDrawerTextColor(e.target.value || null)}
+                        placeholder="مثال: #111111"
+                        dir="ltr"
+                        className="text-left font-mono text-sm"
+                      />
+                      {drawerTextColor && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDrawerTextColor(null)}
+                          className="shrink-0 text-muted-foreground hover:text-destructive"
+                        >
+                          حذف
+                        </Button>
+                      )}
+                    </div>
+                    <div
+                      className="h-10 rounded-md border border-border flex items-center justify-center text-xs font-medium"
+                      style={{ background: drawerBgColor || undefined, color: drawerTextColor || undefined }}
+                    >
+                      الرئيسية · كل المنتجات
                     </div>
                   </div>
                 </div>

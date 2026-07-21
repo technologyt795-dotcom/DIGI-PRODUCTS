@@ -175,6 +175,16 @@ export interface StoreSettings {
      * @nullable
      */
   navbarTextColor?: string | null;
+  /**
+     * Custom hex color for the mobile drawer background
+     * @nullable
+     */
+  drawerBgColor?: string | null;
+  /**
+     * Custom hex color for the mobile drawer text
+     * @nullable
+     */
+  drawerTextColor?: string | null;
 }
 
 export type StoreSettingsUpdateActiveTheme = typeof StoreSettingsUpdateActiveTheme[keyof typeof StoreSettingsUpdateActiveTheme];
@@ -228,6 +238,16 @@ export interface StoreSettingsUpdate {
      * @nullable
      */
   navbarTextColor?: string | null;
+  /**
+     * Custom hex color for the mobile drawer background
+     * @nullable
+     */
+  drawerBgColor?: string | null;
+  /**
+     * Custom hex color for the mobile drawer text
+     * @nullable
+     */
+  drawerTextColor?: string | null;
 }
 
 export interface OrderItem {

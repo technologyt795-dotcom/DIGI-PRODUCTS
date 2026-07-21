@@ -406,7 +406,9 @@ export const GetSettingsResponse = zod.object({
   "twitterUrl": zod.string().nullable(),
   "whatsappNumber": zod.string().nullable(),
   "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
-  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text')
+  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
+  "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
+  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text')
 })
 
 
@@ -438,7 +440,9 @@ export const UpdateSettingsBody = zod.object({
   "twitterUrl": zod.string().nullish(),
   "whatsappNumber": zod.string().nullish(),
   "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
-  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text')
+  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
+  "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
+  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text')
 })
 
 export const UpdateSettingsResponse = zod.object({
@@ -458,7 +462,9 @@ export const UpdateSettingsResponse = zod.object({
   "twitterUrl": zod.string().nullable(),
   "whatsappNumber": zod.string().nullable(),
   "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
-  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text')
+  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
+  "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
+  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text')
 })
 
 

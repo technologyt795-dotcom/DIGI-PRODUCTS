@@ -205,6 +205,10 @@ export function Navbar() {
       >
         <div
           className="fixed inset-y-0 right-0 w-full max-w-xs border-l border-border bg-background p-6 shadow-2xl flex flex-col"
+          style={{
+            ...(settings?.drawerBgColor ? { backgroundColor: settings.drawerBgColor } : {}),
+            ...(settings?.drawerTextColor ? { color: settings.drawerTextColor } : {}),
+          }}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between mb-8">
@@ -216,9 +220,10 @@ export function Navbar() {
                   <ShoppingBag className="h-5 w-5" />
                 </div>
               )}
-              <span className="text-lg font-bold text-primary">{storeName}</span>
+              <span className="text-lg font-bold" style={settings?.drawerTextColor ? { color: settings.drawerTextColor } : {}}>{storeName}</span>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
+            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}
+              style={settings?.drawerTextColor ? { color: settings.drawerTextColor } : {}}>
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -240,7 +245,8 @@ export function Navbar() {
                 key={link.path}
                 href={link.path}
                 onClick={() => setIsMenuOpen(false)}
-                className="px-3 py-2 rounded-md text-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                className="px-3 py-2 rounded-md hover:bg-black/10 transition-colors"
+                style={settings?.drawerTextColor ? { color: settings.drawerTextColor } : {}}
               >
                 {link.name}
               </Link>
