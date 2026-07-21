@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useListOrders, useUpdateOrder, getListOrdersQueryKey, Order, OrderStatus } from '@workspace/api-client-react';
+import { useListOrders, useUpdateOrder, useDeleteOrder, getListOrdersQueryKey, Order, OrderStatus } from '@workspace/api-client-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2, Eye, MapPin, User, Package, Calendar } from 'lucide-react';
+import { Loader2, Eye, MapPin, User, Package, Calendar, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 
@@ -27,9 +37,26 @@ export default function AdminOrders() {
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  
+  const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
+
   const { data: orders, isLoading } = useListOrders(statusFilter === 'all' ? undefined : { status: statusFilter as OrderStatus });
   const updateOrder = useUpdateOrder();
+  const deleteOrder = useDeleteOrder({
+    mutation: {
+      onSuccess: () => {
+        toast.success('تم حذف الطلب نهائياً');
+        queryClient.invalidateQueries({ queryKey: getListOrdersQueryKey() });
+        setOrderToDelete(null);
+        if (selectedOrder && selectedOrder.id === orderToDelete?.id) {
+          setSelectedOrder(null);
+        }
+      },
+      onError: () => {
+        toast.error('تعذّر حذف الطلب');
+        setOrderToDelete(null);
+      },
+    },
+  });
 
   const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
     try {
@@ -117,9 +144,18 @@ export default function AdminOrders() {
                       <TableCell className="font-bold">{order.total.toLocaleString('ar-SA')} رس</TableCell>
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
                       <TableCell className="text-left">
-                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }}>
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        </Button>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }}>
+                            <Eye className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => { e.stopPropagation(); setOrderToDelete(order); }}
+                          >
+                            <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -256,6 +292,31 @@ export default function AdminOrders() {
           )}
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!orderToDelete} onOpenChange={(open) => !open && setOrderToDelete(null)}>
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>حذف الطلب نهائياً</AlertDialogTitle>
+            <AlertDialogDescription>
+              هل أنت متأكد من حذف الطلب{' '}
+              <span className="font-semibold text-foreground">#{orderToDelete?.orderNumber}</span>{' '}
+              الخاص بـ <span className="font-semibold text-foreground">{orderToDelete?.customerName}</span>؟
+              <br />
+              <span className="text-destructive font-medium">هذا الإجراء لا يمكن التراجع عنه.</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row-reverse gap-2">
+            <AlertDialogCancel>تراجع</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => orderToDelete && deleteOrder.mutate({ id: orderToDelete.id })}
+              disabled={deleteOrder.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteOrder.isPending ? 'جاري الحذف...' : 'حذف نهائياً'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
