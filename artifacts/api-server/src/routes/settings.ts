@@ -24,6 +24,8 @@ const DEFAULT_SETTINGS = {
   whatsappNumber: null,
   navbarBgColor: null,
   navbarTextColor: null,
+  drawerBgColor: null,
+  drawerTextColor: null,
 };
 
 async function ensureSettings() {
@@ -58,6 +60,8 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
     whatsappNumber: row.whatsappNumber ?? null,
     navbarBgColor: row.navbarBgColor ?? null,
     navbarTextColor: row.navbarTextColor ?? null,
+    drawerBgColor: row.drawerBgColor ?? null,
+    drawerTextColor: row.drawerTextColor ?? null,
   };
 }
 
@@ -100,6 +104,8 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if (data.whatsappNumber !== undefined) updateValues.whatsappNumber = data.whatsappNumber;
   if (data.navbarBgColor !== undefined) updateValues.navbarBgColor = data.navbarBgColor;
   if (data.navbarTextColor !== undefined) updateValues.navbarTextColor = data.navbarTextColor;
+  if (data.drawerBgColor !== undefined) updateValues.drawerBgColor = data.drawerBgColor;
+  if (data.drawerTextColor !== undefined) updateValues.drawerTextColor = data.drawerTextColor;
 
   try {
     // Upsert: insert if not exists, update otherwise
