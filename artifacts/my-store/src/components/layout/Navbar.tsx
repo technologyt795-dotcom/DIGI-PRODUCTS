@@ -265,7 +265,8 @@ export function Navbar() {
                   <Link
                     href={link.path}
                     onClick={() => setIsMenuOpen(false)}
-                    className="block px-3 py-2 rounded-md text-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                    className="block px-3 py-2 rounded-md hover:bg-black/10 transition-colors"
+                    style={settings?.drawerTextColor ? { color: settings.drawerTextColor } : {}}
                   >
                     {link.name}
                   </Link>
