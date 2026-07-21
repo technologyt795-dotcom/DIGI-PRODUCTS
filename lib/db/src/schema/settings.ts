@@ -30,6 +30,8 @@ export const storeSettingsTable = pgTable("store_settings", {
   instagramUrl: text("instagram_url"),
   twitterUrl: text("twitter_url"),
   whatsappNumber: text("whatsapp_number"),
+  navbarBgColor: text("navbar_bg_color"),
+  navbarTextColor: text("navbar_text_color"),
 });
 
 export const insertStoreSettingsSchema = createInsertSchema(

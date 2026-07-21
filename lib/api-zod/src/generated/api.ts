@@ -404,7 +404,9 @@ export const GetSettingsResponse = zod.object({
   "facebookUrl": zod.string().nullable(),
   "instagramUrl": zod.string().nullable(),
   "twitterUrl": zod.string().nullable(),
-  "whatsappNumber": zod.string().nullable()
+  "whatsappNumber": zod.string().nullable(),
+  "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
+  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text')
 })
 
 
@@ -434,7 +436,9 @@ export const UpdateSettingsBody = zod.object({
   "facebookUrl": zod.string().nullish(),
   "instagramUrl": zod.string().nullish(),
   "twitterUrl": zod.string().nullish(),
-  "whatsappNumber": zod.string().nullish()
+  "whatsappNumber": zod.string().nullish(),
+  "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
+  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text')
 })
 
 export const UpdateSettingsResponse = zod.object({
@@ -452,7 +456,9 @@ export const UpdateSettingsResponse = zod.object({
   "facebookUrl": zod.string().nullable(),
   "instagramUrl": zod.string().nullable(),
   "twitterUrl": zod.string().nullable(),
-  "whatsappNumber": zod.string().nullable()
+  "whatsappNumber": zod.string().nullable(),
+  "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
+  "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text')
 })
 
 

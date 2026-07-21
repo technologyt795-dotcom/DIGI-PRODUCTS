@@ -1500,6 +1500,12 @@ components:
           type: ["string", "null"]
         whatsappNumber:
           type: ["string", "null"]
+        navbarBgColor:
+          type: ["string", "null"]
+          description: Custom hex color for the storefront navbar background
+        navbarTextColor:
+          type: ["string", "null"]
+          description: Custom hex color for the storefront navbar text
 
     StoreSettingsUpdate:
       type: object
@@ -1539,6 +1545,12 @@ components:
           type: ["string", "null"]
         whatsappNumber:
           type: ["string", "null"]
+        navbarBgColor:
+          type: ["string", "null"]
+          description: Custom hex color for the storefront navbar background
+        navbarTextColor:
+          type: ["string", "null"]
+          description: Custom hex color for the storefront navbar text
 
     # ── Order schemas ────────────────────────────────────────────────────────
 

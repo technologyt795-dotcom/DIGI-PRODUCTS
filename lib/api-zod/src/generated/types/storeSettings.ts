@@ -35,4 +35,14 @@ export interface StoreSettings {
   twitterUrl: string | null;
   /** @nullable */
   whatsappNumber: string | null;
+  /**
+     * Custom hex color for the storefront navbar background
+     * @nullable
+     */
+  navbarBgColor?: string | null;
+  /**
+     * Custom hex color for the storefront navbar text
+     * @nullable
+     */
+  navbarTextColor?: string | null;
 }

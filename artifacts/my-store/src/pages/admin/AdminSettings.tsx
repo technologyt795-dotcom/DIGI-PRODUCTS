@@ -35,6 +35,8 @@ export default function AdminSettings() {
   const [instagramUrl, setInstagramUrl] = useState('');
   const [twitterUrl, setTwitterUrl] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [navbarBgColor, setNavbarBgColor] = useState<string | null>(null);
+  const [navbarTextColor, setNavbarTextColor] = useState<string | null>(null);
 
   // Initialize form when settings load
   useEffect(() => {
@@ -55,6 +57,8 @@ export default function AdminSettings() {
       setInstagramUrl(settings.instagramUrl || '');
       setTwitterUrl(settings.twitterUrl || '');
       setWhatsappNumber(settings.whatsappNumber || '');
+      setNavbarBgColor(settings.navbarBgColor ?? null);
+      setNavbarTextColor(settings.navbarTextColor ?? null);
     }
   }, [settings]);
 
@@ -90,6 +94,8 @@ export default function AdminSettings() {
         instagramUrl: instagramUrl || null,
         twitterUrl: twitterUrl || null,
         whatsappNumber: whatsappNumber || null,
+        navbarBgColor: navbarBgColor || null,
+        navbarTextColor: navbarTextColor || null,
       }
     });
   };
@@ -249,6 +255,92 @@ export default function AdminSettings() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+          {/* Navbar Custom Colors */}
+          <Card>
+            <CardHeader>
+              <CardTitle>ألوان شريط التنقل</CardTitle>
+              <CardDescription>خصّص لون خلفية ونصوص شريط التنقل العلوي للمتجر — اتركهما فارغين لاستخدام ألوان القالب</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Background color */}
+                <div className="space-y-3">
+                  <Label>لون الخلفية</Label>
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <input
+                        type="color"
+                        value={navbarBgColor || '#0f172a'}
+                        onChange={(e) => setNavbarBgColor(e.target.value)}
+                        className="h-10 w-14 cursor-pointer rounded-md border border-border bg-transparent p-0.5"
+                      />
+                    </div>
+                    <Input
+                      value={navbarBgColor || ''}
+                      onChange={(e) => setNavbarBgColor(e.target.value || null)}
+                      placeholder="مثال: #0f172a"
+                      dir="ltr"
+                      className="text-left font-mono text-sm"
+                    />
+                    {navbarBgColor && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setNavbarBgColor(null)}
+                        className="shrink-0 text-muted-foreground hover:text-destructive"
+                      >
+                        حذف
+                      </Button>
+                    )}
+                  </div>
+                  <div
+                    className="h-10 rounded-md border border-border flex items-center justify-center text-xs"
+                    style={{ background: navbarBgColor || undefined }}
+                  >
+                    <span style={{ color: navbarTextColor || undefined }}>معاينة الشريط</span>
+                  </div>
+                </div>
+
+                {/* Text color */}
+                <div className="space-y-3">
+                  <Label>لون النصوص</Label>
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <input
+                        type="color"
+                        value={navbarTextColor || '#ffffff'}
+                        onChange={(e) => setNavbarTextColor(e.target.value)}
+                        className="h-10 w-14 cursor-pointer rounded-md border border-border bg-transparent p-0.5"
+                      />
+                    </div>
+                    <Input
+                      value={navbarTextColor || ''}
+                      onChange={(e) => setNavbarTextColor(e.target.value || null)}
+                      placeholder="مثال: #ffffff"
+                      dir="ltr"
+                      className="text-left font-mono text-sm"
+                    />
+                    {navbarTextColor && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setNavbarTextColor(null)}
+                        className="shrink-0 text-muted-foreground hover:text-destructive"
+                      >
+                        حذف
+                      </Button>
+                    )}
+                  </div>
+                  <div
+                    className="h-10 rounded-md border border-border flex items-center justify-center text-xs font-medium"
+                    style={{ background: navbarBgColor || undefined, color: navbarTextColor || undefined }}
+                  >
+                    نص تجريبي — اسم المتجر
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -49,15 +49,26 @@ export function Navbar() {
 
   const storeName = settings?.storeName || 'My Store';
 
+  // Custom navbar colors from settings (override theme defaults when set)
+  const navbarStyle: React.CSSProperties = {
+    ...(settings?.navbarBgColor ? { backgroundColor: settings.navbarBgColor } : {}),
+    ...(settings?.navbarTextColor ? { color: settings.navbarTextColor } : {}),
+  };
+  const hasCustomColors = !!(settings?.navbarBgColor || settings?.navbarTextColor);
+
   return (
     <>
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header
+      className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      style={navbarStyle}
+    >
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between gap-4">
           
           {/* Mobile Menu Toggle */}
           <div className="flex items-center lg:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(true)}>
+            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(true)}
+              style={hasCustomColors && settings?.navbarTextColor ? { color: settings.navbarTextColor } : {}}>
               <Menu className="h-6 w-6" />
             </Button>
           </div>
@@ -73,9 +84,13 @@ export function Navbar() {
               </div>
             )}
             <div className="hidden sm:flex flex-col">
-              <span className="text-xl font-bold leading-none tracking-tight text-primary">{storeName}</span>
+              <span className="text-xl font-bold leading-none tracking-tight text-primary"
+                style={hasCustomColors && settings?.navbarTextColor ? { color: settings.navbarTextColor } : {}}>
+                {storeName}
+              </span>
               {settings?.tagline && (
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mt-1">
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mt-1"
+                  style={hasCustomColors && settings?.navbarTextColor ? { color: settings.navbarTextColor, opacity: 0.7 } : {}}>
                   {settings.tagline}
                 </span>
               )}
@@ -83,7 +98,8 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-muted-foreground overflow-hidden">
+          <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-muted-foreground overflow-hidden"
+            style={hasCustomColors && settings?.navbarTextColor ? { color: settings.navbarTextColor } : {}}>
             {/* Static links — always shown, no animation needed */}
             {staticLinks.map((link) => (
               <Link
@@ -164,7 +180,8 @@ export function Navbar() {
               </DropdownMenu>
             )}
 
-            <Link href="/cart" className="relative p-2 text-foreground transition-colors hover:text-primary group">
+            <Link href="/cart" className="relative p-2 text-foreground transition-colors hover:text-primary group"
+              style={hasCustomColors && settings?.navbarTextColor ? { color: settings.navbarTextColor } : {}}>
               <ShoppingBag className="h-6 w-6 group-hover:scale-110 transition-transform" />
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[11px] font-bold text-secondary-foreground shadow-sm">

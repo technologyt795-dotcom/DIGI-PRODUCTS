@@ -22,6 +22,8 @@ const DEFAULT_SETTINGS = {
   instagramUrl: null,
   twitterUrl: null,
   whatsappNumber: null,
+  navbarBgColor: null,
+  navbarTextColor: null,
 };
 
 async function ensureSettings() {
@@ -54,6 +56,8 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
     instagramUrl: row.instagramUrl ?? null,
     twitterUrl: row.twitterUrl ?? null,
     whatsappNumber: row.whatsappNumber ?? null,
+    navbarBgColor: row.navbarBgColor ?? null,
+    navbarTextColor: row.navbarTextColor ?? null,
   };
 }
 
@@ -94,6 +98,8 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if (data.instagramUrl !== undefined) updateValues.instagramUrl = data.instagramUrl;
   if (data.twitterUrl !== undefined) updateValues.twitterUrl = data.twitterUrl;
   if (data.whatsappNumber !== undefined) updateValues.whatsappNumber = data.whatsappNumber;
+  if (data.navbarBgColor !== undefined) updateValues.navbarBgColor = data.navbarBgColor;
+  if (data.navbarTextColor !== undefined) updateValues.navbarTextColor = data.navbarTextColor;
 
   try {
     // Upsert: insert if not exists, update otherwise
