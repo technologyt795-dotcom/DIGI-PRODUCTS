@@ -50,6 +50,7 @@ export function Navbar() {
   const storeName = settings?.storeName || 'My Store';
 
   return (
+    <>
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between gap-4">
@@ -175,77 +176,83 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden">
-          <div className="fixed inset-y-0 right-0 w-full max-w-xs border-l bg-background p-6 shadow-xl flex flex-col">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-2">
-                {settings?.logoUrl ? (
-                  <img src={settings.logoUrl} alt={storeName} className="h-10 w-auto object-contain rounded" />
-                ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-secondary">
-                    <ShoppingBag className="h-5 w-5" />
-                  </div>
-                )}
-                <span className="text-lg font-bold text-primary">{storeName}</span>
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
-            
-            <form onSubmit={handleSearch} className="relative mb-6">
-              <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-              <input 
-                type="search" 
-                placeholder="ابحث..." 
-                className="h-10 w-full rounded-md border border-border bg-muted/50 pr-10 pl-4 text-sm outline-none focus:border-primary"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
-
-            <nav className="flex flex-col gap-1 text-base font-medium">
-              {/* Static links */}
-              {staticLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  href={link.path}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="px-3 py-2 rounded-md text-foreground hover:text-primary hover:bg-muted/50 transition-colors"
-                >
-                  {link.name}
-                </Link>
-              ))}
-
-              {/* Animated category links in mobile */}
-              <AnimatePresence initial={false}>
-                {categoryLinks.map((link) => (
-                  <motion.div
-                    key={link.path}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.22, ease: 'easeInOut' }}
-                    style={{ overflow: 'hidden' }}
-                  >
-                    <Link
-                      href={link.path}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block px-3 py-2 rounded-md text-foreground hover:text-primary hover:bg-muted/50 transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </nav>
-          </div>
-        </div>
-      )}
-
       <CustomerAuthModal open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
     </header>
+
+    {/* Mobile Menu — rendered OUTSIDE <header> so the header's backdrop-filter
+        does not confine fixed-position children to the header's stacking context */}
+    {isMenuOpen && (
+      <div
+        className="fixed inset-0 z-[100] bg-black/40 lg:hidden"
+        onClick={() => setIsMenuOpen(false)}
+      >
+        <div
+          className="fixed inset-y-0 right-0 w-full max-w-xs border-l border-border bg-background p-6 shadow-2xl flex flex-col"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-2">
+              {settings?.logoUrl ? (
+                <img src={settings.logoUrl} alt={storeName} className="h-10 w-auto object-contain rounded" />
+              ) : (
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-secondary">
+                  <ShoppingBag className="h-5 w-5" />
+                </div>
+              )}
+              <span className="text-lg font-bold text-primary">{storeName}</span>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+
+          <form onSubmit={handleSearch} className="relative mb-6">
+            <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+            <input
+              type="search"
+              placeholder="ابحث..."
+              className="h-10 w-full rounded-md border border-border bg-muted/50 pr-10 pl-4 text-sm outline-none focus:border-primary"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </form>
+
+          <nav className="flex flex-col gap-1 text-base font-medium">
+            {staticLinks.map((link) => (
+              <Link
+                key={link.path}
+                href={link.path}
+                onClick={() => setIsMenuOpen(false)}
+                className="px-3 py-2 rounded-md text-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+
+            <AnimatePresence initial={false}>
+              {categoryLinks.map((link) => (
+                <motion.div
+                  key={link.path}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.22, ease: 'easeInOut' }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <Link
+                    href={link.path}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-3 py-2 rounded-md text-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </nav>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
