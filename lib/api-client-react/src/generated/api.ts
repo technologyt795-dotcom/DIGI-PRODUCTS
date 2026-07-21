@@ -1812,7 +1812,7 @@ export const getDeleteMyOrderUrl = (orderNumber: string,) => {
 }
 
 /**
- * @summary Delete a specific order belonging to the authenticated customer
+ * @summary Cancel or hide a customer order (never hard-deletes)
  */
 export const deleteMyOrder = async (orderNumber: string, options?: RequestInit): Promise<void> => {
 
@@ -1861,7 +1861,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type DeleteMyOrderMutationError = ErrorType<ErrorResponse>
 
     /**
- * @summary Delete a specific order belonging to the authenticated customer
+ * @summary Cancel or hide a customer order (never hard-deletes)
  */
 export const useDeleteMyOrder = <TError = ErrorType<ErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMyOrder>>, TError,{orderNumber: string}, TContext>, request?: SecondParameter<typeof customFetch>}

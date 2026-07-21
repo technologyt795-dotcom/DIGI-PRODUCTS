@@ -676,7 +676,7 @@ export const ListMyOrdersResponse = zod.array(ListMyOrdersResponseItem)
 
 
 /**
- * @summary Delete a specific order belonging to the authenticated customer
+ * @summary Cancel or hide a customer order (never hard-deletes)
  */
 export const DeleteMyOrderParams = zod.object({
   "orderNumber": zod.coerce.string()

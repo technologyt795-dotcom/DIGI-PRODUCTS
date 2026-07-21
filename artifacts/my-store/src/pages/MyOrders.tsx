@@ -50,12 +50,18 @@ export default function MyOrders() {
     request: token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
     mutation: {
       onSuccess: () => {
-        toast.success('تم حذف الطلب بنجاح');
+        const status = orders?.find((o) => o.orderNumber === orderToDelete)?.status;
+        if (status === 'pending') {
+          toast.success('تم إلغاء الطلب');
+        } else {
+          toast.success('تم إخفاء الطلب من قائمتك');
+        }
         queryClient.invalidateQueries({ queryKey: getListMyOrdersQueryKey() });
         setOrderToDelete(null);
       },
-      onError: () => {
-        toast.error('تعذّر حذف الطلب، حاول مرة أخرى');
+      onError: (err: any) => {
+        const msg = err?.response?.data?.error || 'تعذّر تنفيذ العملية، حاول مرة أخرى';
+        toast.error(msg);
         setOrderToDelete(null);
       },
     },
@@ -64,6 +70,13 @@ export default function MyOrders() {
   const confirmDelete = () => {
     if (!orderToDelete) return;
     deleteMutation.mutate({ orderNumber: orderToDelete });
+  };
+
+  // Determine action label based on order status
+  const getDeleteAction = (status: string) => {
+    if (status === 'pending') return { label: 'إلغاء الطلب', allowed: true };
+    if (status === 'cancelled') return { label: 'إخفاء من قائمتي', allowed: true };
+    return { label: '', allowed: false };
   };
 
   if (authLoading || !isAuthenticated) return null;
@@ -99,6 +112,7 @@ export default function MyOrders() {
                 year: 'numeric', month: 'long', day: 'numeric',
               });
               const hasDigital = (order.items as any[]).some((i: any) => i.isDigital);
+              const deleteAction = getDeleteAction(order.status);
 
               return (
                 <div key={order.id} className="border border-border rounded-xl p-5 hover:border-primary/30 hover:bg-muted/20 transition-all group">
@@ -124,17 +138,20 @@ export default function MyOrders() {
                       <Link href={`/my-orders/${order.orderNumber}`}>
                         <ChevronLeft className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                       </Link>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setOrderToDelete(order.orderNumber);
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      {deleteAction.allowed && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          title={deleteAction.label}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setOrderToDelete(order.orderNumber);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -147,24 +164,46 @@ export default function MyOrders() {
       {/* Confirmation Dialog */}
       <AlertDialog open={!!orderToDelete} onOpenChange={(open) => !open && setOrderToDelete(null)}>
         <AlertDialogContent dir="rtl">
-          <AlertDialogHeader>
-            <AlertDialogTitle>حذف الطلب</AlertDialogTitle>
-            <AlertDialogDescription>
-              هل أنت متأكد من حذف الطلب <span className="font-semibold text-foreground">{orderToDelete}</span>؟
-              <br />
-              لن تتمكن من استعادته بعد الحذف.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row-reverse gap-2">
-            <AlertDialogCancel>إلغاء</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              disabled={deleteMutation.isPending}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {deleteMutation.isPending ? 'جاري الحذف...' : 'حذف'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          {(() => {
+            const pendingOrder = orders?.find((o) => o.orderNumber === orderToDelete);
+            const isPending = pendingOrder?.status === 'pending';
+            return (
+              <>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    {isPending ? 'إلغاء الطلب' : 'إخفاء الطلب'}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {isPending ? (
+                      <>
+                        هل تريد إلغاء الطلب <span className="font-semibold text-foreground">{orderToDelete}</span>؟
+                        <br />
+                        سيتحول إلى حالة "ملغى" ولن يمكن معالجته.
+                      </>
+                    ) : (
+                      <>
+                        هل تريد إخفاء الطلب <span className="font-semibold text-foreground">{orderToDelete}</span> من قائمتك؟
+                        <br />
+                        لن يظهر في طلباتك بعد الآن.
+                      </>
+                    )}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="flex-row-reverse gap-2">
+                  <AlertDialogCancel>تراجع</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={confirmDelete}
+                    disabled={deleteMutation.isPending}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {deleteMutation.isPending
+                      ? (isPending ? 'جاري الإلغاء...' : 'جاري الإخفاء...')
+                      : (isPending ? 'إلغاء الطلب' : 'إخفاء')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </>
+            );
+          })()}
         </AlertDialogContent>
       </AlertDialog>
     </>

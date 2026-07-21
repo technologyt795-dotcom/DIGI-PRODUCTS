@@ -6,6 +6,7 @@ import {
   numeric,
   timestamp,
   jsonb,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
@@ -41,6 +42,7 @@ export const ordersTable = pgTable("orders", {
     .default("0"),
   total: numeric("total", { precision: 10, scale: 2 }).notNull(),
   notes: text("notes"),
+  hiddenByCustomer: boolean("hidden_by_customer").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

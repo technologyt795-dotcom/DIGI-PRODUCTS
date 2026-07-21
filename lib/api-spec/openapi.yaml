@@ -667,7 +667,7 @@ paths:
     delete:
       operationId: deleteMyOrder
       tags: [orders]
-      summary: Delete a specific order belonging to the authenticated customer
+      summary: Cancel or hide a customer order (never hard-deletes)
       security:
         - customerToken: []
       parameters:
@@ -678,9 +678,15 @@ paths:
             type: string
       responses:
         "204":
-          description: Order deleted successfully
+          description: Order cancelled or hidden successfully
         "401":
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Order cannot be removed (in-progress or delivered)
           content:
             application/json:
               schema:

@@ -1,6 +1,6 @@
 import { Readable } from "stream";
 import { Router, type IRouter } from "express";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, ne } from "drizzle-orm";
 import { db, ordersTable, productsTable } from "@workspace/db";
 import { inArray } from "drizzle-orm";
 import { requireCustomer } from "../middlewares/customerAuth";
@@ -27,7 +27,7 @@ function mapOrder(row: typeof ordersTable.$inferSelect) {
   };
 }
 
-// GET /customer/orders — list authenticated customer's orders
+// GET /customer/orders — list authenticated customer's orders (excludes hidden ones)
 router.get(
   "/customer/orders",
   requireCustomer as any,
@@ -36,13 +36,22 @@ router.get(
     const rows = await db
       .select()
       .from(ordersTable)
-      .where(eq(ordersTable.customerEmail, payload.email))
+      .where(
+        and(
+          eq(ordersTable.customerEmail, payload.email),
+          ne(ordersTable.hiddenByCustomer, true),
+        ),
+      )
       .orderBy(desc(ordersTable.createdAt));
     res.json(rows.map(mapOrder));
   },
 );
 
-// DELETE /customer/orders/:orderNumber — customer deletes their own order
+// DELETE /customer/orders/:orderNumber — smart cancel/hide logic (never hard-deletes)
+// pending      → convert to cancelled
+// processing / shipped → blocked (403)
+// delivered    → blocked (403, financial data)
+// cancelled    → hide from customer view (hiddenByCustomer = true)
 router.delete(
   "/customer/orders/:orderNumber",
   requireCustomer as any,
@@ -60,11 +69,33 @@ router.delete(
       return;
     }
 
-    await db
-      .delete(ordersTable)
-      .where(eq(ordersTable.orderNumber, orderNumber));
+    if (row.status === "pending") {
+      // Cancel the order
+      await db
+        .update(ordersTable)
+        .set({ status: "cancelled" })
+        .where(eq(ordersTable.orderNumber, orderNumber));
+      res.sendStatus(204);
+      return;
+    }
 
-    res.sendStatus(204);
+    if (row.status === "cancelled") {
+      // Hide from customer view only
+      await db
+        .update(ordersTable)
+        .set({ hiddenByCustomer: true })
+        .where(eq(ordersTable.orderNumber, orderNumber));
+      res.sendStatus(204);
+      return;
+    }
+
+    // processing / shipped / delivered — cannot be deleted
+    res.status(403).json({
+      error:
+        row.status === "delivered"
+          ? "لا يمكن حذف طلب مكتمل — هذه بيانات مالية محفوظة"
+          : "لا يمكن حذف طلب قيد التنفيذ",
+    });
   },
 );
 
