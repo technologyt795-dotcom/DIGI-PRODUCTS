@@ -76,7 +76,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
             {settings?.logoUrl ? (
-              <img src={settings.logoUrl} alt={storeName} className="h-14 w-auto object-contain rounded" />
+              <img src={settings.logoUrl} alt={storeName} className="h-16 w-auto object-contain rounded" />
             ) : (
               <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-secondary">
                 <ShoppingBag className="h-6 w-6 absolute" />
@@ -214,7 +214,7 @@ export function Navbar() {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-2">
               {settings?.logoUrl ? (
-                <img src={settings.logoUrl} alt={storeName} className="h-10 w-auto object-contain rounded" />
+                <img src={settings.logoUrl} alt={storeName} className="h-14 w-auto object-contain rounded" />
               ) : (
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-secondary">
                   <ShoppingBag className="h-5 w-5" />
