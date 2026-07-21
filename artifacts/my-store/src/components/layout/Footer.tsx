@@ -2,9 +2,12 @@ import { Link } from 'wouter';
 import { ShoppingBag, Lock, Mail, Phone, MapPin, Instagram, Twitter, Facebook } from 'lucide-react';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 import { FaWhatsapp } from 'react-icons/fa';
+import { useListCategories } from '@workspace/api-client-react';
 
 export function Footer() {
   const { settings } = useStoreSettings();
+  const { data: categories } = useListCategories();
+  const visibleCategories = (categories ?? []).filter((c) => !c.isHidden);
   const storeName = settings?.storeName || 'My Store';
 
   return (
@@ -63,16 +66,24 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Categories */}
-          <div>
-            <h3 className="text-lg font-bold text-white mb-6">الفئات</h3>
-            <ul className="space-y-3 text-sm text-primary-foreground/70">
-              <li><Link href="/category/home-organization" className="hover:text-secondary transition-colors">المنزل والتنظيم</Link></li>
-              <li><Link href="/category/digital-products" className="hover:text-secondary transition-colors">المنتجات الرقمية</Link></li>
-              <li><Link href="/category/tech-products" className="hover:text-secondary transition-colors">المنتجات التقنية</Link></li>
-              <li><Link href="/category/car-accessories" className="hover:text-secondary transition-colors">إكسسوارات السيارات</Link></li>
-            </ul>
-          </div>
+          {/* Categories — dynamic, hidden categories are excluded */}
+          {visibleCategories.length > 0 && (
+            <div>
+              <h3 className="text-lg font-bold text-white mb-6">الفئات</h3>
+              <ul className="space-y-3 text-sm text-primary-foreground/70">
+                {visibleCategories.map((cat) => (
+                  <li key={cat.id}>
+                    <Link
+                      href={`/category/${cat.slug}`}
+                      className="hover:text-secondary transition-colors"
+                    >
+                      {cat.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Contact */}
           <div>
