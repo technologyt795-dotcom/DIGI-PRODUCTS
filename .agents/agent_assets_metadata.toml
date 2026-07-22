@@ -1,0 +1,20 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "DJgWPxDpdZ-Ij2ZDDDKkR"
+uri = "file://attached_assets/logos/logo1.png"
+type = "image"
+title = "الشعار الأول — مضلع مع صاعقة"
+
+[[outputs]]
+id = "hgAGmRYY9-X_2Hx7U4n20"
+uri = "file://attached_assets/logos/logo2.png"
+type = "image"
+title = "الشعار الثاني — مونوغرام هندسي"
+
+[[outputs]]
+id = "CVhtHrYsi1e6PAmGxrq57"
+uri = "file://attached_assets/logos/logo3.png"
+type = "image"
+title = "الشعار الثالث — ماسة رقمية"
