@@ -41,6 +41,7 @@ export default function AdminSettings() {
   const [drawerBgColor, setDrawerBgColor] = useState<string | null>(null);
   const [drawerTextColor, setDrawerTextColor] = useState<string | null>(null);
   const [drawerColorsEnabled, setDrawerColorsEnabled] = useState(false);
+  const [refundPolicy, setRefundPolicy] = useState<string>('');
 
   // Initialize form when settings load
   useEffect(() => {
@@ -67,6 +68,7 @@ export default function AdminSettings() {
       setDrawerBgColor(settings.drawerBgColor ?? null);
       setDrawerTextColor(settings.drawerTextColor ?? null);
       setDrawerColorsEnabled(!!(settings.drawerBgColor || settings.drawerTextColor));
+      setRefundPolicy(settings.refundPolicy ?? '');
     }
   }, [settings]);
 
@@ -106,6 +108,7 @@ export default function AdminSettings() {
         navbarTextColor: navbarColorsEnabled ? (navbarTextColor || null) : null,
         drawerBgColor: drawerColorsEnabled ? (drawerBgColor || null) : null,
         drawerTextColor: drawerColorsEnabled ? (drawerTextColor || null) : null,
+        refundPolicy: refundPolicy || null,
       }
     });
   };
@@ -521,6 +524,28 @@ export default function AdminSettings() {
                 <Label htmlFor="address">العنوان الفعلي</Label>
                 <Textarea id="address" value={address} onChange={(e) => setAddress(e.target.value)} rows={3} />
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Refund Policy */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5 text-primary" />
+                سياسة الاسترجاع
+              </CardTitle>
+              <CardDescription>
+                هذا النص يظهر للعملاء في صفحة سياسة الاسترجاع — اتركه فارغاً لإخفاء الصفحة من الفوتر
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                id="refundPolicy"
+                value={refundPolicy}
+                onChange={(e) => setRefundPolicy(e.target.value)}
+                rows={8}
+                placeholder="مثال: يمكن استرجاع المنتجات خلال 7 أيام من تاريخ الاستلام بشرط..."
+              />
             </CardContent>
           </Card>
         </TabsContent>

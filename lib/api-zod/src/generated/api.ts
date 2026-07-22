@@ -408,7 +408,8 @@ export const GetSettingsResponse = zod.object({
   "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
   "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
-  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text')
+  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
+  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers')
 })
 
 
@@ -442,7 +443,8 @@ export const UpdateSettingsBody = zod.object({
   "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
   "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
-  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text')
+  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
+  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers')
 })
 
 export const UpdateSettingsResponse = zod.object({
@@ -464,7 +466,8 @@ export const UpdateSettingsResponse = zod.object({
   "navbarBgColor": zod.string().nullish().describe('Custom hex color for the storefront navbar background'),
   "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
-  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text')
+  "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
+  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers')
 })
 
 
@@ -520,6 +523,8 @@ export const CreateOrderResponse = zod.object({
   "discountAmount": zod.number(),
   "total": zod.number(),
   "notes": zod.string().nullable(),
+  "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
+  "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
   "createdAt": zod.coerce.date()
 })
 
@@ -556,6 +561,8 @@ export const ListOrdersResponseItem = zod.object({
   "discountAmount": zod.number(),
   "total": zod.number(),
   "notes": zod.string().nullable(),
+  "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
+  "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
   "createdAt": zod.coerce.date()
 })
 export const ListOrdersResponse = zod.array(ListOrdersResponseItem)
@@ -593,6 +600,8 @@ export const GetOrderResponse = zod.object({
   "discountAmount": zod.number(),
   "total": zod.number(),
   "notes": zod.string().nullable(),
+  "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
+  "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
   "createdAt": zod.coerce.date()
 })
 
@@ -606,7 +615,9 @@ export const UpdateOrderParams = zod.object({
 
 export const UpdateOrderBody = zod.object({
   "status": zod.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).optional(),
-  "notes": zod.string().optional()
+  "notes": zod.string().optional(),
+  "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
+  "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL')
 })
 
 export const UpdateOrderResponse = zod.object({
@@ -634,6 +645,8 @@ export const UpdateOrderResponse = zod.object({
   "discountAmount": zod.number(),
   "total": zod.number(),
   "notes": zod.string().nullable(),
+  "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
+  "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
   "createdAt": zod.coerce.date()
 })
 
@@ -676,6 +689,8 @@ export const ListMyOrdersResponseItem = zod.object({
   "discountAmount": zod.number(),
   "total": zod.number(),
   "notes": zod.string().nullable(),
+  "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
+  "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
   "createdAt": zod.coerce.date()
 })
 export const ListMyOrdersResponse = zod.array(ListMyOrdersResponseItem)
@@ -723,6 +738,8 @@ export const GetMyOrderResponse = zod.object({
   "discountAmount": zod.number(),
   "total": zod.number(),
   "notes": zod.string().nullable(),
+  "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
+  "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
   "createdAt": zod.coerce.date()
 })
 

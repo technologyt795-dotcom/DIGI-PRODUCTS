@@ -1518,6 +1518,9 @@ components:
         drawerTextColor:
           type: ["string", "null"]
           description: Custom hex color for the mobile drawer text
+        refundPolicy:
+          type: ["string", "null"]
+          description: Store refund/return policy text shown to customers
 
     StoreSettingsUpdate:
       type: object
@@ -1569,6 +1572,9 @@ components:
         drawerTextColor:
           type: ["string", "null"]
           description: Custom hex color for the mobile drawer text
+        refundPolicy:
+          type: ["string", "null"]
+          description: Store refund/return policy text shown to customers
 
     # ── Order schemas ────────────────────────────────────────────────────────
 
@@ -1639,6 +1645,12 @@ components:
           type: number
         notes:
           type: ["string", "null"]
+        trackingNumber:
+          type: ["string", "null"]
+          description: Shipping tracking number
+        trackingUrl:
+          type: ["string", "null"]
+          description: Shipping carrier tracking URL
         createdAt:
           type: string
           format: date-time
@@ -1675,6 +1687,12 @@ components:
           enum: [pending, processing, shipped, delivered, cancelled]
         notes:
           type: string
+        trackingNumber:
+          type: ["string", "null"]
+          description: Shipping tracking number
+        trackingUrl:
+          type: ["string", "null"]
+          description: Shipping carrier tracking URL
 
     # ── Customer schemas ─────────────────────────────────────────────────────
 

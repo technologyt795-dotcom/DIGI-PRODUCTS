@@ -18,6 +18,7 @@ import ProductDetail from '@/pages/ProductDetail';
 import Cart from '@/pages/Cart';
 import MyOrders from '@/pages/MyOrders';
 import OrderDetail from '@/pages/OrderDetail';
+import RefundPolicy from '@/pages/RefundPolicy';
 
 // Admin Pages
 import AdminLogin from '@/pages/admin/AdminLogin';
@@ -59,6 +60,7 @@ function StoreRouter() {
       <Route path="/cart" component={Cart} />
       <Route path="/my-orders/:orderNumber" component={OrderDetail} />
       <Route path="/my-orders" component={MyOrders} />
+      <Route path="/refund-policy" component={RefundPolicy} />
       <Route component={NotFound} />
     </Switch>
   );

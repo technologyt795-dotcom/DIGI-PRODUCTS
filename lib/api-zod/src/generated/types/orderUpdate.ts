@@ -10,4 +10,14 @@ import type { OrderUpdateStatus } from './orderUpdateStatus';
 export interface OrderUpdate {
   status?: OrderUpdateStatus;
   notes?: string;
+  /**
+     * Shipping tracking number
+     * @nullable
+     */
+  trackingNumber?: string | null;
+  /**
+     * Shipping carrier tracking URL
+     * @nullable
+     */
+  trackingUrl?: string | null;
 }

@@ -42,6 +42,8 @@ export const ordersTable = pgTable("orders", {
     .default("0"),
   total: numeric("total", { precision: 10, scale: 2 }).notNull(),
   notes: text("notes"),
+  trackingNumber: text("tracking_number"),
+  trackingUrl: text("tracking_url"),
   hiddenByCustomer: boolean("hidden_by_customer").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()

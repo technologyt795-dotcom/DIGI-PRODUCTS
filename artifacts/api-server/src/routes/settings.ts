@@ -26,6 +26,7 @@ const DEFAULT_SETTINGS = {
   navbarTextColor: null,
   drawerBgColor: null,
   drawerTextColor: null,
+  refundPolicy: null,
 };
 
 async function ensureSettings() {
@@ -62,6 +63,7 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
     navbarTextColor: row.navbarTextColor ?? null,
     drawerBgColor: row.drawerBgColor ?? null,
     drawerTextColor: row.drawerTextColor ?? null,
+    refundPolicy: row.refundPolicy ?? null,
   };
 }
 
@@ -106,6 +108,7 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if (data.navbarTextColor !== undefined) updateValues.navbarTextColor = data.navbarTextColor;
   if (data.drawerBgColor !== undefined) updateValues.drawerBgColor = data.drawerBgColor;
   if (data.drawerTextColor !== undefined) updateValues.drawerTextColor = data.drawerTextColor;
+  if (data.refundPolicy !== undefined) updateValues.refundPolicy = data.refundPolicy;
 
   try {
     // Upsert: insert if not exists, update otherwise

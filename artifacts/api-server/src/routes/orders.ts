@@ -36,6 +36,8 @@ const UpdateOrderBody = z.object({
     .enum(["pending", "processing", "shipped", "delivered", "cancelled"])
     .optional(),
   notes: z.string().optional(),
+  trackingNumber: z.string().nullable().optional(),
+  trackingUrl: z.string().nullable().optional(),
 });
 
 // Helper: map DB row to API shape
@@ -120,6 +122,8 @@ router.patch(
     if (parsed.data.status !== undefined)
       updateData.status = parsed.data.status;
     if (parsed.data.notes !== undefined) updateData.notes = parsed.data.notes;
+    if (parsed.data.trackingNumber !== undefined) updateData.trackingNumber = parsed.data.trackingNumber;
+    if (parsed.data.trackingUrl !== undefined) updateData.trackingUrl = parsed.data.trackingUrl;
 
     const [row] = await db
       .update(ordersTable)

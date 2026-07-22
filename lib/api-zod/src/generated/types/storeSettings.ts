@@ -55,4 +55,9 @@ export interface StoreSettings {
      * @nullable
      */
   drawerTextColor?: string | null;
+  /**
+     * Store refund/return policy text shown to customers
+     * @nullable
+     */
+  refundPolicy?: string | null;
 }

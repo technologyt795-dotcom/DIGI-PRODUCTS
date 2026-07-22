@@ -185,6 +185,11 @@ export interface StoreSettings {
      * @nullable
      */
   drawerTextColor?: string | null;
+  /**
+     * Store refund/return policy text shown to customers
+     * @nullable
+     */
+  refundPolicy?: string | null;
 }
 
 export type StoreSettingsUpdateActiveTheme = typeof StoreSettingsUpdateActiveTheme[keyof typeof StoreSettingsUpdateActiveTheme];
@@ -248,6 +253,11 @@ export interface StoreSettingsUpdate {
      * @nullable
      */
   drawerTextColor?: string | null;
+  /**
+     * Store refund/return policy text shown to customers
+     * @nullable
+     */
+  refundPolicy?: string | null;
 }
 
 export interface OrderItem {
@@ -290,6 +300,16 @@ export interface Order {
   total: number;
   /** @nullable */
   notes: string | null;
+  /**
+     * Shipping tracking number
+     * @nullable
+     */
+  trackingNumber?: string | null;
+  /**
+     * Shipping carrier tracking URL
+     * @nullable
+     */
+  trackingUrl?: string | null;
   createdAt: string;
 }
 
@@ -320,6 +340,16 @@ export const OrderUpdateStatus = {
 export interface OrderUpdate {
   status?: OrderUpdateStatus;
   notes?: string;
+  /**
+     * Shipping tracking number
+     * @nullable
+     */
+  trackingNumber?: string | null;
+  /**
+     * Shipping carrier tracking URL
+     * @nullable
+     */
+  trackingUrl?: string | null;
 }
 
 export interface CustomerWithStats {

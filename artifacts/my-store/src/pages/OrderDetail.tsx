@@ -519,6 +519,41 @@ export default function OrderDetail() {
             </table>
           </div>
 
+          {/* ════ TRACKING ═══════════════════════════════════════ */}
+          {(order as any).trackingNumber && !items.every((i: any) => i.isDigital) && (
+            <div className="no-print" style={{
+              margin: '0 0 0 0',
+              padding: '14px 20px',
+              background: 'var(--inv-muted)',
+              borderTop: '1px solid var(--inv-border)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              flexWrap: 'wrap',
+            }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--inv-muted-fg)' }}>
+                📦 رقم تتبع الشحنة:
+              </span>
+              <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 14, letterSpacing: '0.05em' }}>
+                {(order as any).trackingNumber}
+              </span>
+              {(order as any).trackingUrl && (
+                <a
+                  href={(order as any).trackingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: 12, fontWeight: 700, padding: '4px 14px',
+                    background: 'var(--inv-primary)', color: 'var(--inv-primary-fg)',
+                    borderRadius: 6, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4,
+                  }}
+                >
+                  تتبع الشحنة ↗
+                </a>
+              )}
+            </div>
+          )}
+
           {/* ════ TOTALS + NOTES ═════════════════════════════════ */}
           <div className="inv-bottom-grid">
 

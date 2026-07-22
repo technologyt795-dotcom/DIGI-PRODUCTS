@@ -61,8 +61,10 @@ export function Footer() {
               <li><Link href="/" className="hover:text-secondary transition-colors">الرئيسية</Link></li>
               <li><Link href="/products" className="hover:text-secondary transition-colors">كل المنتجات</Link></li>
               <li><Link href="/cart" className="hover:text-secondary transition-colors">سلة المشتريات</Link></li>
-              <li><a href="#" className="hover:text-secondary transition-colors">تتبع طلبك</a></li>
-              <li><a href="#" className="hover:text-secondary transition-colors">سياسة الاسترجاع</a></li>
+              <li><Link href="/my-orders" className="hover:text-secondary transition-colors">تتبع طلبك</Link></li>
+              {settings?.refundPolicy && (
+                <li><Link href="/refund-policy" className="hover:text-secondary transition-colors">سياسة الاسترجاع</Link></li>
+              )}
             </ul>
           </div>
 

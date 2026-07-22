@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useListOrders, useUpdateOrder, useDeleteOrder, getListOrdersQueryKey, Order, OrderStatus } from '@workspace/api-client-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2, Eye, MapPin, User, Package, Calendar, Trash2 } from 'lucide-react';
+import { Loader2, Eye, MapPin, User, Package, Calendar, Trash2, Truck } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -38,6 +40,14 @@ export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [trackingUrl, setTrackingUrl] = useState('');
+  const [isSavingTracking, setIsSavingTracking] = useState(false);
+
+  useEffect(() => {
+    setTrackingNumber((selectedOrder as any)?.trackingNumber ?? '');
+    setTrackingUrl((selectedOrder as any)?.trackingUrl ?? '');
+  }, [selectedOrder]);
 
   const { data: orders, isLoading } = useListOrders(statusFilter === 'all' ? undefined : { status: statusFilter as OrderStatus });
   const updateOrder = useUpdateOrder();
@@ -57,6 +67,24 @@ export default function AdminOrders() {
       },
     },
   });
+
+  const handleSaveTracking = async () => {
+    if (!selectedOrder) return;
+    setIsSavingTracking(true);
+    try {
+      const updated = await updateOrder.mutateAsync({
+        id: selectedOrder.id,
+        data: { trackingNumber: trackingNumber || null, trackingUrl: trackingUrl || null },
+      });
+      toast.success('تم حفظ معلومات التتبع');
+      queryClient.invalidateQueries({ queryKey: getListOrdersQueryKey() });
+      setSelectedOrder({ ...selectedOrder, ...(updated as any) });
+    } catch {
+      toast.error('تعذّر حفظ معلومات التتبع');
+    } finally {
+      setIsSavingTracking(false);
+    }
+  };
 
   const handleStatusChange = async (orderId: number, newStatus: OrderStatus) => {
     try {
@@ -288,6 +316,53 @@ export default function AdminOrders() {
                   </div>
                 </div>
               </div>
+
+              {/* ── Tracking ── */}
+              {!(selectedOrder.items as any[]).every((i: any) => i.isDigital) && (
+                <div className="col-span-full">
+                  <Card>
+                    <CardContent className="p-4 flex gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full h-fit">
+                        <Truck className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="flex-1 space-y-3">
+                        <h3 className="font-bold text-sm">معلومات تتبع الشحنة</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <Label className="text-xs">رقم التتبع</Label>
+                            <Input
+                              value={trackingNumber}
+                              onChange={(e) => setTrackingNumber(e.target.value)}
+                              placeholder="مثال: 1Z9999999999999"
+                              dir="ltr"
+                              className="text-left font-mono text-sm"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs">رابط تتبع الشحنة</Label>
+                            <Input
+                              value={trackingUrl}
+                              onChange={(e) => setTrackingUrl(e.target.value)}
+                              placeholder="https://..."
+                              dir="ltr"
+                              className="text-left text-sm"
+                            />
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={handleSaveTracking}
+                          disabled={isSavingTracking}
+                          className="mt-1"
+                        >
+                          {isSavingTracking ? <Loader2 className="h-4 w-4 animate-spin ml-2" /> : null}
+                          حفظ معلومات التتبع
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
             </>
           )}
         </DialogContent>

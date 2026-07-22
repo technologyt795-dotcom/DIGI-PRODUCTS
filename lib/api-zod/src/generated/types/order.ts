@@ -26,5 +26,15 @@ export interface Order {
   total: number;
   /** @nullable */
   notes: string | null;
+  /**
+     * Shipping tracking number
+     * @nullable
+     */
+  trackingNumber?: string | null;
+  /**
+     * Shipping carrier tracking URL
+     * @nullable
+     */
+  trackingUrl?: string | null;
   createdAt: Date;
 }
