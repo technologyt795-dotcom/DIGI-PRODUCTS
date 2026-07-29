@@ -130,17 +130,18 @@ router.get(
       .filter((i) => i.isDigital && i.productId)
       .map((i) => i.productId);
 
-    let productMap = new Map<number, { downloadUrls: string[]; downloadLabels: string[] }>();
+    let productMap = new Map<number, { downloadUrls: string[]; downloadLabels: string[]; productUrl: string | null }>();
     if (digitalProductIds.length > 0) {
       const products = await db
         .select({
           id: productsTable.id,
           downloadUrls: productsTable.downloadUrls,
           downloadLabels: productsTable.downloadLabels,
+          productUrl: productsTable.productUrl,
         })
         .from(productsTable)
         .where(inArray(productsTable.id, digitalProductIds));
-      products.forEach((p) => productMap.set(p.id, { downloadUrls: p.downloadUrls, downloadLabels: p.downloadLabels }));
+      products.forEach((p) => productMap.set(p.id, { downloadUrls: p.downloadUrls, downloadLabels: p.downloadLabels, productUrl: p.productUrl ?? null }));
     }
 
     // Returns true only when the array has at least one non-blank string
@@ -156,6 +157,7 @@ router.get(
         // Always prefer current product data so labels/files added after the order are visible
         downloadUrls: hasRealContent(prod.downloadUrls) ? prod.downloadUrls : (item.downloadUrls ?? []),
         downloadLabels: hasRealContent(prod.downloadLabels) ? prod.downloadLabels : (item.downloadLabels ?? []),
+        productUrl: prod.productUrl ?? item.productUrl ?? null,
       };
     });
 
