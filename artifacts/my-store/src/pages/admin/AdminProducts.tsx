@@ -428,7 +428,7 @@ export default function AdminProducts() {
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.isDigital}
-                  onCheckedChange={(checked) => setForm({ ...form, isDigital: checked, downloadUrls: checked ? form.downloadUrls : [], downloadLabels: checked ? form.downloadLabels : [] })}
+                  onCheckedChange={(checked) => setForm({ ...form, isDigital: checked })}
                 />
                 <Label>منتج رقمي</Label>
               </div>
