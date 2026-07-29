@@ -65,6 +65,8 @@ export interface ProductInput {
   isDigital?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
+  /** @nullable */
+  productUrl?: string | null;
 }
 
 export interface ProductUpdate {
@@ -88,6 +90,8 @@ export interface ProductUpdate {
   isDigital?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
+  /** @nullable */
+  productUrl?: string | null;
 }
 
 export interface AdminLoginInput {
@@ -121,6 +125,8 @@ export interface Product {
   isDigital: boolean;
   downloadUrls: string[];
   downloadLabels: string[];
+  /** @nullable */
+  productUrl?: string | null;
   createdAt: string;
 }
 
@@ -269,6 +275,8 @@ export interface OrderItem {
   isDigital?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
+  /** @nullable */
+  productUrl?: string | null;
 }
 
 export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];

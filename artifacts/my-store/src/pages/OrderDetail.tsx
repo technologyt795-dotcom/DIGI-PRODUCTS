@@ -506,11 +506,11 @@ export default function OrderDetail() {
                             );
                           });
                         })()}
-                        {/* Product page link — always visible for confirmed digital items */}
-                        {item.isDigital && canDownload && (
+                        {/* Product URL link — shown when admin has set a productUrl */}
+                        {item.isDigital && canDownload && (item as any).productUrl && (
                           <a
                             key="product-link"
-                            href={`/product/${item.productId}`}
+                            href={(item as any).productUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="no-print"
@@ -524,7 +524,7 @@ export default function OrderDetail() {
                               textDecoration: 'none',
                               whiteSpace: 'nowrap',
                             }}
-                            title="فتح صفحة المنتج"
+                            title="فتح المنتج"
                           >
                             <ExternalLink style={{ width: 12, height: 12, flexShrink: 0 }} />
                             <span>فتح المنتج</span>

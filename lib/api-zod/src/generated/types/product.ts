@@ -28,5 +28,7 @@ export interface Product {
   isDigital: boolean;
   downloadUrls: string[];
   downloadLabels: string[];
+  /** @nullable */
+  productUrl?: string | null;
   createdAt: Date;
 }

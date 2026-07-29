@@ -31,6 +31,7 @@ function toInsertValues(data: {
   isDigital?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
+  productUrl?: string | null;
 }) {
   return {
     slug: data.slug,
@@ -50,6 +51,7 @@ function toInsertValues(data: {
     ...(data.isDigital != null ? { isDigital: data.isDigital } : {}),
     ...(data.downloadUrls !== undefined ? { downloadUrls: data.downloadUrls } : {}),
     ...(data.downloadLabels !== undefined ? { downloadLabels: data.downloadLabels } : {}),
+    ...(data.productUrl !== undefined ? { productUrl: data.productUrl } : {}),
   };
 }
 
@@ -70,6 +72,7 @@ function toUpdateValues(data: {
   isDigital?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
+  productUrl?: string | null;
 }) {
   const values: Record<string, unknown> = { ...data };
   if (data.price != null) values.price = data.price.toString();
@@ -104,6 +107,7 @@ const productSelection = {
   isDigital: productsTable.isDigital,
   downloadUrls: productsTable.downloadUrls,
   downloadLabels: productsTable.downloadLabels,
+  productUrl: productsTable.productUrl,
   createdAt: productsTable.createdAt,
 };
 

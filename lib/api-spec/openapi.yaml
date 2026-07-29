@@ -1318,6 +1318,8 @@ components:
           type: array
           items:
             type: string
+        productUrl:
+          type: ["string", "null"]
 
     ProductUpdate:
       type: object
@@ -1362,6 +1364,8 @@ components:
           type: array
           items:
             type: string
+        productUrl:
+          type: ["string", "null"]
 
     AdminLoginInput:
       type: object
@@ -1448,6 +1452,8 @@ components:
           type: array
           items:
             type: string
+        productUrl:
+          type: ["string", "null"]
         createdAt:
           type: string
           format: date-time
@@ -1602,6 +1608,8 @@ components:
           type: array
           items:
             type: string
+        productUrl:
+          type: ["string", "null"]
 
     Order:
       type: object

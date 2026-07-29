@@ -27,4 +27,6 @@ export interface ProductUpdate {
   isDigital?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
+  /** @nullable */
+  productUrl?: string | null;
 }

@@ -31,6 +31,7 @@ export const productsTable = pgTable("products", {
   isDigital: boolean("is_digital").notNull().default(false),
   downloadUrls: text("download_urls").array().notNull().default([]),
   downloadLabels: text("download_labels").array().notNull().default([]),
+  productUrl: text("product_url"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

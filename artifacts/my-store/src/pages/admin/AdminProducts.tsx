@@ -69,6 +69,7 @@ interface ProductFormState {
   isDigital: boolean;
   downloadUrls: string[];
   downloadLabels: string[];
+  productUrl: string;
 }
 
 const emptyForm: ProductFormState = {
@@ -86,6 +87,7 @@ const emptyForm: ProductFormState = {
   isDigital: false,
   downloadUrls: [],
   downloadLabels: [],
+  productUrl: '',
 };
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
@@ -168,6 +170,7 @@ export default function AdminProducts() {
       isDigital: product.isDigital,
       downloadUrls: product.downloadUrls || [],
       downloadLabels: product.downloadLabels || [],
+      productUrl: (product as any).productUrl || '',
     });
     setUploadedFileNames([]);
     setIsDialogOpen(true);
@@ -196,6 +199,7 @@ export default function AdminProducts() {
             .map((url, i) => (url ? form.downloadLabels[i] ?? '' : null))
             .filter((l): l is string => l !== null)
         : [],
+      productUrl: form.productUrl.trim() || null,
     };
 
     try {
@@ -524,6 +528,26 @@ export default function AdminProducts() {
                 <p className="text-xs text-muted-foreground">الملفات ستُتاح للعميل بعد تأكيد الطلب — يُقبل أي نوع ملف</p>
               </div>
             )}
+
+            {/* Product URL */}
+            <div className="space-y-2">
+              <Label htmlFor="productUrl" className="flex items-center gap-2">
+                رابط المنتج
+                <span className="text-xs text-muted-foreground font-normal">(اختياري — يظهر للعميل في الفاتورة)</span>
+              </Label>
+              <Input
+                id="productUrl"
+                type="url"
+                dir="ltr"
+                className="text-left font-mono text-sm"
+                placeholder="https://example.com/product"
+                value={form.productUrl}
+                onChange={(e) => setForm({ ...form, productUrl: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">
+                ضع الرابط الذي تريد أن يدخل عليه العميل مباشرةً — مثل: رابط Google Drive، GitHub، أو أي خدمة أونلاين
+              </p>
+            </div>
 
             <DialogFooter>
               <Button type="submit" disabled={isSaving || !form.categoryId}>

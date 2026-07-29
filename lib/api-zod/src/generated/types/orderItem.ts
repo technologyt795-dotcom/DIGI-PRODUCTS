@@ -15,4 +15,6 @@ export interface OrderItem {
   isDigital?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
+  /** @nullable */
+  productUrl?: string | null;
 }

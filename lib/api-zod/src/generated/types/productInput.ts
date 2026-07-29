@@ -27,4 +27,6 @@ export interface ProductInput {
   isDigital?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
+  /** @nullable */
+  productUrl?: string | null;
 }
