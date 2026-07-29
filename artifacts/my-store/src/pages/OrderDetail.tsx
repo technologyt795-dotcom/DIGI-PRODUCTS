@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'wouter';
-import { ArrowRight, Download, Loader2, Printer, Package } from 'lucide-react';
+import { ArrowRight, Download, ExternalLink, Loader2, Printer, Package } from 'lucide-react';
 import { useGetMyOrder, getGetMyOrderQueryKey } from '@workspace/api-client-react';
 import { useCustomerAuth } from '@/hooks/use-customer-auth';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
@@ -506,6 +506,30 @@ export default function OrderDetail() {
                             );
                           });
                         })()}
+                        {/* Product page link — always visible for confirmed digital items */}
+                        {item.isDigital && canDownload && (
+                          <a
+                            key="product-link"
+                            href={`/product/${item.productId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="no-print"
+                            style={{
+                              display: 'inline-flex', alignItems: 'center', gap: 4,
+                              fontSize: 11, fontWeight: 700, padding: '3px 10px',
+                              background: 'transparent',
+                              color: 'var(--inv-primary)',
+                              border: '1.5px solid var(--inv-primary)',
+                              borderRadius: 6, cursor: 'pointer',
+                              textDecoration: 'none',
+                              whiteSpace: 'nowrap',
+                            }}
+                            title="فتح صفحة المنتج"
+                          >
+                            <ExternalLink style={{ width: 12, height: 12, flexShrink: 0 }} />
+                            <span>فتح المنتج</span>
+                          </a>
+                        )}
                         {item.isDigital && !canDownload && order.status !== 'cancelled' && (
                           <span className="no-print" style={{ fontSize: 10, color: 'var(--inv-muted-fg)' }}>
                             ينتظر التأكيد
