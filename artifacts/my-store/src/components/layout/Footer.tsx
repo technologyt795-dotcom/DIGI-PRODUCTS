@@ -22,6 +22,15 @@ export function Footer() {
     color:           settings?.footerTextColor || undefined,
   };
 
+  // When a custom text color is set, override the hardcoded child classes
+  const tc = settings?.footerTextColor;
+  const headingCls   = tc ? '' : 'text-white';
+  const bodyCls      = tc ? '' : 'text-primary-foreground/70';
+  const dimCls       = tc ? '' : 'text-primary-foreground/50';
+  const headingStyle = tc ? { color: tc }                    : {};
+  const bodyStyle    = tc ? { color: tc, opacity: 0.75 }     : {};
+  const dimStyle     = tc ? { color: tc, opacity: 0.5  }     : {};
+
   return (
     <footer
       className={[
