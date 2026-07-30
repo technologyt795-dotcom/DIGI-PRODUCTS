@@ -32,6 +32,7 @@ import AdminReviews from '@/pages/admin/AdminReviews';
 import AdminAnalytics from '@/pages/admin/AdminAnalytics';
 import AdminFinance from '@/pages/admin/AdminFinance';
 import AdminSettings from '@/pages/admin/AdminSettings';
+import AdminPreview from '@/pages/admin/AdminPreview';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -106,6 +107,9 @@ function App() {
                 </Route>
                 <Route path="/admin/settings">
                   <AdminPage><AdminSettings /></AdminPage>
+                </Route>
+                <Route path="/admin/preview">
+                  <AdminPage><AdminPreview /></AdminPage>
                 </Route>
                 <Route path="/admin">
                   <AdminPage><AdminDashboard /></AdminPage>

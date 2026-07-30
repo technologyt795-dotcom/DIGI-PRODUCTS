@@ -15,7 +15,8 @@ import {
   ExternalLink,
   ShoppingBag,
   Menu,
-  X
+  X,
+  Smartphone,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAdminAuth } from '@/hooks/use-admin-auth';
@@ -33,6 +34,7 @@ const navItems = [
   { name: 'التحليلات', path: '/admin/analytics', icon: BarChart2 },
   { name: 'المالية', path: '/admin/finance', icon: Wallet },
   { name: 'الإعدادات', path: '/admin/settings', icon: Settings2 },
+  { name: 'معاينة المتجر', path: '/admin/preview', icon: Smartphone },
 ];
 
 export function AdminLayout({ children }: { children: ReactNode }) {
