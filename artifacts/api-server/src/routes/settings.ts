@@ -27,6 +27,10 @@ const DEFAULT_SETTINGS = {
   drawerBgColor: null,
   drawerTextColor: null,
   refundPolicy: null,
+  heroBgImage: null,
+  footerBgColor: null,
+  footerTextColor: null,
+  footerPadding: null,
 };
 
 async function ensureSettings() {
@@ -64,6 +68,10 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
     drawerBgColor: row.drawerBgColor ?? null,
     drawerTextColor: row.drawerTextColor ?? null,
     refundPolicy: row.refundPolicy ?? null,
+    heroBgImage: row.heroBgImage ?? null,
+    footerBgColor: row.footerBgColor ?? null,
+    footerTextColor: row.footerTextColor ?? null,
+    footerPadding: row.footerPadding ?? null,
   };
 }
 
@@ -109,6 +117,10 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if (data.drawerBgColor !== undefined) updateValues.drawerBgColor = data.drawerBgColor;
   if (data.drawerTextColor !== undefined) updateValues.drawerTextColor = data.drawerTextColor;
   if (data.refundPolicy !== undefined) updateValues.refundPolicy = data.refundPolicy;
+  if (data.heroBgImage !== undefined) updateValues.heroBgImage = data.heroBgImage;
+  if (data.footerBgColor !== undefined) updateValues.footerBgColor = data.footerBgColor;
+  if (data.footerTextColor !== undefined) updateValues.footerTextColor = data.footerTextColor;
+  if (data.footerPadding !== undefined) updateValues.footerPadding = data.footerPadding;
 
   try {
     // Upsert: insert if not exists, update otherwise

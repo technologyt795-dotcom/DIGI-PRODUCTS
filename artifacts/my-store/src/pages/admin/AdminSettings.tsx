@@ -42,6 +42,11 @@ export default function AdminSettings() {
   const [drawerTextColor, setDrawerTextColor] = useState<string | null>(null);
   const [drawerColorsEnabled, setDrawerColorsEnabled] = useState(false);
   const [refundPolicy, setRefundPolicy] = useState<string>('');
+  const [heroBgImage, setHeroBgImage] = useState<string | null>(null);
+  const [footerBgColor, setFooterBgColor] = useState<string | null>(null);
+  const [footerTextColor, setFooterTextColor] = useState<string | null>(null);
+  const [footerPadding, setFooterPadding] = useState<string>('normal');
+  const [footerColorsEnabled, setFooterColorsEnabled] = useState(false);
 
   // Initialize form when settings load
   useEffect(() => {
@@ -69,6 +74,11 @@ export default function AdminSettings() {
       setDrawerTextColor(settings.drawerTextColor ?? null);
       setDrawerColorsEnabled(!!(settings.drawerBgColor || settings.drawerTextColor));
       setRefundPolicy(settings.refundPolicy ?? '');
+      setHeroBgImage(settings.heroBgImage ?? null);
+      setFooterBgColor(settings.footerBgColor ?? null);
+      setFooterTextColor(settings.footerTextColor ?? null);
+      setFooterPadding(settings.footerPadding ?? 'normal');
+      setFooterColorsEnabled(!!(settings.footerBgColor || settings.footerTextColor));
     }
   }, [settings]);
 
@@ -109,6 +119,10 @@ export default function AdminSettings() {
         drawerBgColor: drawerColorsEnabled ? (drawerBgColor || null) : null,
         drawerTextColor: drawerColorsEnabled ? (drawerTextColor || null) : null,
         refundPolicy: refundPolicy || null,
+        heroBgImage: heroBgImage || null,
+        footerBgColor: footerColorsEnabled ? (footerBgColor || null) : null,
+        footerTextColor: footerColorsEnabled ? (footerTextColor || null) : null,
+        footerPadding: footerPadding || null,
       }
     });
   };
@@ -488,6 +502,137 @@ export default function AdminSettings() {
                 </div>
               </CardContent>
             )}
+          </Card>
+
+          {/* ── Hero Background Image ──────────────────────────── */}
+          <Card>
+            <CardHeader>
+              <CardTitle>صورة خلفية الـ Hero</CardTitle>
+              <CardDescription>
+                صورة تظهر خلف نص القسم الرئيسي في الصفحة الرئيسية — الحجم الموصى به: <strong>1920 × 1080 px</strong>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ImageUploadField
+                images={heroBgImage ? [heroBgImage] : []}
+                onChange={(imgs) => setHeroBgImage(imgs.length > 0 ? imgs[imgs.length - 1] : null)}
+                label="صورة الخلفية"
+              />
+              {heroBgImage && (
+                <div className="mt-4 rounded-xl overflow-hidden border border-border h-40 relative">
+                  <img src={heroBgImage} alt="معاينة الخلفية" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">معاينة الخلفية</span>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* ── Footer Colors ─────────────────────────────────────── */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Palette className="h-5 w-5 text-primary" />
+                    ألوان وحجم الفوتر
+                  </CardTitle>
+                  <CardDescription>تخصيص ألوان الفوتر وحجم التبادد الداخلي</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {footerColorsEnabled ? 'مفعّل' : 'معطَّل'}
+                  </span>
+                  <Switch
+                    checked={footerColorsEnabled}
+                    onCheckedChange={(checked) => {
+                      setFooterColorsEnabled(checked);
+                      if (!checked) {
+                        setFooterBgColor(null);
+                        setFooterTextColor(null);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              {footerColorsEnabled && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Bg color */}
+                  <div className="space-y-3">
+                    <Label>لون الخلفية</Label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={footerBgColor || '#0f172a'}
+                        onChange={(e) => setFooterBgColor(e.target.value)}
+                        className="h-10 w-14 cursor-pointer rounded-md border border-border bg-transparent p-0.5 shrink-0"
+                      />
+                      <Input
+                        value={footerBgColor || ''}
+                        onChange={(e) => setFooterBgColor(e.target.value || null)}
+                        placeholder="مثال: #0f172a"
+                        dir="ltr"
+                        className="text-left font-mono text-sm"
+                      />
+                      {footerBgColor && (
+                        <Button variant="ghost" size="sm" onClick={() => setFooterBgColor(null)} className="shrink-0 text-muted-foreground hover:text-destructive">حذف</Button>
+                      )}
+                    </div>
+                  </div>
+                  {/* Text color */}
+                  <div className="space-y-3">
+                    <Label>لون النصوص</Label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={footerTextColor || '#ffffff'}
+                        onChange={(e) => setFooterTextColor(e.target.value)}
+                        className="h-10 w-14 cursor-pointer rounded-md border border-border bg-transparent p-0.5 shrink-0"
+                      />
+                      <Input
+                        value={footerTextColor || ''}
+                        onChange={(e) => setFooterTextColor(e.target.value || null)}
+                        placeholder="مثال: #ffffff"
+                        dir="ltr"
+                        className="text-left font-mono text-sm"
+                      />
+                      {footerTextColor && (
+                        <Button variant="ghost" size="sm" onClick={() => setFooterTextColor(null)} className="shrink-0 text-muted-foreground hover:text-destructive">حذف</Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Footer padding — always visible */}
+              <div className="space-y-2 md:w-1/2">
+                <Label>حجم التبادد الداخلي (Padding)</Label>
+                <select
+                  value={footerPadding}
+                  onChange={(e) => setFooterPadding(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                >
+                  <option value="compact">مضغوط (compact)</option>
+                  <option value="normal">عادي (normal)</option>
+                  <option value="large">واسع (large)</option>
+                </select>
+              </div>
+
+              {/* Preview */}
+              <div
+                className="rounded-xl border border-border p-4 text-xs flex items-center justify-center"
+                style={{
+                  background: footerColorsEnabled ? (footerBgColor || '#0f172a') : '#0f172a',
+                  color: footerColorsEnabled ? (footerTextColor || '#ffffff') : '#ffffff',
+                }}
+              >
+                معاينة الفوتر — {footerPadding === 'compact' ? 'مضغوط' : footerPadding === 'large' ? 'واسع' : 'عادي'}
+              </div>
+            </CardContent>
           </Card>
         </TabsContent>
 

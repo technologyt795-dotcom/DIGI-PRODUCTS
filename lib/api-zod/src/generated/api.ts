@@ -417,7 +417,11 @@ export const GetSettingsResponse = zod.object({
   "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
   "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
-  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers')
+  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers'),
+  "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
+  "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
+  "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
+  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)')
 })
 
 
@@ -452,7 +456,11 @@ export const UpdateSettingsBody = zod.object({
   "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
   "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
-  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers')
+  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers'),
+  "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
+  "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
+  "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
+  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)')
 })
 
 export const UpdateSettingsResponse = zod.object({
@@ -475,7 +483,11 @@ export const UpdateSettingsResponse = zod.object({
   "navbarTextColor": zod.string().nullish().describe('Custom hex color for the storefront navbar text'),
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
   "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
-  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers')
+  "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers'),
+  "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
+  "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
+  "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
+  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)')
 })
 
 

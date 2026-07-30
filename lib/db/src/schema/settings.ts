@@ -35,6 +35,10 @@ export const storeSettingsTable = pgTable("store_settings", {
   drawerBgColor: text("drawer_bg_color"),
   drawerTextColor: text("drawer_text_color"),
   refundPolicy: text("refund_policy"),
+  heroBgImage: text("hero_bg_image"),
+  footerBgColor: text("footer_bg_color"),
+  footerTextColor: text("footer_text_color"),
+  footerPadding: text("footer_padding"),
 });
 
 export const insertStoreSettingsSchema = createInsertSchema(

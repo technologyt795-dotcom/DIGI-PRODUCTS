@@ -196,6 +196,26 @@ export interface StoreSettings {
      * @nullable
      */
   refundPolicy?: string | null;
+  /**
+     * URL of the hero section background image
+     * @nullable
+     */
+  heroBgImage?: string | null;
+  /**
+     * Custom hex color for the footer background
+     * @nullable
+     */
+  footerBgColor?: string | null;
+  /**
+     * Custom hex color for the footer text
+     * @nullable
+     */
+  footerTextColor?: string | null;
+  /**
+     * Footer padding size (compact, normal, large)
+     * @nullable
+     */
+  footerPadding?: string | null;
 }
 
 export type StoreSettingsUpdateActiveTheme = typeof StoreSettingsUpdateActiveTheme[keyof typeof StoreSettingsUpdateActiveTheme];
@@ -264,6 +284,26 @@ export interface StoreSettingsUpdate {
      * @nullable
      */
   refundPolicy?: string | null;
+  /**
+     * URL of the hero section background image
+     * @nullable
+     */
+  heroBgImage?: string | null;
+  /**
+     * Custom hex color for the footer background
+     * @nullable
+     */
+  footerBgColor?: string | null;
+  /**
+     * Custom hex color for the footer text
+     * @nullable
+     */
+  footerTextColor?: string | null;
+  /**
+     * Footer padding size (compact, normal, large)
+     * @nullable
+     */
+  footerPadding?: string | null;
 }
 
 export interface OrderItem {

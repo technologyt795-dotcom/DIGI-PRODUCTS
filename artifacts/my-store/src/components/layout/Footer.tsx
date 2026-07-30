@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'wouter';
 import { ShoppingBag, Lock, Mail, Phone, MapPin, Instagram, Twitter, Facebook } from 'lucide-react';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
@@ -10,9 +11,19 @@ export function Footer() {
   const visibleCategories = (categories ?? []).filter((c) => !c.isHidden);
   const storeName = settings?.storeName || 'My Store';
 
+  const paddingClass =
+    settings?.footerPadding === 'compact' ? 'py-8' :
+    settings?.footerPadding === 'large'   ? 'py-24' :
+    'py-16';
+
+  const footerStyle: React.CSSProperties = {
+    ...(settings?.footerBgColor ? { background: settings.footerBgColor } : {}),
+    ...(settings?.footerTextColor ? { color: settings.footerTextColor } : {}),
+  };
+
   return (
-    <footer className="bg-primary text-primary-foreground mt-auto">
-      <div className="container mx-auto px-4 py-16">
+    <footer className="bg-primary text-primary-foreground mt-auto" style={footerStyle}>
+      <div className={`container mx-auto px-4 ${paddingClass}`}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           
           {/* Brand */}

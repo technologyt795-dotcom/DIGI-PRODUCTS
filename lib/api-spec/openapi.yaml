@@ -1527,6 +1527,18 @@ components:
         refundPolicy:
           type: ["string", "null"]
           description: Store refund/return policy text shown to customers
+        heroBgImage:
+          type: ["string", "null"]
+          description: URL of the hero section background image
+        footerBgColor:
+          type: ["string", "null"]
+          description: Custom hex color for the footer background
+        footerTextColor:
+          type: ["string", "null"]
+          description: Custom hex color for the footer text
+        footerPadding:
+          type: ["string", "null"]
+          description: Footer padding size (compact, normal, large)
 
     StoreSettingsUpdate:
       type: object
@@ -1581,6 +1593,18 @@ components:
         refundPolicy:
           type: ["string", "null"]
           description: Store refund/return policy text shown to customers
+        heroBgImage:
+          type: ["string", "null"]
+          description: URL of the hero section background image
+        footerBgColor:
+          type: ["string", "null"]
+          description: Custom hex color for the footer background
+        footerTextColor:
+          type: ["string", "null"]
+          description: Custom hex color for the footer text
+        footerPadding:
+          type: ["string", "null"]
+          description: Footer padding size (compact, normal, large)
 
     # ── Order schemas ────────────────────────────────────────────────────────
 
