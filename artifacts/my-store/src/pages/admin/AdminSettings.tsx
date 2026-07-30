@@ -616,6 +616,7 @@ export default function AdminSettings() {
                   onChange={(e) => setFooterPadding(e.target.value)}
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 >
+                  <option value="mini">صغير جداً (mini)</option>
                   <option value="compact">مضغوط (compact)</option>
                   <option value="normal">عادي (normal)</option>
                   <option value="large">واسع (large)</option>
@@ -630,7 +631,7 @@ export default function AdminSettings() {
                   color: footerColorsEnabled ? (footerTextColor || '#ffffff') : '#ffffff',
                 }}
               >
-                معاينة الفوتر — {footerPadding === 'compact' ? 'مضغوط' : footerPadding === 'large' ? 'واسع' : 'عادي'}
+                معاينة الفوتر — {footerPadding === 'mini' ? 'صغير جداً' : footerPadding === 'compact' ? 'مضغوط' : footerPadding === 'large' ? 'واسع' : 'عادي'}
               </div>
             </CardContent>
           </Card>

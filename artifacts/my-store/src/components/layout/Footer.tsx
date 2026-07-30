@@ -12,6 +12,7 @@ export function Footer() {
   const storeName = settings?.storeName || 'My Store';
 
   const paddingClass =
+    settings?.footerPadding === 'mini'    ? 'py-4' :
     settings?.footerPadding === 'compact' ? 'py-8' :
     settings?.footerPadding === 'large'   ? 'py-24' :
     'py-16';
