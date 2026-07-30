@@ -11,20 +11,20 @@ export function Footer() {
   const visibleCategories = (categories ?? []).filter((c) => !c.isHidden);
   const storeName = settings?.storeName || 'My Store';
 
-  const paddingClass =
-    settings?.footerPadding === 'mini'    ? 'py-4' :
-    settings?.footerPadding === 'compact' ? 'py-8' :
-    settings?.footerPadding === 'large'   ? 'py-24' :
-    'py-16';
+  const paddingY =
+    settings?.footerPadding === 'mini'    ? '1rem'  :
+    settings?.footerPadding === 'compact' ? '2rem'  :
+    settings?.footerPadding === 'large'   ? '6rem'  :
+    '4rem';
 
   const footerStyle: React.CSSProperties = {
-    ...(settings?.footerBgColor ? { background: settings.footerBgColor } : {}),
-    ...(settings?.footerTextColor ? { color: settings.footerTextColor } : {}),
+    backgroundColor: settings?.footerBgColor  || undefined,
+    color:           settings?.footerTextColor || undefined,
   };
 
   return (
     <footer className="bg-primary text-primary-foreground mt-auto" style={footerStyle}>
-      <div className={`container mx-auto px-4 ${paddingClass}`}>
+      <div className="container mx-auto px-4" style={{ paddingTop: paddingY, paddingBottom: paddingY }}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           
           {/* Brand */}
