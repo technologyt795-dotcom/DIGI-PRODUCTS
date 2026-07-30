@@ -23,7 +23,14 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-primary text-primary-foreground mt-auto" style={footerStyle}>
+    <footer
+      className={[
+        'mt-auto',
+        settings?.footerBgColor  ? '' : 'bg-primary',
+        settings?.footerTextColor ? '' : 'text-primary-foreground',
+      ].join(' ')}
+      style={footerStyle}
+    >
       <div className="container mx-auto px-4" style={{ paddingTop: paddingY, paddingBottom: paddingY }}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           
