@@ -46,6 +46,11 @@ export const ordersTable = pgTable("orders", {
   trackingNumber: text("tracking_number"),
   trackingUrl: text("tracking_url"),
   hiddenByCustomer: boolean("hidden_by_customer").notNull().default(false),
+  paymentMethod: text("payment_method").notNull().default("cash"),
+  // cash | online
+  paymentStatus: text("payment_status").notNull().default("pending"),
+  // pending | paid | failed
+  paymentId: text("payment_id"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

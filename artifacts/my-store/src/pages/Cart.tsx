@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Minus, Plus, Trash2, ShoppingBag, Lock, Loader2, CheckCircle, Tag, MapPin } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, Lock, Loader2, CheckCircle, Tag, MapPin, CreditCard, Truck } from 'lucide-react';
 import { useValidateDiscount, useCreateOrder } from '@workspace/api-client-react';
 import { useCustomerAuth } from '@/hooks/use-customer-auth';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 export default function Cart() {
   const [, setLocation] = useLocation();
@@ -20,7 +21,8 @@ export default function Cart() {
 
   const [discountCode, setDiscountCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number } | null>(null);
-  
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'online'>('cash');
+
   const [form, setForm] = useState({
     customerName: '',
     customerEmail: '',
@@ -51,7 +53,8 @@ export default function Cart() {
     if (!discountCode) return;
     try {
       const res = await validateDiscount.mutateAsync({ data: { code: discountCode, orderTotal: subtotalWithTax } });
-      setAppliedDiscount({ code: discountCode, amount: res.discountAmount });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setAppliedDiscount({ code: discountCode, amount: (res as any).discountAmount });
       toast.success('تم تطبيق كود الخصم بنجاح');
     } catch (err: any) {
       toast.error(err.message || 'كود الخصم غير صالح');
@@ -62,7 +65,7 @@ export default function Cart() {
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (items.length === 0) return;
-    
+
     try {
       const orderItems = items.map(item => ({
         productId: item.product.id,
@@ -76,18 +79,26 @@ export default function Cart() {
         ...form,
         items: orderItems,
         discountCode: appliedDiscount?.code,
+        paymentMethod,
       };
 
       const res = await createOrder.mutateAsync({ data: payload });
       clearCart();
-      toast.success(
-        <div className="flex flex-col gap-1">
-          <span className="font-bold text-lg">تم تأكيد طلبك بنجاح!</span>
-          <span>رقم الطلب: #{res.orderNumber}</span>
-        </div>,
-        { duration: 5000 }
-      );
-      setLocation('/');
+
+      if (paymentMethod === 'online') {
+        // Redirect to Moyasar payment checkout
+        const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
+        setLocation(`${baseUrl}/payment-checkout?orderNumber=${encodeURIComponent(res.orderNumber)}&total=${encodeURIComponent(finalTotal)}`);
+      } else {
+        toast.success(
+          <div className="flex flex-col gap-1">
+            <span className="font-bold text-lg">تم تأكيد طلبك بنجاح!</span>
+            <span>رقم الطلب: #{res.orderNumber}</span>
+          </div>,
+          { duration: 5000 }
+        );
+        setLocation('/');
+      }
     } catch (err: any) {
       toast.error(err.message || 'حدث خطأ أثناء إتمام الطلب');
     }
@@ -115,26 +126,26 @@ export default function Cart() {
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-4xl font-black mb-10">إتمام الشراء</h1>
-      
+
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Left Column: Cart Items & Form */}
         <div className="flex-1 space-y-10">
-          
+
           {/* Cart Items Box */}
           <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
             <div className="p-6 bg-muted/30 border-b border-border flex justify-between items-center">
               <h2 className="text-xl font-bold flex items-center gap-2"><ShoppingBag className="h-5 w-5" /> منتجات السلة</h2>
               <span className="text-muted-foreground font-medium">{items.length} منتجات</span>
             </div>
-            
+
             <div className="divide-y divide-border">
               {items.map((item) => (
                 <div key={item.product.id} className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                   <div className="flex items-center gap-4 flex-1 w-full">
                     <div className="w-20 h-20 rounded-xl overflow-hidden bg-muted border border-border/50 shrink-0">
-                      <img 
-                        src={item.product.images[0]} 
-                        alt={item.product.name} 
+                      <img
+                        src={item.product.images[0]}
+                        alt={item.product.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -143,10 +154,10 @@ export default function Cart() {
                       <span className="text-primary font-bold mt-1">{formatPrice(item.product.price)}</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between w-full sm:w-auto mt-4 sm:mt-0 gap-6">
                     <div className="flex items-center border border-border rounded-lg bg-background w-28 h-9">
-                      <button 
+                      <button
                         onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                         disabled={item.quantity >= item.product.stock}
                         className="w-8 h-full flex items-center justify-center hover:bg-muted text-foreground transition-colors disabled:opacity-50"
@@ -156,7 +167,7 @@ export default function Cart() {
                       <div className="flex-1 h-full flex items-center justify-center font-bold text-sm border-x border-border">
                         {item.quantity}
                       </div>
-                      <button 
+                      <button
                         onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                         className="w-8 h-full flex items-center justify-center hover:bg-muted text-foreground transition-colors"
                       >
@@ -166,7 +177,7 @@ export default function Cart() {
                     <div className="font-bold w-20 text-left">
                       {formatPrice(item.product.price * item.quantity)}
                     </div>
-                    <button 
+                    <button
                       onClick={() => removeItem(item.product.id)}
                       className="text-muted-foreground hover:text-destructive transition-colors p-2"
                     >
@@ -206,24 +217,89 @@ export default function Cart() {
               </div>
             </form>
           </div>
+
+          {/* Payment Method Selection */}
+          <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm p-6 sm:p-8">
+            <h2 className="text-xl font-bold mb-5 flex items-center gap-2"><CreditCard className="h-5 w-5" /> طريقة الدفع</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Cash on Delivery */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('cash')}
+                className={cn(
+                  'flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer text-center',
+                  paymentMethod === 'cash'
+                    ? 'border-primary bg-primary/5 shadow-md'
+                    : 'border-border bg-muted/30 hover:border-primary/40 hover:bg-muted/60'
+                )}
+              >
+                <div className={cn(
+                  'w-12 h-12 rounded-full flex items-center justify-center transition-colors',
+                  paymentMethod === 'cash' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                )}>
+                  <Truck className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="font-bold text-base">الدفع عند الاستلام</p>
+                  <p className="text-muted-foreground text-sm mt-0.5">ادفع نقداً عند استلام طلبك</p>
+                </div>
+                {paymentMethod === 'cash' && (
+                  <CheckCircle className="h-5 w-5 text-primary absolute top-3 left-3" />
+                )}
+              </button>
+
+              {/* Online Payment */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('online')}
+                className={cn(
+                  'flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer text-center relative',
+                  paymentMethod === 'online'
+                    ? 'border-primary bg-primary/5 shadow-md'
+                    : 'border-border bg-muted/30 hover:border-primary/40 hover:bg-muted/60'
+                )}
+              >
+                <div className={cn(
+                  'w-12 h-12 rounded-full flex items-center justify-center transition-colors',
+                  paymentMethod === 'online' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                )}>
+                  <CreditCard className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="font-bold text-base">الدفع الإلكتروني</p>
+                  <p className="text-muted-foreground text-sm mt-0.5">بطاقة بنكية · Apple Pay · STC Pay</p>
+                </div>
+                {paymentMethod === 'online' && (
+                  <CheckCircle className="h-5 w-5 text-primary absolute top-3 left-3" />
+                )}
+              </button>
+            </div>
+
+            {paymentMethod === 'online' && (
+              <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-xl p-3">
+                <Lock className="h-4 w-4 shrink-0 text-primary" />
+                <span>سيتم توجيهك إلى بوابة ميسر الآمنة لإتمام عملية الدفع</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Column: Order Summary */}
         <div className="w-full lg:w-96 shrink-0">
           <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 sticky top-28 shadow-sm">
             <h2 className="text-xl font-black mb-6 border-b border-border pb-4">ملخص الطلب</h2>
-            
+
             {/* Discount Code */}
             <div className="mb-6 space-y-3 pb-6 border-b border-border">
               <Label className="flex items-center gap-1.5"><Tag className="h-4 w-4" /> كود الخصم</Label>
               <div className="flex gap-2">
-                <Input 
-                  value={discountCode} 
-                  onChange={e => setDiscountCode(e.target.value.toUpperCase())} 
-                  placeholder="أدخل الكود" 
-                  dir="ltr" 
+                <Input
+                  value={discountCode}
+                  onChange={e => setDiscountCode(e.target.value.toUpperCase())}
+                  placeholder="أدخل الكود"
+                  dir="ltr"
                   disabled={!!appliedDiscount || validateDiscount.isPending}
-                  className="font-bold text-center uppercase" 
+                  className="font-bold text-center uppercase"
                 />
                 {!appliedDiscount ? (
                   <Button variant="secondary" onClick={handleApplyDiscount} disabled={!discountCode || validateDiscount.isPending}>
@@ -262,25 +338,34 @@ export default function Cart() {
                 </div>
               )}
             </div>
-            
+
             <div className="border-t border-border pt-6 mb-8 flex justify-between items-end">
               <span className="font-bold">الإجمالي الكلي</span>
               <span className="text-3xl font-black text-primary">{formatPrice(finalTotal)}</span>
             </div>
-            
-            <Button 
-              type="submit" 
+
+            <Button
+              type="submit"
               form="checkout-form"
-              size="lg" 
+              size="lg"
               disabled={createOrder.isPending}
               className="w-full h-14 text-lg font-bold rounded-xl shadow-md"
             >
-              {createOrder.isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 'تأكيد الطلب'}
+              {createOrder.isPending ? (
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              ) : paymentMethod === 'online' ? (
+                <>
+                  <CreditCard className="ml-2 h-5 w-5" />
+                  المتابعة للدفع
+                </>
+              ) : (
+                'تأكيد الطلب'
+              )}
             </Button>
-            
+
             <div className="mt-6 flex items-center justify-center gap-2 text-muted-foreground text-sm">
               <Lock className="h-4 w-4" />
-              <span>دفع آمن عند الاستلام</span>
+              <span>{paymentMethod === 'online' ? 'دفع آمن عبر بوابة ميسر' : 'دفع آمن عند الاستلام'}</span>
             </div>
           </div>
         </div>

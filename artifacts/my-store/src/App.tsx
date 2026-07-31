@@ -19,6 +19,8 @@ import Cart from '@/pages/Cart';
 import MyOrders from '@/pages/MyOrders';
 import OrderDetail from '@/pages/OrderDetail';
 import RefundPolicy from '@/pages/RefundPolicy';
+import PaymentCallback from '@/pages/PaymentCallback';
+import PaymentCheckout from '@/pages/PaymentCheckout';
 
 // Admin Pages
 import AdminLogin from '@/pages/admin/AdminLogin';
@@ -62,6 +64,8 @@ function StoreRouter() {
       <Route path="/my-orders/:orderNumber" component={OrderDetail} />
       <Route path="/my-orders" component={MyOrders} />
       <Route path="/refund-policy" component={RefundPolicy} />
+      <Route path="/payment-callback" component={PaymentCallback} />
+      <Route path="/payment-checkout" component={PaymentCheckout} />
       <Route component={NotFound} />
     </Switch>
   );

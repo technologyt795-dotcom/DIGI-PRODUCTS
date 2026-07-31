@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { OrderInputPaymentMethod } from './orderInputPaymentMethod';
 import type { OrderItem } from './orderItem';
 
 export interface OrderInput {
@@ -18,4 +19,6 @@ export interface OrderInput {
   items: OrderItem[];
   discountCode?: string;
   notes?: string;
+  /** Payment method (defaults to cash) */
+  paymentMethod?: OrderInputPaymentMethod;
 }

@@ -1164,6 +1164,76 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  # ── Payments ─────────────────────────────────────────────────────────────────
+
+  /payments/moyasar:
+    post:
+      operationId: createMoyasarPayment
+      tags: [orders]
+      summary: Create a Moyasar payment for an existing order (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MoyasarPaymentInput"
+      responses:
+        "200":
+          description: Moyasar payment URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MoyasarPaymentResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /payments/callback:
+    get:
+      operationId: handlePaymentCallback
+      tags: [orders]
+      summary: Verify Moyasar payment callback and update order (public)
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: orderNumber
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect to success or failure page
+        "200":
+          description: Payment verification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentCallbackResult"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /storage/uploads/request-url:
     post:
       tags: [Storage]
@@ -1641,7 +1711,8 @@ components:
         [
           id, orderNumber, customerName, customerEmail, customerPhone,
           address, status, items, subtotal, shippingCost, tax,
-          discountCode, discountAmount, total, notes, createdAt
+          discountCode, discountAmount, total, notes, createdAt,
+          paymentMethod, paymentStatus
         ]
       properties:
         id:
@@ -1683,6 +1754,17 @@ components:
         trackingUrl:
           type: ["string", "null"]
           description: Shipping carrier tracking URL
+        paymentMethod:
+          type: string
+          enum: [cash, online]
+          description: Payment method chosen by customer
+        paymentStatus:
+          type: string
+          enum: [pending, paid, failed]
+          description: Payment status for online orders
+        paymentId:
+          type: ["string", "null"]
+          description: Moyasar payment ID
         createdAt:
           type: string
           format: date-time
@@ -1709,6 +1791,44 @@ components:
         discountCode:
           type: string
         notes:
+          type: string
+        paymentMethod:
+          type: string
+          enum: [cash, online]
+          description: Payment method (defaults to cash)
+
+    MoyasarPaymentInput:
+      type: object
+      required: [orderNumber, callbackUrl]
+      properties:
+        orderNumber:
+          type: string
+          minLength: 1
+        callbackUrl:
+          type: string
+          minLength: 1
+
+    MoyasarPaymentResponse:
+      type: object
+      required: [paymentUrl, paymentId]
+      properties:
+        paymentUrl:
+          type: string
+          description: URL to redirect the customer to for payment
+        paymentId:
+          type: string
+          description: Moyasar payment ID
+
+    PaymentCallbackResult:
+      type: object
+      required: [status, orderNumber]
+      properties:
+        status:
+          type: string
+          enum: [paid, failed, pending]
+        orderNumber:
+          type: string
+        message:
           type: string
 
     OrderUpdate:

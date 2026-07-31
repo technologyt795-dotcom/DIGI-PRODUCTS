@@ -12,6 +12,7 @@ import analyticsRouter from "./analytics";
 import customerAuthRouter from "./customerAuth";
 import customerOrdersRouter from "./customerOrders";
 import storageRouter from "./storage";
+import paymentsRouter from "./payments";
 
 const router: IRouter = Router();
 
@@ -28,5 +29,6 @@ router.use(analyticsRouter);
 router.use(customerAuthRouter);
 router.use(customerOrdersRouter);
 router.use(storageRouter);
+router.use(paymentsRouter);
 
 export default router;

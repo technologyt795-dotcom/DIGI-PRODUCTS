@@ -330,6 +330,29 @@ export const OrderStatus = {
   cancelled: 'cancelled',
 } as const;
 
+/**
+ * Payment method chosen by customer
+ */
+export type OrderPaymentMethod = typeof OrderPaymentMethod[keyof typeof OrderPaymentMethod];
+
+
+export const OrderPaymentMethod = {
+  cash: 'cash',
+  online: 'online',
+} as const;
+
+/**
+ * Payment status for online orders
+ */
+export type OrderPaymentStatus = typeof OrderPaymentStatus[keyof typeof OrderPaymentStatus];
+
+
+export const OrderPaymentStatus = {
+  pending: 'pending',
+  paid: 'paid',
+  failed: 'failed',
+} as const;
+
 export interface Order {
   id: number;
   orderNumber: string;
@@ -358,8 +381,28 @@ export interface Order {
      * @nullable
      */
   trackingUrl?: string | null;
+  /** Payment method chosen by customer */
+  paymentMethod: OrderPaymentMethod;
+  /** Payment status for online orders */
+  paymentStatus: OrderPaymentStatus;
+  /**
+     * Moyasar payment ID
+     * @nullable
+     */
+  paymentId?: string | null;
   createdAt: string;
 }
+
+/**
+ * Payment method (defaults to cash)
+ */
+export type OrderInputPaymentMethod = typeof OrderInputPaymentMethod[keyof typeof OrderInputPaymentMethod];
+
+
+export const OrderInputPaymentMethod = {
+  cash: 'cash',
+  online: 'online',
+} as const;
 
 export interface OrderInput {
   /** @minLength 1 */
@@ -372,6 +415,37 @@ export interface OrderInput {
   items: OrderItem[];
   discountCode?: string;
   notes?: string;
+  /** Payment method (defaults to cash) */
+  paymentMethod?: OrderInputPaymentMethod;
+}
+
+export interface MoyasarPaymentInput {
+  /** @minLength 1 */
+  orderNumber: string;
+  /** @minLength 1 */
+  callbackUrl: string;
+}
+
+export interface MoyasarPaymentResponse {
+  /** URL to redirect the customer to for payment */
+  paymentUrl: string;
+  /** Moyasar payment ID */
+  paymentId: string;
+}
+
+export type PaymentCallbackResultStatus = typeof PaymentCallbackResultStatus[keyof typeof PaymentCallbackResultStatus];
+
+
+export const PaymentCallbackResultStatus = {
+  paid: 'paid',
+  failed: 'failed',
+  pending: 'pending',
+} as const;
+
+export interface PaymentCallbackResult {
+  status: PaymentCallbackResultStatus;
+  orderNumber: string;
+  message?: string;
 }
 
 export type OrderUpdateStatus = typeof OrderUpdateStatus[keyof typeof OrderUpdateStatus];
@@ -621,5 +695,11 @@ export const ListOrdersStatus = {
 
 export type ListReviewsParams = {
 approved?: boolean;
+};
+
+export type HandlePaymentCallbackParams = {
+id: string;
+status?: string;
+orderNumber?: string;
 };
 

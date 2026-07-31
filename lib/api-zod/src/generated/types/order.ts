@@ -6,6 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { OrderItem } from './orderItem';
+import type { OrderPaymentMethod } from './orderPaymentMethod';
+import type { OrderPaymentStatus } from './orderPaymentStatus';
 import type { OrderStatus } from './orderStatus';
 
 export interface Order {
@@ -36,5 +38,14 @@ export interface Order {
      * @nullable
      */
   trackingUrl?: string | null;
+  /** Payment method chosen by customer */
+  paymentMethod: OrderPaymentMethod;
+  /** Payment status for online orders */
+  paymentStatus: OrderPaymentStatus;
+  /**
+     * Moyasar payment ID
+     * @nullable
+     */
+  paymentId?: string | null;
   createdAt: Date;
 }

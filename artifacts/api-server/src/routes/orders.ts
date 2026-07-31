@@ -29,6 +29,7 @@ const CreateOrderBody = z.object({
   items: z.array(OrderItemSchema).min(1),
   discountCode: z.string().optional(),
   notes: z.string().optional(),
+  paymentMethod: z.enum(["cash", "online"]).default("cash"),
 });
 
 const UpdateOrderBody = z.object({
@@ -49,6 +50,9 @@ function mapOrder(row: typeof ordersTable.$inferSelect) {
     tax: Number(row.tax),
     discountAmount: Number(row.discountAmount),
     total: Number(row.total),
+    paymentMethod: row.paymentMethod ?? "cash",
+    paymentStatus: row.paymentStatus ?? "pending",
+    paymentId: row.paymentId ?? null,
     createdAt:
       row.createdAt instanceof Date
         ? row.createdAt.toISOString()
@@ -268,6 +272,8 @@ router.post("/orders", async (req, res): Promise<void> => {
       discountAmount: discountAmount.toFixed(2),
       total: total.toFixed(2),
       notes: data.notes,
+      paymentMethod: data.paymentMethod ?? "cash",
+      paymentStatus: "pending",
     })
     .returning();
 

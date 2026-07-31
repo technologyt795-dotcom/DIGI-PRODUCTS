@@ -516,7 +516,8 @@ export const CreateOrderBody = zod.object({
   "productUrl": zod.string().nullish()
 })).min(1),
   "discountCode": zod.string().optional(),
-  "notes": zod.string().optional()
+  "notes": zod.string().optional(),
+  "paymentMethod": zod.enum(['cash', 'online']).optional().describe('Payment method (defaults to cash)')
 })
 
 export const CreateOrderResponse = zod.object({
@@ -547,6 +548,9 @@ export const CreateOrderResponse = zod.object({
   "notes": zod.string().nullable(),
   "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
   "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
+  "paymentMethod": zod.enum(['cash', 'online']).describe('Payment method chosen by customer'),
+  "paymentStatus": zod.enum(['pending', 'paid', 'failed']).describe('Payment status for online orders'),
+  "paymentId": zod.string().nullish().describe('Moyasar payment ID'),
   "createdAt": zod.coerce.date()
 })
 
@@ -586,6 +590,9 @@ export const ListOrdersResponseItem = zod.object({
   "notes": zod.string().nullable(),
   "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
   "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
+  "paymentMethod": zod.enum(['cash', 'online']).describe('Payment method chosen by customer'),
+  "paymentStatus": zod.enum(['pending', 'paid', 'failed']).describe('Payment status for online orders'),
+  "paymentId": zod.string().nullish().describe('Moyasar payment ID'),
   "createdAt": zod.coerce.date()
 })
 export const ListOrdersResponse = zod.array(ListOrdersResponseItem)
@@ -626,6 +633,9 @@ export const GetOrderResponse = zod.object({
   "notes": zod.string().nullable(),
   "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
   "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
+  "paymentMethod": zod.enum(['cash', 'online']).describe('Payment method chosen by customer'),
+  "paymentStatus": zod.enum(['pending', 'paid', 'failed']).describe('Payment status for online orders'),
+  "paymentId": zod.string().nullish().describe('Moyasar payment ID'),
   "createdAt": zod.coerce.date()
 })
 
@@ -672,6 +682,9 @@ export const UpdateOrderResponse = zod.object({
   "notes": zod.string().nullable(),
   "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
   "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
+  "paymentMethod": zod.enum(['cash', 'online']).describe('Payment method chosen by customer'),
+  "paymentStatus": zod.enum(['pending', 'paid', 'failed']).describe('Payment status for online orders'),
+  "paymentId": zod.string().nullish().describe('Moyasar payment ID'),
   "createdAt": zod.coerce.date()
 })
 
@@ -717,6 +730,9 @@ export const ListMyOrdersResponseItem = zod.object({
   "notes": zod.string().nullable(),
   "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
   "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
+  "paymentMethod": zod.enum(['cash', 'online']).describe('Payment method chosen by customer'),
+  "paymentStatus": zod.enum(['pending', 'paid', 'failed']).describe('Payment status for online orders'),
+  "paymentId": zod.string().nullish().describe('Moyasar payment ID'),
   "createdAt": zod.coerce.date()
 })
 export const ListMyOrdersResponse = zod.array(ListMyOrdersResponseItem)
@@ -767,6 +783,9 @@ export const GetMyOrderResponse = zod.object({
   "notes": zod.string().nullable(),
   "trackingNumber": zod.string().nullish().describe('Shipping tracking number'),
   "trackingUrl": zod.string().nullish().describe('Shipping carrier tracking URL'),
+  "paymentMethod": zod.enum(['cash', 'online']).describe('Payment method chosen by customer'),
+  "paymentStatus": zod.enum(['pending', 'paid', 'failed']).describe('Payment status for online orders'),
+  "paymentId": zod.string().nullish().describe('Moyasar payment ID'),
   "createdAt": zod.coerce.date()
 })
 
@@ -1090,6 +1109,40 @@ export const GetFinanceResponse = zod.object({
   "revenue": zod.number(),
   "orders": zod.number()
 }))
+})
+
+
+/**
+ * @summary Create a Moyasar payment for an existing order (public)
+ */
+
+
+
+
+export const CreateMoyasarPaymentBody = zod.object({
+  "orderNumber": zod.string().min(1),
+  "callbackUrl": zod.string().min(1)
+})
+
+export const CreateMoyasarPaymentResponse = zod.object({
+  "paymentUrl": zod.string().describe('URL to redirect the customer to for payment'),
+  "paymentId": zod.string().describe('Moyasar payment ID')
+})
+
+
+/**
+ * @summary Verify Moyasar payment callback and update order (public)
+ */
+export const HandlePaymentCallbackQueryParams = zod.object({
+  "id": zod.coerce.string(),
+  "status": zod.coerce.string().optional(),
+  "orderNumber": zod.coerce.string().optional()
+})
+
+export const HandlePaymentCallbackResponse = zod.object({
+  "status": zod.enum(['paid', 'failed', 'pending']),
+  "orderNumber": zod.string(),
+  "message": zod.string().optional()
 })
 
 

@@ -34,13 +34,17 @@ import type {
   DiscountValidateInput,
   ErrorResponse,
   FinanceSummary,
+  HandlePaymentCallbackParams,
   HealthStatus,
   ListOrdersParams,
   ListProductsParams,
   ListReviewsParams,
+  MoyasarPaymentInput,
+  MoyasarPaymentResponse,
   Order,
   OrderInput,
   OrderUpdate,
+  PaymentCallbackResult,
   Product,
   ProductInput,
   ProductUpdate,
@@ -3050,6 +3054,161 @@ export function useGetFinance<TData = Awaited<ReturnType<typeof getFinance>>, TE
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetFinanceQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateMoyasarPaymentUrl = () => {
+
+
+
+
+  return `/api/payments/moyasar`
+}
+
+/**
+ * @summary Create a Moyasar payment for an existing order (public)
+ */
+export const createMoyasarPayment = async (moyasarPaymentInput: MoyasarPaymentInput, options?: RequestInit): Promise<MoyasarPaymentResponse> => {
+
+  return customFetch<MoyasarPaymentResponse>(getCreateMoyasarPaymentUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(moyasarPaymentInput)
+  }
+);}
+
+
+
+
+
+export const getCreateMoyasarPaymentMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createMoyasarPayment>>, TError,{data: BodyType<MoyasarPaymentInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createMoyasarPayment>>, TError,{data: BodyType<MoyasarPaymentInput>}, TContext> => {
+
+const mutationKey = ['createMoyasarPayment'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createMoyasarPayment>>, {data: BodyType<MoyasarPaymentInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createMoyasarPayment(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateMoyasarPaymentMutationResult = NonNullable<Awaited<ReturnType<typeof createMoyasarPayment>>>
+    export type CreateMoyasarPaymentMutationBody = BodyType<MoyasarPaymentInput>
+    export type CreateMoyasarPaymentMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Create a Moyasar payment for an existing order (public)
+ */
+export const useCreateMoyasarPayment = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createMoyasarPayment>>, TError,{data: BodyType<MoyasarPaymentInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createMoyasarPayment>>,
+        TError,
+        {data: BodyType<MoyasarPaymentInput>},
+        TContext
+      > => {
+      return useMutation(getCreateMoyasarPaymentMutationOptions(options));
+    }
+
+export const getHandlePaymentCallbackUrl = (params: HandlePaymentCallbackParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/payments/callback?${stringifiedParams}` : `/api/payments/callback`
+}
+
+/**
+ * @summary Verify Moyasar payment callback and update order (public)
+ */
+export const handlePaymentCallback = async (params: HandlePaymentCallbackParams, options?: RequestInit): Promise<PaymentCallbackResult> => {
+
+  return customFetch<PaymentCallbackResult>(getHandlePaymentCallbackUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getHandlePaymentCallbackQueryKey = (params?: HandlePaymentCallbackParams,) => {
+    return [
+    `/api/payments/callback`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getHandlePaymentCallbackQueryOptions = <TData = Awaited<ReturnType<typeof handlePaymentCallback>>, TError = ErrorType<void | ErrorResponse>>(params: HandlePaymentCallbackParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof handlePaymentCallback>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getHandlePaymentCallbackQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof handlePaymentCallback>>> = ({ signal }) => handlePaymentCallback(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof handlePaymentCallback>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type HandlePaymentCallbackQueryResult = NonNullable<Awaited<ReturnType<typeof handlePaymentCallback>>>
+export type HandlePaymentCallbackQueryError = ErrorType<void | ErrorResponse>
+
+
+/**
+ * @summary Verify Moyasar payment callback and update order (public)
+ */
+
+export function useHandlePaymentCallback<TData = Awaited<ReturnType<typeof handlePaymentCallback>>, TError = ErrorType<void | ErrorResponse>>(
+ params: HandlePaymentCallbackParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof handlePaymentCallback>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getHandlePaymentCallbackQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
