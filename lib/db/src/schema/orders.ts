@@ -19,6 +19,7 @@ export type OrderItem = {
   quantity: number;
   isDigital?: boolean;
   downloadUrls?: string[];
+  downloadLabels?: string[];
   productUrl?: string | null;
 };
 

@@ -167,6 +167,47 @@ router.delete(
   },
 );
 
+// GET /orders/:orderNumber/downloads — public; returns digital items for paid orders
+router.get("/orders/:orderNumber/downloads", async (req, res): Promise<void> => {
+  const { orderNumber } = req.params as { orderNumber: string };
+
+  const [order] = await db
+    .select()
+    .from(ordersTable)
+    .where(eq(ordersTable.orderNumber, orderNumber));
+
+  if (!order) {
+    res.status(404).json({ error: "الطلب غير موجود" });
+    return;
+  }
+
+  if (order.paymentStatus !== "paid") {
+    res.status(403).json({ error: "الدفع لم يتم تأكيده بعد" });
+    return;
+  }
+
+  type DigitalItem = {
+    idx: number;
+    name: string;
+    downloadUrls: string[];
+    downloadLabels: string[];
+    productUrl: string | null;
+  };
+
+  const items = (order.items as import("@workspace/db").OrderItem[])
+    .map((item, idx) => ({ item, idx }))
+    .filter(({ item }) => item.isDigital)
+    .map(({ item, idx }): DigitalItem => ({
+      idx,
+      name: item.name,
+      downloadUrls: item.downloadUrls ?? [],
+      downloadLabels: item.downloadLabels ?? [],
+      productUrl: item.productUrl ?? null,
+    }));
+
+  res.json({ orderNumber, hasDigital: items.length > 0, items });
+});
+
 // POST /orders — public checkout
 router.post("/orders", async (req, res): Promise<void> => {
   const parsed = CreateOrderBody.safeParse(req.body);

@@ -150,20 +150,13 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
         .where(eq(ordersTable.orderNumber, resolvedOrderNumber));
     }
 
-    const base = req.headers["x-forwarded-proto"]
-      ? `${req.headers["x-forwarded-proto"]}://${req.headers.host}`
-      : "";
-    res.redirect(
-      `${base}/?payment=${isPaid ? "success" : "failed"}&orderNumber=${resolvedOrderNumber}`,
-    );
+    res.json({
+      status: isPaid ? "paid" : "failed",
+      orderNumber: resolvedOrderNumber,
+    });
   } catch (err) {
     req.log?.error({ err }, "Payment callback error");
-    const base = req.headers["x-forwarded-proto"]
-      ? `${req.headers["x-forwarded-proto"]}://${req.headers.host}`
-      : "";
-    res.redirect(
-      `${base}/?payment=failed&orderNumber=${orderNumber ?? ""}`,
-    );
+    res.status(500).json({ status: "failed", orderNumber: orderNumber ?? "" });
   }
 });
 
