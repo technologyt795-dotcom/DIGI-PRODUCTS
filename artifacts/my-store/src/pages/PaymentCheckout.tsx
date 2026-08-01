@@ -73,10 +73,11 @@ export default function PaymentCheckout() {
     };
   }, [orderNumber]);
 
-  // Init Moyasar form after script loads
+  // Init Moyasar form after script loads AND publishable key is ready
   useEffect(() => {
     if (!scriptLoaded || initDoneRef.current || !formRef.current) return;
     if (!window.Moyasar) return;
+    if (!publishableKey) return; // wait for key before init
     initDoneRef.current = true;
 
     const callbackUrl =
