@@ -12,6 +12,10 @@ import {
 
 const router: IRouter = Router();
 
+router.get("/admin/verify", requireAdmin, (_req, res): void => {
+  res.json({ ok: true });
+});
+
 router.post("/admin/login", (req, res): void => {
   const parsed = AdminLoginBody.safeParse(req.body);
   if (!parsed.success) {
