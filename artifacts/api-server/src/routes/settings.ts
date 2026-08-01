@@ -72,6 +72,17 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
     footerBgColor: row.footerBgColor ?? null,
     footerTextColor: row.footerTextColor ?? null,
     footerPadding: row.footerPadding ?? null,
+    // Announcement bar (needed by store frontend + admin marketing)
+    announcementBarEnabled: row.announcementBarEnabled ?? false,
+    announcementBarText: row.announcementBarText ?? null,
+    announcementBarColor: row.announcementBarColor ?? null,
+    announcementBarLink: row.announcementBarLink ?? null,
+    // Promo popup (needed by store frontend + admin marketing)
+    popupEnabled: row.popupEnabled ?? false,
+    popupTitle: row.popupTitle ?? null,
+    popupMessage: row.popupMessage ?? null,
+    popupDiscountCode: row.popupDiscountCode ?? null,
+    popupDelay: row.popupDelay ?? 3,
   };
 }
 
@@ -121,6 +132,17 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if (data.footerBgColor !== undefined) updateValues.footerBgColor = data.footerBgColor;
   if (data.footerTextColor !== undefined) updateValues.footerTextColor = data.footerTextColor;
   if (data.footerPadding !== undefined) updateValues.footerPadding = data.footerPadding;
+  // Announcement bar
+  if ((data as any).announcementBarEnabled !== undefined) updateValues.announcementBarEnabled = (data as any).announcementBarEnabled;
+  if ((data as any).announcementBarText !== undefined) updateValues.announcementBarText = (data as any).announcementBarText;
+  if ((data as any).announcementBarColor !== undefined) updateValues.announcementBarColor = (data as any).announcementBarColor;
+  if ((data as any).announcementBarLink !== undefined) updateValues.announcementBarLink = (data as any).announcementBarLink;
+  // Promo popup
+  if ((data as any).popupEnabled !== undefined) updateValues.popupEnabled = (data as any).popupEnabled;
+  if ((data as any).popupTitle !== undefined) updateValues.popupTitle = (data as any).popupTitle;
+  if ((data as any).popupMessage !== undefined) updateValues.popupMessage = (data as any).popupMessage;
+  if ((data as any).popupDiscountCode !== undefined) updateValues.popupDiscountCode = (data as any).popupDiscountCode;
+  if ((data as any).popupDelay !== undefined) updateValues.popupDelay = (data as any).popupDelay;
 
   try {
     // Upsert: insert if not exists, update otherwise

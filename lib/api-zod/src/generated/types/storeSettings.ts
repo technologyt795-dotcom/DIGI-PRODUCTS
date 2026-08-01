@@ -80,4 +80,20 @@ export interface StoreSettings {
      * @nullable
      */
   footerPadding?: string | null;
+  announcementBarEnabled?: boolean;
+  /** @nullable */
+  announcementBarText?: string | null;
+  /** @nullable */
+  announcementBarColor?: string | null;
+  /** @nullable */
+  announcementBarLink?: string | null;
+  popupEnabled?: boolean;
+  /** @nullable */
+  popupTitle?: string | null;
+  /** @nullable */
+  popupMessage?: string | null;
+  /** @nullable */
+  popupDiscountCode?: string | null;
+  /** @nullable */
+  popupDelay?: number | null;
 }

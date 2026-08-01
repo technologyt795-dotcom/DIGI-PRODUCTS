@@ -216,6 +216,22 @@ export interface StoreSettings {
      * @nullable
      */
   footerPadding?: string | null;
+  announcementBarEnabled?: boolean;
+  /** @nullable */
+  announcementBarText?: string | null;
+  /** @nullable */
+  announcementBarColor?: string | null;
+  /** @nullable */
+  announcementBarLink?: string | null;
+  popupEnabled?: boolean;
+  /** @nullable */
+  popupTitle?: string | null;
+  /** @nullable */
+  popupMessage?: string | null;
+  /** @nullable */
+  popupDiscountCode?: string | null;
+  /** @nullable */
+  popupDelay?: number | null;
 }
 
 export type StoreSettingsUpdateActiveTheme = typeof StoreSettingsUpdateActiveTheme[keyof typeof StoreSettingsUpdateActiveTheme];
@@ -304,6 +320,34 @@ export interface StoreSettingsUpdate {
      * @nullable
      */
   footerPadding?: string | null;
+  announcementBarEnabled?: boolean;
+  /** @nullable */
+  announcementBarText?: string | null;
+  /** @nullable */
+  announcementBarColor?: string | null;
+  /** @nullable */
+  announcementBarLink?: string | null;
+  /** @nullable */
+  smtpHost?: string | null;
+  /** @nullable */
+  smtpPort?: number | null;
+  /** @nullable */
+  smtpSecure?: boolean | null;
+  /** @nullable */
+  smtpUser?: string | null;
+  /** @nullable */
+  smtpPass?: string | null;
+  /** @nullable */
+  smtpFrom?: string | null;
+  popupEnabled?: boolean;
+  /** @nullable */
+  popupTitle?: string | null;
+  /** @nullable */
+  popupMessage?: string | null;
+  /** @nullable */
+  popupDiscountCode?: string | null;
+  /** @nullable */
+  popupDelay?: number | null;
 }
 
 export interface OrderItem {

@@ -369,4 +369,114 @@ router.post(
   },
 );
 
+// ─── Customers with phones (for WhatsApp tab) ─────────────────────────────────
+
+router.get(
+  "/admin/marketing/customers-phones",
+  requireAdmin,
+  async (_req, res): Promise<void> => {
+    const rows = await db
+      .select({
+        id: customersTable.id,
+        name: customersTable.name,
+        email: customersTable.email,
+        phone: customersTable.phone,
+      })
+      .from(customersTable)
+      .orderBy(customersTable.name);
+    res.json(rows);
+  },
+);
+
+// ─── Review Requests ──────────────────────────────────────────────────────────
+
+router.get(
+  "/admin/marketing/review-requests/preview",
+  requireAdmin,
+  async (_req, res): Promise<void> => {
+    const result = await db.execute(sql`
+      SELECT COUNT(DISTINCT customer_email)::int AS count
+      FROM orders WHERE status = 'delivered'
+    `);
+    res.json({ count: (result.rows[0] as any)?.count ?? 0 });
+  },
+);
+
+router.post(
+  "/admin/marketing/review-requests/send",
+  requireAdmin,
+  async (req, res): Promise<void> => {
+    const [settings] = await db
+      .select()
+      .from(storeSettingsTable)
+      .where(eq(storeSettingsTable.id, 1));
+
+    if (!settings?.smtpHost || !settings?.smtpUser || !settings?.smtpPass) {
+      res.status(400).json({ error: "لم يتم تكوين إعدادات SMTP في إعدادات التسويق" });
+      return;
+    }
+
+    const result = await db.execute(sql`
+      SELECT DISTINCT ON (customer_email)
+        customer_name, customer_email, order_number, items
+      FROM orders WHERE status = 'delivered'
+      ORDER BY customer_email, created_at DESC
+    `);
+
+    const recipients = result.rows as Array<{
+      customer_name: string; customer_email: string;
+      order_number: string; items: Array<{ productId: number; name: string }>;
+    }>;
+
+    if (recipients.length === 0) {
+      res.status(400).json({ error: "لا يوجد عملاء لديهم طلبات مكتملة" });
+      return;
+    }
+
+    const proto = req.headers["x-forwarded-proto"] ?? "https";
+    const host = req.headers.host ?? "localhost";
+    const baseUrl = `${proto}://${host}`;
+
+    const transporter = nodemailer.createTransport({
+      host: settings.smtpHost, port: settings.smtpPort ?? 587,
+      secure: settings.smtpSecure ?? false,
+      auth: { user: settings.smtpUser!, pass: settings.smtpPass! },
+      tls: { rejectUnauthorized: false },
+    });
+
+    let sent = 0;
+    const failed: string[] = [];
+
+    for (const r of recipients) {
+      const items = (Array.isArray(r.items) ? r.items : []).slice(0, 3);
+      const links = items.map((p) =>
+        `<li style="margin:4px 0"><a href="${baseUrl}/product/${p.productId}" style="color:#6366f1">${p.name}</a></li>`
+      ).join("");
+
+      const html = `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#333">
+  <h2 style="color:#6366f1">مرحباً ${r.customer_name}،</h2>
+  <p>شكراً لتسوقك من <strong>${settings.storeName}</strong>!</p>
+  <p>نأمل أنك راضٍ عن مشترياتك. هل يمكنك مشاركتنا رأيك في المنتجات؟</p>
+  ${links ? `<ul style="padding-right:20px">${links}</ul>` : ""}
+  <p>رأيك يساعد المتسوقين الآخرين ويساعدنا على التطوير المستمر.</p>
+  <a href="${baseUrl}" style="display:inline-block;margin-top:16px;padding:12px 28px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;font-weight:bold">اكتب مراجعتك ←</a>
+  <hr style="margin:24px 0;border:none;border-top:1px solid #eee"/>
+  <p style="font-size:12px;color:#999">${settings.storeName}</p>
+</div>`;
+
+      try {
+        await transporter.sendMail({
+          from: settings.smtpFrom ?? settings.smtpUser ?? "",
+          to: r.customer_email,
+          subject: `رأيك يهمنا – كيف كانت تجربتك مع ${settings.storeName}؟`,
+          html,
+        });
+        sent++;
+      } catch { failed.push(r.customer_email); }
+    }
+
+    res.json({ sent, failed: failed.length, total: recipients.length });
+  },
+);
+
 export default router;

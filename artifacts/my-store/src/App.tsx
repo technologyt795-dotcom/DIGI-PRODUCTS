@@ -9,6 +9,7 @@ import { CustomerAuthProvider } from '@/hooks/use-customer-auth';
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { StoreSettingsProvider, ThemeApplier } from '@/contexts/StoreSettingsContext';
+import { PromoPopup } from '@/components/store/PromoPopup';
 
 // Pages
 import Home from '@/pages/Home';
@@ -80,6 +81,7 @@ function App() {
         <CustomerAuthProvider>
           <AdminAuthProvider>
             <CartProvider>
+              <PromoPopup />
               <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
                 <Switch>
                   {/* Admin Login — no guard needed */}

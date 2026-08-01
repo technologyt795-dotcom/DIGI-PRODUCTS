@@ -51,6 +51,12 @@ export const storeSettingsTable = pgTable("store_settings", {
   smtpUser: text("smtp_user"),
   smtpPass: text("smtp_pass"),
   smtpFrom: text("smtp_from"),
+  // Promo popup
+  popupEnabled: boolean("popup_enabled").notNull().default(false),
+  popupTitle: text("popup_title"),
+  popupMessage: text("popup_message"),
+  popupDiscountCode: text("popup_discount_code"),
+  popupDelay: integer("popup_delay").default(3),
 });
 
 export const insertStoreSettingsSchema = createInsertSchema(

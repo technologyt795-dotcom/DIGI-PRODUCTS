@@ -421,7 +421,16 @@ export const GetSettingsResponse = zod.object({
   "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
   "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
   "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
-  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)')
+  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)'),
+  "announcementBarEnabled": zod.boolean().optional(),
+  "announcementBarText": zod.string().nullish(),
+  "announcementBarColor": zod.string().nullish(),
+  "announcementBarLink": zod.string().nullish(),
+  "popupEnabled": zod.boolean().optional(),
+  "popupTitle": zod.string().nullish(),
+  "popupMessage": zod.string().nullish(),
+  "popupDiscountCode": zod.string().nullish(),
+  "popupDelay": zod.number().nullish()
 })
 
 
@@ -460,7 +469,22 @@ export const UpdateSettingsBody = zod.object({
   "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
   "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
   "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
-  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)')
+  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)'),
+  "announcementBarEnabled": zod.boolean().optional(),
+  "announcementBarText": zod.string().nullish(),
+  "announcementBarColor": zod.string().nullish(),
+  "announcementBarLink": zod.string().nullish(),
+  "smtpHost": zod.string().nullish(),
+  "smtpPort": zod.number().nullish(),
+  "smtpSecure": zod.boolean().nullish(),
+  "smtpUser": zod.string().nullish(),
+  "smtpPass": zod.string().nullish(),
+  "smtpFrom": zod.string().nullish(),
+  "popupEnabled": zod.boolean().optional(),
+  "popupTitle": zod.string().nullish(),
+  "popupMessage": zod.string().nullish(),
+  "popupDiscountCode": zod.string().nullish(),
+  "popupDelay": zod.number().nullish()
 })
 
 export const UpdateSettingsResponse = zod.object({
@@ -487,7 +511,16 @@ export const UpdateSettingsResponse = zod.object({
   "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
   "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
   "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
-  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)')
+  "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)'),
+  "announcementBarEnabled": zod.boolean().optional(),
+  "announcementBarText": zod.string().nullish(),
+  "announcementBarColor": zod.string().nullish(),
+  "announcementBarLink": zod.string().nullish(),
+  "popupEnabled": zod.boolean().optional(),
+  "popupTitle": zod.string().nullish(),
+  "popupMessage": zod.string().nullish(),
+  "popupDiscountCode": zod.string().nullish(),
+  "popupDelay": zod.number().nullish()
 })
 
 

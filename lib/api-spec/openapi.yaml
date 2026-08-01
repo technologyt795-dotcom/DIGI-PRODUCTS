@@ -1609,6 +1609,24 @@ components:
         footerPadding:
           type: ["string", "null"]
           description: Footer padding size (compact, normal, large)
+        announcementBarEnabled:
+          type: boolean
+        announcementBarText:
+          type: ["string", "null"]
+        announcementBarColor:
+          type: ["string", "null"]
+        announcementBarLink:
+          type: ["string", "null"]
+        popupEnabled:
+          type: boolean
+        popupTitle:
+          type: ["string", "null"]
+        popupMessage:
+          type: ["string", "null"]
+        popupDiscountCode:
+          type: ["string", "null"]
+        popupDelay:
+          type: ["integer", "null"]
 
     StoreSettingsUpdate:
       type: object
@@ -1695,6 +1713,16 @@ components:
           type: ["string", "null"]
         smtpFrom:
           type: ["string", "null"]
+        popupEnabled:
+          type: boolean
+        popupTitle:
+          type: ["string", "null"]
+        popupMessage:
+          type: ["string", "null"]
+        popupDiscountCode:
+          type: ["string", "null"]
+        popupDelay:
+          type: ["integer", "null"]
 
     # ── Order schemas ────────────────────────────────────────────────────────
 
