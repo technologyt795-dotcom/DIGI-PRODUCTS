@@ -1,4 +1,4 @@
-import { pgTable, text, numeric, boolean, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, numeric, boolean, integer, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -39,6 +39,18 @@ export const storeSettingsTable = pgTable("store_settings", {
   footerBgColor: text("footer_bg_color"),
   footerTextColor: text("footer_text_color"),
   footerPadding: text("footer_padding"),
+  // Announcement bar
+  announcementBarEnabled: boolean("announcement_bar_enabled").notNull().default(false),
+  announcementBarText: text("announcement_bar_text"),
+  announcementBarColor: text("announcement_bar_color").default("primary"),
+  announcementBarLink: text("announcement_bar_link"),
+  // SMTP for email campaigns
+  smtpHost: text("smtp_host"),
+  smtpPort: integer("smtp_port"),
+  smtpSecure: boolean("smtp_secure").default(false),
+  smtpUser: text("smtp_user"),
+  smtpPass: text("smtp_pass"),
+  smtpFrom: text("smtp_from"),
 });
 
 export const insertStoreSettingsSchema = createInsertSchema(

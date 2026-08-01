@@ -13,6 +13,7 @@ import customerAuthRouter from "./customerAuth";
 import customerOrdersRouter from "./customerOrders";
 import storageRouter from "./storage";
 import paymentsRouter from "./payments";
+import marketingRouter from "./marketing";
 
 const router: IRouter = Router();
 
@@ -30,5 +31,6 @@ router.use(customerAuthRouter);
 router.use(customerOrdersRouter);
 router.use(storageRouter);
 router.use(paymentsRouter);
+router.use(marketingRouter);
 
 export default router;

@@ -5,3 +5,4 @@ export * from "./customers";
 export * from "./orders";
 export * from "./discounts";
 export * from "./reviews";
+export * from "./emailCampaigns";
