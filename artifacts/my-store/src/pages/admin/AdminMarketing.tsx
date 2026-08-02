@@ -278,23 +278,65 @@ function PromoTab({ token }: { token: string }) {
         </div>
         <p className="text-sm text-muted-foreground -mt-2">نافذة ترحيبية تظهر للزوار بعد ثوانٍ من دخولهم المتجر</p>
 
-        {/* Preview */}
-        {(popupTitle || popupMessage) && (
-          <div className="border-2 border-dashed border-border rounded-xl p-4 bg-muted/30 relative">
-            <p className="text-xs text-muted-foreground mb-2 font-medium">معاينة:</p>
-            <div className="bg-card rounded-xl p-4 shadow-lg max-w-xs mx-auto text-center relative">
-              <X className="absolute top-2 left-2 h-4 w-4 text-muted-foreground" />
-              {popupTitle && <p className="font-black text-base mb-1">{popupTitle}</p>}
-              {popupMessage && <p className="text-sm text-muted-foreground mb-3">{popupMessage}</p>}
-              {popupCode && (
-                <div className="bg-primary/10 rounded-lg px-3 py-2 inline-block">
-                  <p className="font-mono font-black text-primary text-lg tracking-widest">{popupCode}</p>
-                  <p className="text-xs text-muted-foreground">كود الخصم</p>
+        {/* Live Preview */}
+        <div className="space-y-1">
+          <p className="text-xs text-muted-foreground font-semibold flex items-center gap-1.5">
+            <Eye className="h-3.5 w-3.5" />معاينة مباشرة
+          </p>
+          <div className="rounded-2xl overflow-hidden shadow-xl border border-border max-w-xs mx-auto" dir="rtl">
+            {/* Gradient header */}
+            <div
+              className="relative px-5 pt-6 pb-8 text-white text-center overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)' }}
+            >
+              <div className="absolute -top-5 -right-5 w-20 h-20 rounded-full opacity-20 bg-white" />
+              <div className="absolute -bottom-3 -left-3 w-16 h-16 rounded-full opacity-15 bg-white" />
+              <div className="absolute top-3 left-6 w-2.5 h-2.5 rounded-full opacity-40 bg-white" />
+
+              <X className="absolute top-2.5 left-2.5 h-3.5 w-3.5 text-white/60" />
+
+              <div className="flex justify-center mb-2.5">
+                <div className="h-11 w-11 rounded-xl bg-white/25 flex items-center justify-center">
+                  <Zap className="h-5 w-5 text-white" />
                 </div>
+              </div>
+
+              <p className="font-black text-sm leading-snug drop-shadow-sm">
+                {popupTitle || <span className="opacity-50">عنوان النافذة</span>}
+              </p>
+              {(popupMessage || !popupTitle) && (
+                <p className="text-xs text-white/80 mt-1 leading-relaxed">
+                  {popupMessage || <span className="opacity-50">نص الرسالة الترحيبية</span>}
+                </p>
               )}
             </div>
+
+            {/* White body */}
+            <div className="bg-card px-5 pb-5 -mt-0.5">
+              {popupCode ? (
+                <div className="relative -mt-4 mb-4 rounded-xl border-2 border-dashed border-primary/40 p-3 text-center"
+                  style={{ background: 'linear-gradient(135deg, hsl(var(--primary)/0.06) 0%, hsl(var(--primary)/0.12) 100%)' }}>
+                  <p className="text-xs text-muted-foreground font-semibold mb-0.5">كود الخصم</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="font-mono font-black text-xl text-primary tracking-[0.2em]">{popupCode}</span>
+                    <div className="h-7 w-7 rounded-lg bg-primary/15 flex items-center justify-center">
+                      <Copy className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">اضغط لنسخ الكود</p>
+                </div>
+              ) : (
+                <div className="h-3" />
+              )}
+              <button
+                className="w-full rounded-xl py-2.5 text-xs font-black text-white"
+                style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)', boxShadow: '0 3px 12px rgba(99,102,241,0.3)' }}
+              >
+                تسوق الآن ←
+              </button>
+            </div>
           </div>
-        )}
+        </div>
 
         <div className="flex items-center justify-between">
           <span className="font-semibold text-sm">تفعيل النافذة</span>

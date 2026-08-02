@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Tag, Copy, Check } from 'lucide-react';
+import { X, Copy, Check, Sparkles, Tag } from 'lucide-react';
 
 type PopupSettings = {
   popupEnabled: boolean;
@@ -43,7 +43,7 @@ export function PromoPopup() {
     if (!settings?.popupDiscountCode) return;
     navigator.clipboard.writeText(settings.popupDiscountCode).then(() => {
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), 2500);
     });
   };
 
@@ -52,79 +52,111 @@ export function PromoPopup() {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }}
+      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
       onClick={dismiss}
     >
       <div
-        className="bg-card border border-border rounded-2xl shadow-2xl max-w-sm w-full p-6 relative"
-        style={{ animation: 'popup-in 0.25s ease-out' }}
+        className="relative max-w-sm w-full overflow-hidden rounded-3xl shadow-2xl"
+        style={{ animation: 'popup-in 0.3s cubic-bezier(0.34,1.56,0.64,1)' }}
         onClick={e => e.stopPropagation()}
         dir="rtl"
       >
-        {/* Close button */}
-        <button
-          onClick={dismiss}
-          className="absolute top-3 left-3 text-muted-foreground hover:text-foreground transition-colors p-1 rounded-lg hover:bg-muted"
-          aria-label="إغلاق"
+        {/* ── Gradient header ── */}
+        <div
+          className="relative px-6 pt-8 pb-10 text-white text-center overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)' }}
         >
-          <X className="h-4 w-4" />
-        </button>
+          {/* Decorative circles */}
+          <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-20" style={{ background: 'rgba(255,255,255,0.4)' }} />
+          <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-full opacity-15" style={{ background: 'rgba(255,255,255,0.4)' }} />
+          <div className="absolute top-4 left-8 w-3 h-3 rounded-full opacity-40 bg-white" />
+          <div className="absolute bottom-8 right-10 w-2 h-2 rounded-full opacity-30 bg-white" />
 
-        {/* Logo */}
-        {settings.logoUrl && (
-          <div className="flex justify-center mb-4">
-            <img src={settings.logoUrl} alt={settings.storeName} className="h-10 object-contain" />
-          </div>
-        )}
+          {/* Close button */}
+          <button
+            onClick={dismiss}
+            className="absolute top-3 left-3 text-white/70 hover:text-white transition-colors p-1.5 rounded-full hover:bg-white/20"
+            aria-label="إغلاق"
+          >
+            <X className="h-4 w-4" />
+          </button>
 
-        {/* Title */}
-        {settings.popupTitle && (
-          <h2 className="text-xl font-black text-center mb-2 leading-snug">
-            {settings.popupTitle}
-          </h2>
-        )}
+          {/* Logo or icon */}
+          {settings.logoUrl ? (
+            <div className="flex justify-center mb-3">
+              <div className="h-12 w-12 rounded-2xl bg-white/20 p-1.5 flex items-center justify-center backdrop-blur-sm">
+                <img src={settings.logoUrl} alt={settings.storeName} className="h-full object-contain" />
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-center mb-3">
+              <div className="h-14 w-14 rounded-2xl bg-white/25 flex items-center justify-center backdrop-blur-sm">
+                <Sparkles className="h-7 w-7 text-white" />
+              </div>
+            </div>
+          )}
 
-        {/* Message */}
-        {settings.popupMessage && (
-          <p className="text-sm text-muted-foreground text-center mb-4 leading-relaxed">
-            {settings.popupMessage}
-          </p>
-        )}
-
-        {/* Discount code */}
-        {settings.popupDiscountCode && (
-          <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 text-center mb-4">
-            <p className="text-xs text-muted-foreground mb-1 font-medium">كود الخصم</p>
-            <button
-              onClick={copyCode}
-              className="flex items-center gap-2 mx-auto font-mono font-black text-2xl text-primary tracking-widest hover:opacity-70 transition-opacity"
-            >
-              {copied ? <Check className="h-5 w-5 text-green-500" /> : <Tag className="h-5 w-5" />}
-              {settings.popupDiscountCode}
-              {copied ? null : <Copy className="h-4 w-4 opacity-50" />}
-            </button>
-            <p className="text-xs text-muted-foreground mt-1.5">
-              {copied ? '✅ تم نسخ الكود!' : 'اضغط لنسخ الكود'}
+          {settings.popupTitle && (
+            <h2 className="text-xl font-black leading-snug drop-shadow-sm">
+              {settings.popupTitle}
+            </h2>
+          )}
+          {settings.popupMessage && (
+            <p className="text-sm text-white/85 mt-2 leading-relaxed font-medium">
+              {settings.popupMessage}
             </p>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* CTA button */}
-        <button
-          onClick={dismiss}
-          className="w-full bg-primary text-primary-foreground rounded-xl py-3 text-sm font-bold hover:opacity-90 transition-opacity"
-        >
-          تسوق الآن ←
-        </button>
+        {/* ── White body ── */}
+        <div className="bg-card px-6 pb-6 -mt-1">
+          {/* Discount code */}
+          {settings.popupDiscountCode && (
+            <div className="relative -mt-5 mb-5">
+              <button
+                onClick={copyCode}
+                className="w-full group relative overflow-hidden rounded-2xl border-2 border-dashed border-primary/40 hover:border-primary transition-all duration-200 p-4 text-center"
+                style={{ background: 'linear-gradient(135deg, hsl(var(--primary)/0.06) 0%, hsl(var(--primary)/0.12) 100%)' }}
+              >
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <Tag className="h-4 w-4 text-primary opacity-70" />
+                  <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase">كود الخصم</span>
+                </div>
+                <div className="flex items-center justify-center gap-3">
+                  <span className="font-mono font-black text-2xl text-primary tracking-[0.2em]">
+                    {settings.popupDiscountCode}
+                  </span>
+                  <div className="h-8 w-8 rounded-lg bg-primary/15 flex items-center justify-center group-hover:bg-primary/25 transition-colors">
+                    {copied
+                      ? <Check className="h-4 w-4 text-green-600" />
+                      : <Copy className="h-4 w-4 text-primary" />}
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  {copied ? '✅ تم نسخ الكود بنجاح!' : 'اضغط لنسخ الكود'}
+                </p>
+              </button>
+            </div>
+          )}
 
-        <p className="text-xs text-muted-foreground text-center mt-3 opacity-60">
-          {settings.storeName}
-        </p>
+          {/* CTA */}
+          <button
+            onClick={dismiss}
+            className="w-full rounded-2xl py-3.5 text-sm font-black text-white tracking-wide hover:opacity-90 active:scale-95 transition-all duration-150 shadow-lg"
+            style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}
+          >
+            تسوق الآن ←
+          </button>
+
+          <p className="text-xs text-muted-foreground/60 text-center mt-3 font-medium">
+            {settings.storeName}
+          </p>
+        </div>
       </div>
 
       <style>{`
         @keyframes popup-in {
-          from { opacity: 0; transform: scale(0.92) translateY(8px); }
+          from { opacity: 0; transform: scale(0.88) translateY(16px); }
           to   { opacity: 1; transform: scale(1) translateY(0); }
         }
       `}</style>
