@@ -12,6 +12,8 @@ import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { toast } from 'sonner';
 import { formatPrice } from '@/lib/utils';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { useQueryClient } from '@tanstack/react-query';
+import { getGetSettingsQueryKey } from '@workspace/api-client-react';
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
 
@@ -132,6 +134,7 @@ export default function AdminMarketing() {
 function PromoTab({ token }: { token: string }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<'banner' | 'popup' | null>(null);
+  const queryClient = useQueryClient();
 
   // Banner state
   const [bannerEnabled, setBannerEnabled] = useState(false);
@@ -172,10 +175,13 @@ function PromoTab({ token }: { token: string }) {
       .finally(() => setLoading(false));
   }, []);
 
+  const invalidateSettings = () =>
+    queryClient.invalidateQueries({ queryKey: getGetSettingsQueryKey() });
+
   const saveBanner = async () => {
     setSaving('banner');
     try {
-      await fetch(`${BASE}/admin/settings`, {
+      const r = await fetch(`${BASE}/admin/settings`, {
         method: 'PUT', headers: authHeader(token),
         body: JSON.stringify({
           announcementBarEnabled: bannerEnabled,
@@ -184,7 +190,8 @@ function PromoTab({ token }: { token: string }) {
           announcementBarLink: bannerLink || null,
         }),
       });
-      toast.success('تم حفظ البانر');
+      if (r.ok) { invalidateSettings(); toast.success('تم حفظ البانر'); }
+      else toast.error('فشل الحفظ');
     } catch { toast.error('فشل الحفظ'); }
     finally { setSaving(null); }
   };
@@ -192,7 +199,7 @@ function PromoTab({ token }: { token: string }) {
   const savePopup = async () => {
     setSaving('popup');
     try {
-      await fetch(`${BASE}/admin/settings`, {
+      const r = await fetch(`${BASE}/admin/settings`, {
         method: 'PUT', headers: authHeader(token),
         body: JSON.stringify({
           popupEnabled,
@@ -202,7 +209,8 @@ function PromoTab({ token }: { token: string }) {
           popupDelay,
         }),
       });
-      toast.success('تم حفظ النافذة المنبثقة');
+      if (r.ok) { invalidateSettings(); toast.success('تم حفظ النافذة المنبثقة'); }
+      else toast.error('فشل الحفظ');
     } catch { toast.error('فشل الحفظ'); }
     finally { setSaving(null); }
   };

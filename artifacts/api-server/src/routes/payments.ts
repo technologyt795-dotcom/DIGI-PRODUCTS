@@ -129,7 +129,15 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
     const payment = (await verifyRes.json()) as {
       id: string;
       status: string;
+      message?: string;
       metadata?: { orderNumber?: string };
+      source?: {
+        message?: string;
+        response_code?: string;
+        company?: string;
+        name?: string;
+        number?: string;
+      };
     };
 
     const resolvedOrderNumber =
@@ -138,6 +146,10 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
       "";
 
     const isPaid = payment.status === "paid";
+
+    // Extract the best failure message available
+    const failureMessage = payment.source?.message || payment.message || null;
+    const failureCode = payment.source?.response_code || null;
 
     if (resolvedOrderNumber) {
       await db
@@ -153,6 +165,8 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
     res.json({
       status: isPaid ? "paid" : "failed",
       orderNumber: resolvedOrderNumber,
+      ...((!isPaid && failureMessage) ? { failureMessage } : {}),
+      ...((!isPaid && failureCode) ? { failureCode } : {}),
     });
   } catch (err) {
     req.log?.error({ err }, "Payment callback error");

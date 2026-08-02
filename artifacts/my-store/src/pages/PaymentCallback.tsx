@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
-import { CheckCircle, XCircle, Loader2, Download, ExternalLink, Package } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, Download, ExternalLink, Package, AlertCircle, CreditCard, RefreshCw, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 type DigitalItem = {
@@ -11,11 +11,42 @@ type DigitalItem = {
   productUrl: string | null;
 };
 
+// Map Moyasar/bank error messages to Arabic
+const ERROR_TRANSLATIONS: Record<string, { ar: string; hint: string; icon: string }> = {
+  'insufficient funds':          { ar: 'رصيد غير كافٍ',                    hint: 'تأكد من وجود رصيد كافٍ في بطاقتك أو جرّب بطاقة أخرى.',           icon: '💳' },
+  'insufficient balance':        { ar: 'رصيد غير كافٍ',                    hint: 'تأكد من وجود رصيد كافٍ في بطاقتك أو جرّب بطاقة أخرى.',           icon: '💳' },
+  'do not honor':                { ar: 'رُفض الطلب من البنك',              hint: 'تواصل مع بنكك للاستفسار، أو جرّب بطاقة أخرى.',                   icon: '🏦' },
+  'card declined':               { ar: 'تم رفض البطاقة',                   hint: 'تواصل مع بنكك أو جرّب وسيلة دفع أخرى.',                          icon: '🚫' },
+  'invalid card number':         { ar: 'رقم البطاقة غير صحيح',            hint: 'تحقق من رقم البطاقة وأعد المحاولة.',                              icon: '🔢' },
+  'invalid card':                { ar: 'بيانات البطاقة غير صحيحة',        hint: 'تحقق من جميع بيانات البطاقة وأعد المحاولة.',                     icon: '🔢' },
+  'expired card':                { ar: 'البطاقة منتهية الصلاحية',         hint: 'استخدم بطاقة سارية المفعول.',                                    icon: '📅' },
+  'wrong cvv':                   { ar: 'رمز CVV غير صحيح',                 hint: 'تحقق من الرقم المكوّن من 3 أرقام خلف البطاقة.',                  icon: '🔐' },
+  'cvv mismatch':                { ar: 'رمز CVV غير صحيح',                 hint: 'تحقق من الرقم المكوّن من 3 أرقام خلف البطاقة.',                  icon: '🔐' },
+  'invalid cvv':                 { ar: 'رمز CVV غير صحيح',                 hint: 'تحقق من الرقم المكوّن من 3 أرقام خلف البطاقة.',                  icon: '🔐' },
+  'restricted card':             { ar: 'البطاقة مقيدة',                   hint: 'البطاقة مقيدة من قِبل البنك. تواصل معهم أو جرّب بطاقة أخرى.',    icon: '🔒' },
+  'transaction not permitted':   { ar: 'العملية غير مسموح بها',           hint: 'بنكك لا يسمح بهذا النوع من المعاملات. تواصل معهم.',              icon: '⛔' },
+  'exceeds withdrawal':          { ar: 'تجاوزت الحد المسموح به',          hint: 'تجاوزت حد السحب اليومي. جرّب غداً أو بطاقة أخرى.',              icon: '📊' },
+  '3ds':                         { ar: 'فشل التحقق الثنائي (3D Secure)', hint: 'لم تكتمل عملية التحقق. أعد المحاولة وتأكد من إدخال رمز OTP.', icon: '📱' },
+  'authentication failed':       { ar: 'فشل التحقق الثنائي (3D Secure)', hint: 'لم تكتمل عملية التحقق. أعد المحاولة وتأكد من إدخال رمز OTP.', icon: '📱' },
+  'timeout':                     { ar: 'انتهت مهلة العملية',              hint: 'استغرقت العملية وقتاً طويلاً. أعد المحاولة.',                    icon: '⏱️' },
+  'connection':                  { ar: 'خطأ في الاتصال',                  hint: 'تحقق من اتصالك بالإنترنت وأعد المحاولة.',                        icon: '🌐' },
+};
+
+function translateError(msg: string): { ar: string; hint: string; icon: string } | null {
+  if (!msg) return null;
+  const lower = msg.toLowerCase();
+  for (const [key, val] of Object.entries(ERROR_TRANSLATIONS)) {
+    if (lower.includes(key)) return val;
+  }
+  return null;
+}
+
 export default function PaymentCallback() {
   const [status, setStatus] = useState<'loading' | 'success' | 'failed'>('loading');
   const [orderNumber, setOrderNumber] = useState('');
   const [digitalItems, setDigitalItems] = useState<DigitalItem[]>([]);
   const [loadingDownloads, setLoadingDownloads] = useState(false);
+  const [failureMessage, setFailureMessage] = useState<string | null>(null);
 
   // Fetch download links after confirmed payment
   async function fetchDownloads(orderNum: string) {
@@ -43,6 +74,9 @@ export default function PaymentCallback() {
       const orderNum = params.get('orderNumber') || '';
       setOrderNumber(orderNum);
       setStatus(directPayment === 'success' ? 'success' : 'failed');
+      // Moyasar may also pass ?message= in the redirect URL
+      const msg = params.get('message') || params.get('error') || null;
+      if (msg) setFailureMessage(msg);
       if (directPayment === 'success') fetchDownloads(orderNum);
       return;
     }
@@ -50,30 +84,39 @@ export default function PaymentCallback() {
     // Case 2: Moyasar redirected with ?id=PAYMENT_ID (standard flow)
     const paymentId = params.get('id') || params.get('payment_id');
     const orderNum = params.get('orderNumber') || params.get('order_number') || '';
+    // Moyasar sometimes passes the message directly in the callback URL too
+    const urlMessage = params.get('message') || params.get('error') || null;
     setOrderNumber(orderNum);
 
     if (!paymentId) {
       setStatus('failed');
+      if (urlMessage) setFailureMessage(urlMessage);
       return;
     }
 
-    // Call backend to verify payment — backend returns JSON now
+    // Call backend to verify payment
     fetch(
       `/api/payments/callback?id=${encodeURIComponent(paymentId)}&orderNumber=${encodeURIComponent(orderNum)}`,
     )
       .then(async (r) => {
-        if (!r.ok) {
-          setStatus('failed');
-          return;
-        }
-        const data = (await r.json()) as { status: string; orderNumber: string };
+        const data = (await r.json()) as {
+          status: string;
+          orderNumber: string;
+          failureMessage?: string;
+          failureCode?: string;
+        };
         const resolvedOrder = data.orderNumber || orderNum;
         setOrderNumber(resolvedOrder);
         const isPaid = data.status === 'paid';
         setStatus(isPaid ? 'success' : 'failed');
+        // Use backend failure message, fallback to URL message
+        if (!isPaid) setFailureMessage(data.failureMessage || urlMessage);
         if (isPaid) await fetchDownloads(resolvedOrder);
       })
-      .catch(() => setStatus('failed'));
+      .catch(() => {
+        setStatus('failed');
+        if (urlMessage) setFailureMessage(urlMessage);
+      });
   }, []);
 
   if (status === 'loading') {
@@ -189,27 +232,85 @@ export default function PaymentCallback() {
   }
 
   // Failed state
+  const translated = failureMessage ? translateError(failureMessage) : null;
+
   return (
-    <div className="min-h-[60vh] flex items-center justify-center container px-4">
+    <div className="min-h-[60vh] flex items-center justify-center container px-4 py-12">
       <div className="max-w-md w-full text-center space-y-6" dir="rtl">
+        {/* Icon */}
         <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto">
           <XCircle className="h-14 w-14 text-red-500" />
         </div>
+
+        {/* Title */}
         <div className="space-y-2">
           <h1 className="text-3xl font-black">فشل الدفع</h1>
-          <p className="text-muted-foreground text-lg">لم تتم عملية الدفع. يمكنك المحاولة مرة أخرى</p>
+          <p className="text-muted-foreground">لم تتم عملية الدفع بنجاح</p>
           {orderNumber && (
-            <p className="font-bold text-muted-foreground">رقم الطلب: #{orderNumber}</p>
+            <p className="font-semibold text-muted-foreground text-sm">رقم الطلب: #{orderNumber}</p>
           )}
         </div>
+
+        {/* Error reason card */}
+        {failureMessage && (
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-5 text-right space-y-3">
+            <div className="flex items-center gap-2 text-red-700">
+              <AlertCircle className="h-5 w-5 shrink-0" />
+              <span className="font-bold text-base">سبب الرفض</span>
+            </div>
+
+            {/* Translated reason */}
+            <div className="space-y-1">
+              <p className="font-bold text-red-800 text-lg">
+                {translated ? `${translated.icon} ${translated.ar}` : failureMessage}
+              </p>
+              {translated && (
+                <p className="text-sm text-red-700">{translated.hint}</p>
+              )}
+              {/* Show original message if no translation found */}
+              {!translated && (
+                <p className="text-xs text-red-500 font-mono bg-red-100 rounded-lg px-3 py-1.5 inline-block">
+                  {failureMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Generic tips when no specific reason */}
+        {!failureMessage && (
+          <div className="bg-muted/50 border border-border rounded-2xl p-5 text-right space-y-3">
+            <p className="font-bold flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-primary" />
+              أسباب شائعة لفشل الدفع:
+            </p>
+            <ul className="space-y-1.5 text-sm text-muted-foreground">
+              <li className="flex items-start gap-2"><span>•</span>رصيد غير كافٍ في البطاقة</li>
+              <li className="flex items-start gap-2"><span>•</span>بيانات البطاقة غير صحيحة (الرقم، تاريخ الانتهاء، CVV)</li>
+              <li className="flex items-start gap-2"><span>•</span>البطاقة غير مفعّلة للمدفوعات الإلكترونية</li>
+              <li className="flex items-start gap-2"><span>•</span>انتهاء مهلة رمز OTP</li>
+            </ul>
+          </div>
+        )}
+
+        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button asChild size="lg" className="rounded-xl font-bold">
-            <Link href="/cart">العودة للسلة</Link>
+          <Button asChild size="lg" className="rounded-xl font-bold gap-2">
+            <Link href="/cart">
+              <RefreshCw className="h-4 w-4" />
+              إعادة المحاولة
+            </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="rounded-xl font-bold">
+          <Button asChild variant="outline" size="lg" className="rounded-xl font-bold gap-2">
             <Link href="/">الرئيسية</Link>
           </Button>
         </div>
+
+        {/* Support hint */}
+        <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+          <Phone className="h-3 w-3" />
+          إذا استمرت المشكلة، تواصل مع دعم العملاء أو جرّب بطاقة أخرى
+        </p>
       </div>
     </div>
   );
