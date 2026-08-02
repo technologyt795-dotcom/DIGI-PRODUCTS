@@ -109,6 +109,13 @@ export default function AdminOrders() {
     }
   };
 
+  const getPaymentBadge = (order: Order) => {
+    const ps = (order as any).paymentStatus as string | undefined;
+    if (ps === 'failed') return <Badge variant="outline" className="bg-red-500/15 text-red-600 border-red-400/40 text-xs">فشل الدفع</Badge>;
+    if (ps === 'paid')   return <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-400/30 text-xs">مدفوع</Badge>;
+    return null;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -170,7 +177,12 @@ export default function AdminOrders() {
                         </div>
                       </TableCell>
                       <TableCell className="font-bold">{order.total.toLocaleString('ar-SA')} رس</TableCell>
-                      <TableCell>{getStatusBadge(order.status)}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {getStatusBadge(order.status)}
+                          {getPaymentBadge(order)}
+                        </div>
+                      </TableCell>
                       <TableCell className="text-left">
                         <div className="flex items-center gap-1">
                           <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }}>

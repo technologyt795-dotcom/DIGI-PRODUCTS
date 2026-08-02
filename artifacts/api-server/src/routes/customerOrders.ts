@@ -27,7 +27,7 @@ function mapOrder(row: typeof ordersTable.$inferSelect) {
   };
 }
 
-// GET /customer/orders — list authenticated customer's orders (excludes hidden ones)
+// GET /customer/orders — list authenticated customer's orders (excludes hidden and failed-payment ones)
 router.get(
   "/customer/orders",
   requireCustomer as any,
@@ -40,6 +40,7 @@ router.get(
         and(
           eq(ordersTable.customerEmail, payload.email),
           ne(ordersTable.hiddenByCustomer, true),
+          ne(ordersTable.paymentStatus, "failed"),
         ),
       )
       .orderBy(desc(ordersTable.createdAt));
