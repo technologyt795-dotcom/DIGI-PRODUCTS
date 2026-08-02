@@ -217,7 +217,16 @@ function PromoTab({ token }: { token: string }) {
 
   if (loading) return <Spinner />;
 
-  const colorCls = colors.find(c => c.id === bannerColor)?.cls ?? 'bg-primary';
+  /* gradient map matching AnnouncementBar themes */
+  const bannerGradients: Record<string, { bg: string; glow: string }> = {
+    primary: { bg: 'linear-gradient(90deg,#4f46e5,#7c3aed,#a855f7,#4f46e5)', glow: 'rgba(124,58,237,0.35)' },
+    green:   { bg: 'linear-gradient(90deg,#059669,#10b981,#34d399,#059669)', glow: 'rgba(16,185,129,0.35)' },
+    orange:  { bg: 'linear-gradient(90deg,#ea580c,#f97316,#fbbf24,#ea580c)', glow: 'rgba(249,115,22,0.4)' },
+    red:     { bg: 'linear-gradient(90deg,#dc2626,#e11d48,#f43f5e,#dc2626)', glow: 'rgba(225,29,72,0.35)' },
+    purple:  { bg: 'linear-gradient(90deg,#7c3aed,#c026d3,#db2777,#7c3aed)', glow: 'rgba(192,38,211,0.35)' },
+    dark:    { bg: 'linear-gradient(90deg,#0f172a,#1e293b,#334155,#0f172a)', glow: 'rgba(15,23,42,0.6)' },
+  };
+  const activeBannerTheme = bannerGradients[bannerColor] ?? bannerGradients.primary;
 
   return (
     <div className="space-y-6">
@@ -227,13 +236,43 @@ function PromoTab({ token }: { token: string }) {
           <Megaphone className="h-5 w-5 text-primary" />
           <h2 className="font-bold text-lg">البانر الإعلاني</h2>
         </div>
-        <p className="text-sm text-muted-foreground -mt-2">شريط إعلاني يظهر أعلى المتجر</p>
+        <p className="text-sm text-muted-foreground -mt-2">شريط إعلاني متحرك يظهر أعلى المتجر</p>
 
-        {bannerText && (
-          <div className={`${colorCls} text-white rounded-xl p-3 text-center text-sm font-medium`}>
-            <Megaphone className="inline h-4 w-4 ml-2" />{bannerText}
+        {/* Live animated preview */}
+        <div className="rounded-xl overflow-hidden border border-white/10"
+          style={{ boxShadow: `0 4px 20px 0 ${activeBannerTheme.glow}` }}>
+          <div
+            className="relative overflow-hidden flex items-center"
+            style={{
+              height: 40,
+              background: activeBannerTheme.bg,
+              backgroundSize: '200% 200%',
+              animation: 'ab-bg-pan 8s ease infinite',
+            }}
+          >
+            {/* shimmer */}
+            <div className="announcement-shimmer" style={{ ['--announcement-shimmer' as string]: 'linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.3) 50%,transparent 60%)' }} />
+            {/* marquee track */}
+            <div className="announcement-viewport" style={{ flex: 1 }}>
+              <div className="announcement-track" dir="ltr">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <span key={i} className="announcement-segment-wrap">
+                    <span className="announcement-segment" dir="rtl">
+                      <Zap style={{ width: 13, height: 13, flexShrink: 0, opacity: 0.9 }} />
+                      <span>{bannerText || 'نص الإعلان سيظهر هنا...'}</span>
+                      <Zap style={{ width: 13, height: 13, flexShrink: 0, opacity: 0.9 }} />
+                      <span className="announcement-dot" />
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+            {/* close mock */}
+            <div className="announcement-close" style={{ pointerEvents: 'none', right: 8 }}>
+              <X style={{ width: 11, height: 11, strokeWidth: 2.5 }} />
+            </div>
           </div>
-        )}
+        </div>
 
         <div className="flex items-center justify-between">
           <span className="font-semibold text-sm">تفعيل البانر</span>
