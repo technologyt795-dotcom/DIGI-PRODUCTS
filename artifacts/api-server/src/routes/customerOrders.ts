@@ -1,6 +1,6 @@
 import { Readable } from "stream";
 import { Router, type IRouter } from "express";
-import { eq, desc, and, ne } from "drizzle-orm";
+import { eq, desc, and, ne, or } from "drizzle-orm";
 import { db, ordersTable, productsTable } from "@workspace/db";
 import { inArray } from "drizzle-orm";
 import { requireCustomer } from "../middlewares/customerAuth";
@@ -40,7 +40,12 @@ router.get(
         and(
           eq(ordersTable.customerEmail, payload.email),
           ne(ordersTable.hiddenByCustomer, true),
-          ne(ordersTable.paymentStatus, "failed"),
+          // Hide any online-payment order that wasn't actually paid
+          // (covers both "failed" and "pending"/abandoned orders)
+          or(
+            ne(ordersTable.paymentMethod, "online"),
+            eq(ordersTable.paymentStatus, "paid"),
+          ),
         ),
       )
       .orderBy(desc(ordersTable.createdAt));
