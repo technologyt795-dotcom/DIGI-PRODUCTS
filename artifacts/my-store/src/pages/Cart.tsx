@@ -53,7 +53,8 @@ export default function Cart() {
     if (allDigital) setPaymentMethod('online');
   }, [allDigital]);
 
-  const taxAmount = totalPrice * 0.15;
+  // No tax or shipping for all-digital orders — both are irrelevant/misleading
+  const taxAmount = allDigital ? 0 : totalPrice * 0.15;
   const subtotalWithTax = totalPrice + taxAmount;
   const finalTotal = subtotalWithTax - (appliedDiscount?.amount || 0);
 
@@ -353,14 +354,18 @@ export default function Cart() {
                 <span>المجموع الفرعي</span>
                 <span className="font-bold text-foreground">{formatPrice(totalPrice)}</span>
               </div>
-              <div className="flex justify-between text-muted-foreground text-sm">
-                <span>الشحن</span>
-                <span className="font-bold text-foreground">مجاني</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground text-sm">
-                <span>ضريبة القيمة المضافة (15%)</span>
-                <span className="font-bold text-foreground">{formatPrice(taxAmount)}</span>
-              </div>
+              {!allDigital && (
+                <div className="flex justify-between text-muted-foreground text-sm">
+                  <span>الشحن</span>
+                  <span className="font-bold text-foreground">مجاني</span>
+                </div>
+              )}
+              {!allDigital && (
+                <div className="flex justify-between text-muted-foreground text-sm">
+                  <span>ضريبة القيمة المضافة (15%)</span>
+                  <span className="font-bold text-foreground">{formatPrice(taxAmount)}</span>
+                </div>
+              )}
               {appliedDiscount && (
                 <div className="flex justify-between text-green-600 text-sm font-medium">
                   <span>الخصم</span>
