@@ -152,6 +152,20 @@ router.get("/products", async (req, res): Promise<void> => {
   res.json(rows);
 });
 
+// GET /admin/products — returns ALL products including hidden ones (admin only)
+router.get("/admin/products", requireAdmin, async (req, res): Promise<void> => {
+  const rows = await db
+    .select(productSelection)
+    .from(productsTable)
+    .innerJoin(
+      categoriesTable,
+      eq(productsTable.categoryId, categoriesTable.id),
+    )
+    .orderBy(desc(productsTable.createdAt));
+
+  res.json(rows);
+});
+
 router.post("/products", requireAdmin, async (req, res): Promise<void> => {
   const parsed = CreateProductBody.safeParse(req.body);
   if (!parsed.success) {

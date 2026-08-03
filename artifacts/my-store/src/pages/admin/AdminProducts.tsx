@@ -40,7 +40,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { ImageUploadField } from '@/components/admin/ImageUploadField';
 import {
-  useListProducts,
   useListCategories,
   useCreateProduct,
   useUpdateProduct,
@@ -48,7 +47,7 @@ import {
   getListProductsQueryKey,
   type Product,
 } from '@workspace/api-client-react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -97,7 +96,14 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
 export default function AdminProducts() {
   const queryClient = useQueryClient();
   const { token: adminToken } = useAdminAuth();
-  const { data: products, isLoading } = useListProducts();
+  const { data: products, isLoading } = useQuery<Product[]>({
+    queryKey: ['admin', 'products'],
+    queryFn: async () => {
+      const res = await fetch(`${BASE}/admin/products`, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to fetch products');
+      return res.json();
+    },
+  });
   const { data: categories } = useListCategories();
   const createMutation = useCreateProduct();
   const updateMutation = useUpdateProduct();
