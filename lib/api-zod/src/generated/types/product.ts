@@ -26,6 +26,7 @@ export interface Product {
   /** @nullable */
   badge: string | null;
   isDigital: boolean;
+  isHidden: boolean;
   downloadUrls: string[];
   downloadLabels: string[];
   /** @nullable */

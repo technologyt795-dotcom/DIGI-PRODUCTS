@@ -67,6 +67,7 @@ interface ProductFormState {
   isNew: boolean;
   badge: string;
   isDigital: boolean;
+  isHidden: boolean;
   downloadUrls: string[];
   downloadLabels: string[];
   productUrl: string;
@@ -85,6 +86,7 @@ const emptyForm: ProductFormState = {
   isNew: false,
   badge: '',
   isDigital: false,
+  isHidden: false,
   downloadUrls: [],
   downloadLabels: [],
   productUrl: '',
@@ -168,6 +170,7 @@ export default function AdminProducts() {
       isNew: product.isNew,
       badge: product.badge || '',
       isDigital: product.isDigital,
+      isHidden: (product as any).isHidden ?? false,
       downloadUrls: product.downloadUrls || [],
       downloadLabels: product.downloadLabels || [],
       productUrl: (product as any).productUrl || '',
@@ -192,6 +195,7 @@ export default function AdminProducts() {
       isNew: form.isNew,
       badge: form.badge || null,
       isDigital: form.isDigital,
+      isHidden: form.isHidden,
       // Keep only slots that have a URL, and carry their matching label at the same index
       downloadUrls: form.isDigital ? form.downloadUrls.filter(Boolean) : [],
       downloadLabels: form.isDigital
@@ -431,6 +435,15 @@ export default function AdminProducts() {
                   onCheckedChange={(checked) => setForm({ ...form, isDigital: checked })}
                 />
                 <Label>منتج رقمي</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={form.isHidden}
+                  onCheckedChange={(checked) => setForm({ ...form, isHidden: checked })}
+                />
+                <Label className={form.isHidden ? 'text-destructive font-semibold' : ''}>
+                  {form.isHidden ? '🚫 مخفي عن المتجر' : 'مخفي عن المتجر'}
+                </Label>
               </div>
             </div>
 

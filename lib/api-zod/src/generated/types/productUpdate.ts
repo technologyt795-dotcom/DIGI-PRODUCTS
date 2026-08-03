@@ -29,4 +29,5 @@ export interface ProductUpdate {
   downloadLabels?: string[];
   /** @nullable */
   productUrl?: string | null;
+  isHidden?: boolean;
 }

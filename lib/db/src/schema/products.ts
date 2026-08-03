@@ -29,6 +29,7 @@ export const productsTable = pgTable("products", {
   isNew: boolean("is_new").notNull().default(false),
   badge: text("badge"),
   isDigital: boolean("is_digital").notNull().default(false),
+  isHidden: boolean("is_hidden").notNull().default(false),
   downloadUrls: text("download_urls").array().notNull().default([]),
   downloadLabels: text("download_labels").array().notNull().default([]),
   productUrl: text("product_url"),

@@ -29,6 +29,7 @@ function toInsertValues(data: {
   isNew?: boolean;
   badge?: string | null;
   isDigital?: boolean;
+  isHidden?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
   productUrl?: string | null;
@@ -49,6 +50,7 @@ function toInsertValues(data: {
     ...(data.isNew != null ? { isNew: data.isNew } : {}),
     ...(data.badge !== undefined ? { badge: data.badge } : {}),
     ...(data.isDigital != null ? { isDigital: data.isDigital } : {}),
+    ...(data.isHidden != null ? { isHidden: data.isHidden } : {}),
     ...(data.downloadUrls !== undefined ? { downloadUrls: data.downloadUrls } : {}),
     ...(data.downloadLabels !== undefined ? { downloadLabels: data.downloadLabels } : {}),
     ...(data.productUrl !== undefined ? { productUrl: data.productUrl } : {}),
@@ -70,6 +72,7 @@ function toUpdateValues(data: {
   isNew?: boolean;
   badge?: string | null;
   isDigital?: boolean;
+  isHidden?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
   productUrl?: string | null;
@@ -105,6 +108,7 @@ const productSelection = {
   isNew: productsTable.isNew,
   badge: productsTable.badge,
   isDigital: productsTable.isDigital,
+  isHidden: productsTable.isHidden,
   downloadUrls: productsTable.downloadUrls,
   downloadLabels: productsTable.downloadLabels,
   productUrl: productsTable.productUrl,
@@ -119,7 +123,10 @@ router.get("/products", async (req, res): Promise<void> => {
   }
   const { categorySlug, search, sort } = params.data;
 
-  const conditions = [eq(categoriesTable.isHidden, false)];
+  const conditions = [
+    eq(categoriesTable.isHidden, false),
+    eq(productsTable.isHidden, false),
+  ];
   if (categorySlug) {
     conditions.push(eq(categoriesTable.slug, categorySlug));
   }
@@ -195,7 +202,7 @@ router.get("/products/featured", async (_req, res): Promise<void> => {
       categoriesTable,
       eq(productsTable.categoryId, categoriesTable.id),
     )
-    .where(and(eq(productsTable.isFeatured, true), eq(categoriesTable.isHidden, false)))
+    .where(and(eq(productsTable.isFeatured, true), eq(categoriesTable.isHidden, false), eq(productsTable.isHidden, false)))
     .orderBy(desc(productsTable.createdAt));
 
   res.json(rows);

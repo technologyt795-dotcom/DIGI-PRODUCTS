@@ -159,6 +159,7 @@ export const ListProductsResponseItem = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
+  "isHidden": zod.boolean(),
   "downloadUrls": zod.array(zod.string()),
   "downloadLabels": zod.array(zod.string()),
   "productUrl": zod.string().nullish(),
@@ -191,7 +192,8 @@ export const CreateProductBody = zod.object({
   "isDigital": zod.boolean().optional(),
   "downloadUrls": zod.array(zod.string()).optional(),
   "downloadLabels": zod.array(zod.string()).optional(),
-  "productUrl": zod.string().nullish()
+  "productUrl": zod.string().nullish(),
+  "isHidden": zod.boolean().optional()
 })
 
 export const CreateProductResponse = zod.object({
@@ -212,6 +214,7 @@ export const CreateProductResponse = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
+  "isHidden": zod.boolean(),
   "downloadUrls": zod.array(zod.string()),
   "downloadLabels": zod.array(zod.string()),
   "productUrl": zod.string().nullish(),
@@ -240,6 +243,7 @@ export const ListFeaturedProductsResponseItem = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
+  "isHidden": zod.boolean(),
   "downloadUrls": zod.array(zod.string()),
   "downloadLabels": zod.array(zod.string()),
   "productUrl": zod.string().nullish(),
@@ -273,6 +277,7 @@ export const GetProductResponse = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
+  "isHidden": zod.boolean(),
   "downloadUrls": zod.array(zod.string()),
   "downloadLabels": zod.array(zod.string()),
   "productUrl": zod.string().nullish(),
@@ -308,7 +313,8 @@ export const UpdateProductBody = zod.object({
   "isDigital": zod.boolean().optional(),
   "downloadUrls": zod.array(zod.string()).optional(),
   "downloadLabels": zod.array(zod.string()).optional(),
-  "productUrl": zod.string().nullish()
+  "productUrl": zod.string().nullish(),
+  "isHidden": zod.boolean().optional()
 })
 
 export const UpdateProductResponse = zod.object({
@@ -329,6 +335,7 @@ export const UpdateProductResponse = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
+  "isHidden": zod.boolean(),
   "downloadUrls": zod.array(zod.string()),
   "downloadLabels": zod.array(zod.string()),
   "productUrl": zod.string().nullish(),
@@ -386,6 +393,7 @@ export const ListRelatedProductsResponseItem = zod.object({
   "isNew": zod.boolean(),
   "badge": zod.string().nullable(),
   "isDigital": zod.boolean(),
+  "isHidden": zod.boolean(),
   "downloadUrls": zod.array(zod.string()),
   "downloadLabels": zod.array(zod.string()),
   "productUrl": zod.string().nullish(),

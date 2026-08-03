@@ -67,6 +67,7 @@ export interface ProductInput {
   downloadLabels?: string[];
   /** @nullable */
   productUrl?: string | null;
+  isHidden?: boolean;
 }
 
 export interface ProductUpdate {
@@ -92,6 +93,7 @@ export interface ProductUpdate {
   downloadLabels?: string[];
   /** @nullable */
   productUrl?: string | null;
+  isHidden?: boolean;
 }
 
 export interface AdminLoginInput {
@@ -123,6 +125,7 @@ export interface Product {
   /** @nullable */
   badge: string | null;
   isDigital: boolean;
+  isHidden: boolean;
   downloadUrls: string[];
   downloadLabels: string[];
   /** @nullable */
