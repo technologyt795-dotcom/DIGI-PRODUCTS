@@ -99,7 +99,10 @@ export default function AdminProducts() {
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['admin', 'products'],
     queryFn: async () => {
-      const res = await fetch(`${BASE}/admin/products`, { credentials: 'include' });
+      const token = localStorage.getItem('my-store-admin-token');
+      const res = await fetch(`${BASE}/admin/products`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (!res.ok) throw new Error('Failed to fetch products');
       return res.json();
     },
