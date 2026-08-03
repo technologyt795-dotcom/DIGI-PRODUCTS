@@ -152,7 +152,7 @@ router.get("/products", async (req, res): Promise<void> => {
   res.json(rows);
 });
 
-// GET /admin/products — returns ALL products including hidden ones (admin only)
+// GET /admin/products — returns products whose category is visible (admin only)
 router.get("/admin/products", requireAdmin, async (req, res): Promise<void> => {
   const rows = await db
     .select(productSelection)
@@ -161,6 +161,7 @@ router.get("/admin/products", requireAdmin, async (req, res): Promise<void> => {
       categoriesTable,
       eq(productsTable.categoryId, categoriesTable.id),
     )
+    .where(eq(categoriesTable.isHidden, false))
     .orderBy(desc(productsTable.createdAt));
 
   res.json(rows);
