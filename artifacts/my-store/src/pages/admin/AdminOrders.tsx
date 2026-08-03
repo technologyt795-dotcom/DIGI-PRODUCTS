@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useListOrders, useUpdateOrder, useDeleteOrder, getListOrdersQueryKey, Order, OrderStatus } from '@workspace/api-client-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2, Eye, MapPin, User, Package, Calendar, Trash2, Truck } from 'lucide-react';
+import { Loader2, Eye, MapPin, User, Package, Calendar, Trash2, Truck, CreditCard, Banknote } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
@@ -116,6 +116,12 @@ export default function AdminOrders() {
     return null;
   };
 
+  const getPaymentMethodBadge = (order: Order) => {
+    const pm = (order as any).paymentMethod as string | undefined;
+    if (pm === 'online') return <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-400/30 text-xs gap-1"><CreditCard className="h-3 w-3" />إلكتروني</Badge>;
+    return <Badge variant="outline" className="bg-orange-500/10 text-orange-600 border-orange-400/30 text-xs gap-1"><Banknote className="h-3 w-3" />عند الاستلام</Badge>;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -180,6 +186,7 @@ export default function AdminOrders() {
                       <TableCell>
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {getStatusBadge(order.status)}
+                          {getPaymentMethodBadge(order)}
                           {getPaymentBadge(order)}
                         </div>
                       </TableCell>
@@ -278,6 +285,23 @@ export default function AdminOrders() {
                         <p className="text-sm text-muted-foreground">
                           {new Date(selectedOrder.createdAt).toLocaleDateString('ar-SA')} - {new Date(selectedOrder.createdAt).toLocaleTimeString('ar-SA')}
                         </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4 flex gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full h-fit">
+                        {(selectedOrder as any).paymentMethod === 'online'
+                          ? <CreditCard className="h-5 w-5 text-primary" />
+                          : <Banknote className="h-5 w-5 text-primary" />}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm mb-1">طريقة الدفع</h3>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {getPaymentMethodBadge(selectedOrder)}
+                          {getPaymentBadge(selectedOrder)}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

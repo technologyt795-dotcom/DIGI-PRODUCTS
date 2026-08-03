@@ -377,22 +377,32 @@ export default function OrderDetail() {
                 }}>
                   <div style={{ display: 'grid', gap: '6px' }}>
                     {[
-                      ['رقم الفاتورة', order.orderNumber],
-                      ['التاريخ', date],
-                      ['الوقت', time],
-                      ['الحالة', null],
-                    ].map(([label, val]) => (
+                      ['رقم الفاتورة', order.orderNumber, 'text'],
+                      ['التاريخ', date, 'text'],
+                      ['الوقت', time, 'text'],
+                      ['طريقة الدفع', null, 'paymentMethod'],
+                      ['الحالة', null, 'status'],
+                    ].map(([label, val, type]) => (
                       <div key={label as string} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, gap: 8, alignItems: 'center' }}>
                         <span style={{ opacity: 0.7 }}>{label}</span>
-                        {val ? (
-                          <span style={{ fontWeight: 700, fontFamily: 'monospace', textAlign: 'left' }}>{val}</span>
-                        ) : (
+                        {type === 'status' ? (
                           <span
                             className="inv-status-badge"
                             style={{ background: status.color, color: '#fff' }}
                           >
                             {status.label}
                           </span>
+                        ) : type === 'paymentMethod' ? (
+                          <span style={{
+                            fontWeight: 700, fontSize: 11,
+                            padding: '2px 8px', borderRadius: 999,
+                            background: (order as any).paymentMethod === 'online' ? 'rgba(59,130,246,0.2)' : 'rgba(251,146,60,0.2)',
+                            color: (order as any).paymentMethod === 'online' ? '#1d4ed8' : '#c2410c',
+                          }}>
+                            {(order as any).paymentMethod === 'online' ? '💳 إلكتروني' : '💵 عند الاستلام'}
+                          </span>
+                        ) : (
+                          <span style={{ fontWeight: 700, fontFamily: 'monospace', textAlign: 'left' }}>{val}</span>
                         )}
                       </div>
                     ))}

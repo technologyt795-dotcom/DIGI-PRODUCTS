@@ -23,6 +23,9 @@ export default function Cart() {
   const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number } | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'online'>('cash');
 
+  // If every item in the cart is digital, cash on delivery makes no sense
+  const allDigital = items.length > 0 && items.every(item => (item.product as any).isDigital === true);
+
   const [form, setForm] = useState({
     customerName: '',
     customerEmail: '',
@@ -44,6 +47,11 @@ export default function Cart() {
       }));
     }
   }, [isAuthenticated, customer]);
+
+  // Force online payment when all items are digital
+  useEffect(() => {
+    if (allDigital) setPaymentMethod('online');
+  }, [allDigital]);
 
   const taxAmount = totalPrice * 0.15;
   const subtotalWithTax = totalPrice + taxAmount;
@@ -207,10 +215,12 @@ export default function Cart() {
                 <Label>البريد الإلكتروني *</Label>
                 <Input type="email" required value={form.customerEmail} onChange={e => setForm({...form, customerEmail: e.target.value})} placeholder="example@email.com" dir="ltr" className="text-right" />
               </div>
-              <div className="space-y-2">
-                <Label>عنوان التوصيل بالتفصيل *</Label>
-                <Textarea required value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="المدينة، الحي، الشارع، رقم المبنى" className="resize-none" rows={3} />
-              </div>
+              {!allDigital && (
+                <div className="space-y-2">
+                  <Label>عنوان التوصيل بالتفصيل *</Label>
+                  <Textarea required value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="المدينة، الحي، الشارع، رقم المبنى" className="resize-none" rows={3} />
+                </div>
+              )}
               <div className="space-y-2">
                 <Label>ملاحظات إضافية (اختياري)</Label>
                 <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="أي تعليمات خاصة للمندوب..." className="resize-none" rows={2} />
@@ -221,65 +231,85 @@ export default function Cart() {
           {/* Payment Method Selection */}
           <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm p-6 sm:p-8">
             <h2 className="text-xl font-bold mb-5 flex items-center gap-2"><CreditCard className="h-5 w-5" /> طريقة الدفع</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Cash on Delivery */}
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('cash')}
-                className={cn(
-                  'flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer text-center',
-                  paymentMethod === 'cash'
-                    ? 'border-primary bg-primary/5 shadow-md'
-                    : 'border-border bg-muted/30 hover:border-primary/40 hover:bg-muted/60'
-                )}
-              >
-                <div className={cn(
-                  'w-12 h-12 rounded-full flex items-center justify-center transition-colors',
-                  paymentMethod === 'cash' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-                )}>
-                  <Truck className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="font-bold text-base">الدفع عند الاستلام</p>
-                  <p className="text-muted-foreground text-sm mt-0.5">ادفع نقداً عند استلام طلبك</p>
-                </div>
-                {paymentMethod === 'cash' && (
-                  <CheckCircle className="h-5 w-5 text-primary absolute top-3 left-3" />
-                )}
-              </button>
 
-              {/* Online Payment */}
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('online')}
-                className={cn(
-                  'flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer text-center relative',
-                  paymentMethod === 'online'
-                    ? 'border-primary bg-primary/5 shadow-md'
-                    : 'border-border bg-muted/30 hover:border-primary/40 hover:bg-muted/60'
-                )}
-              >
-                <div className={cn(
-                  'w-12 h-12 rounded-full flex items-center justify-center transition-colors',
-                  paymentMethod === 'online' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-                )}>
-                  <CreditCard className="h-6 w-6" />
+            {allDigital ? (
+              /* All-digital cart — only online payment makes sense */
+              <div className="flex items-center gap-3 p-4 rounded-2xl border-2 border-primary bg-primary/5">
+                <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+                  <CreditCard className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-bold text-base">الدفع الإلكتروني</p>
-                  <p className="text-muted-foreground text-sm mt-0.5">بطاقة بنكية · Apple Pay · STC Pay</p>
+                  <p className="font-bold">الدفع الإلكتروني</p>
+                  <p className="text-sm text-muted-foreground">بطاقة بنكية · Apple Pay · STC Pay</p>
                 </div>
-                {paymentMethod === 'online' && (
-                  <CheckCircle className="h-5 w-5 text-primary absolute top-3 left-3" />
-                )}
-              </button>
-            </div>
+                <CheckCircle className="h-5 w-5 text-primary mr-auto shrink-0" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Cash on Delivery */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('cash')}
+                  className={cn(
+                    'flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer text-center',
+                    paymentMethod === 'cash'
+                      ? 'border-primary bg-primary/5 shadow-md'
+                      : 'border-border bg-muted/30 hover:border-primary/40 hover:bg-muted/60'
+                  )}
+                >
+                  <div className={cn(
+                    'w-12 h-12 rounded-full flex items-center justify-center transition-colors',
+                    paymentMethod === 'cash' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                  )}>
+                    <Truck className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-base">الدفع عند الاستلام</p>
+                    <p className="text-muted-foreground text-sm mt-0.5">ادفع نقداً عند استلام طلبك</p>
+                  </div>
+                  {paymentMethod === 'cash' && (
+                    <CheckCircle className="h-5 w-5 text-primary absolute top-3 left-3" />
+                  )}
+                </button>
+
+                {/* Online Payment */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('online')}
+                  className={cn(
+                    'flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer text-center relative',
+                    paymentMethod === 'online'
+                      ? 'border-primary bg-primary/5 shadow-md'
+                      : 'border-border bg-muted/30 hover:border-primary/40 hover:bg-muted/60'
+                  )}
+                >
+                  <div className={cn(
+                    'w-12 h-12 rounded-full flex items-center justify-center transition-colors',
+                    paymentMethod === 'online' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                  )}>
+                    <CreditCard className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-base">الدفع الإلكتروني</p>
+                    <p className="text-muted-foreground text-sm mt-0.5">بطاقة بنكية · Apple Pay · STC Pay</p>
+                  </div>
+                  {paymentMethod === 'online' && (
+                    <CheckCircle className="h-5 w-5 text-primary absolute top-3 left-3" />
+                  )}
+                </button>
+              </div>
+            )}
 
             {paymentMethod === 'online' && (
               <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-xl p-3">
                 <Lock className="h-4 w-4 shrink-0 text-primary" />
                 <span>سيتم توجيهك إلى بوابة ميسر الآمنة لإتمام عملية الدفع</span>
               </div>
+            )}
+            {allDigital && (
+              <p className="mt-3 text-xs text-muted-foreground text-center">
+                🔒 المنتجات الرقمية تتطلب الدفع الإلكتروني — ستصلك روابط التحميل فور إتمام الدفع
+              </p>
             )}
           </div>
         </div>
