@@ -21,7 +21,7 @@ const categorySelection = {
   image: categoriesTable.image,
   isHidden: categoriesTable.isHidden,
   sortOrder: categoriesTable.sortOrder,
-  productCount: sql<number>`count(${productsTable.id})`.mapWith(Number),
+  productCount: sql<number>`count(CASE WHEN ${productsTable.isHidden} = false THEN ${productsTable.id} END)`.mapWith(Number),
 };
 
 // Public: only visible categories
