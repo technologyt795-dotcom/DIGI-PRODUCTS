@@ -12,6 +12,7 @@ export function Footer() {
   const storeName = settings?.storeName || 'My Store';
 
   const paddingY =
+    settings?.footerPadding === 'nano'    ? '0.25rem' :
     settings?.footerPadding === 'mini'    ? '1rem'  :
     settings?.footerPadding === 'compact' ? '2rem'  :
     settings?.footerPadding === 'large'   ? '6rem'  :
