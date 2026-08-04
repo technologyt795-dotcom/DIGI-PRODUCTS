@@ -57,6 +57,12 @@ export const storeSettingsTable = pgTable("store_settings", {
   popupMessage: text("popup_message"),
   popupDiscountCode: text("popup_discount_code"),
   popupDelay: integer("popup_delay").default(3),
+  // Payment method badges in footer
+  paymentVisaEnabled: boolean("payment_visa_enabled").notNull().default(true),
+  paymentMastercardEnabled: boolean("payment_mastercard_enabled").notNull().default(true),
+  paymentMadaEnabled: boolean("payment_mada_enabled").notNull().default(true),
+  paymentApplePayEnabled: boolean("payment_apple_pay_enabled").notNull().default(false),
+  paymentStcPayEnabled: boolean("payment_stc_pay_enabled").notNull().default(false),
 });
 
 export const insertStoreSettingsSchema = createInsertSchema(

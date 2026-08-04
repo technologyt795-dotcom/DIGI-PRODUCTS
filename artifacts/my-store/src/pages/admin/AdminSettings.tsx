@@ -47,6 +47,12 @@ export default function AdminSettings() {
   const [footerTextColor, setFooterTextColor] = useState<string | null>(null);
   const [footerPadding, setFooterPadding] = useState<string>('normal');
   const [footerColorsEnabled, setFooterColorsEnabled] = useState(false);
+  // Payment method badges
+  const [paymentVisaEnabled, setPaymentVisaEnabled] = useState(true);
+  const [paymentMastercardEnabled, setPaymentMastercardEnabled] = useState(true);
+  const [paymentMadaEnabled, setPaymentMadaEnabled] = useState(true);
+  const [paymentApplePayEnabled, setPaymentApplePayEnabled] = useState(false);
+  const [paymentStcPayEnabled, setPaymentStcPayEnabled] = useState(false);
 
   // Initialize form when settings load
   useEffect(() => {
@@ -79,6 +85,11 @@ export default function AdminSettings() {
       setFooterTextColor(settings.footerTextColor ?? null);
       setFooterPadding(settings.footerPadding ?? 'normal');
       setFooterColorsEnabled(!!(settings.footerBgColor || settings.footerTextColor));
+      setPaymentVisaEnabled((settings as any).paymentVisaEnabled ?? true);
+      setPaymentMastercardEnabled((settings as any).paymentMastercardEnabled ?? true);
+      setPaymentMadaEnabled((settings as any).paymentMadaEnabled ?? true);
+      setPaymentApplePayEnabled((settings as any).paymentApplePayEnabled ?? false);
+      setPaymentStcPayEnabled((settings as any).paymentStcPayEnabled ?? false);
     }
   }, [settings]);
 
@@ -123,7 +134,12 @@ export default function AdminSettings() {
         footerBgColor: footerColorsEnabled ? (footerBgColor || null) : null,
         footerTextColor: footerColorsEnabled ? (footerTextColor || null) : null,
         footerPadding: footerPadding || null,
-      }
+        paymentVisaEnabled,
+        paymentMastercardEnabled,
+        paymentMadaEnabled,
+        paymentApplePayEnabled,
+        paymentStcPayEnabled,
+      } as any
     });
   };
 
@@ -635,6 +651,98 @@ export default function AdminSettings() {
               </div>
             </CardContent>
           </Card>
+          {/* ── Payment Method Badges ─────────────────────────── */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span>💳</span>
+                شعارات بوابات الدفع في الفوتر
+              </CardTitle>
+              <CardDescription>
+                فعّل فقط وسائل الدفع التي تقبلها فعلاً — ستظهر شعاراتها في أسفل المتجر
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {[
+                  {
+                    key: 'visa', label: 'Visa', description: 'بطاقات فيزا الائتمانية والمدفوعة مسبقاً',
+                    checked: paymentVisaEnabled, onChange: setPaymentVisaEnabled,
+                    badge: (
+                      <span className="inline-flex items-center justify-center bg-white border rounded px-2 py-0.5 h-7 shadow-sm">
+                        <svg viewBox="0 0 60 20" width="36" height="12" xmlns="http://www.w3.org/2000/svg">
+                          <text x="0" y="16" fontFamily="Arial" fontWeight="bold" fontSize="18" fill="#1A1F71">VISA</text>
+                        </svg>
+                      </span>
+                    )
+                  },
+                  {
+                    key: 'mastercard', label: 'Mastercard', description: 'بطاقات ماستركارد الائتمانية',
+                    checked: paymentMastercardEnabled, onChange: setPaymentMastercardEnabled,
+                    badge: (
+                      <span className="inline-flex items-center justify-center bg-white border rounded px-2 py-0.5 h-7 shadow-sm">
+                        <svg viewBox="0 0 38 24" width="32" height="20" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="13" cy="12" r="10" fill="#EB001B"/>
+                          <circle cx="25" cy="12" r="10" fill="#F79E1B"/>
+                          <path d="M19 5.27A10 10 0 0 1 23.73 12 10 10 0 0 1 19 18.73 10 10 0 0 1 14.27 12 10 10 0 0 1 19 5.27Z" fill="#FF5F00"/>
+                        </svg>
+                      </span>
+                    )
+                  },
+                  {
+                    key: 'mada', label: 'مدى (Mada)', description: 'البطاقات المصرفية السعودية المحلية',
+                    checked: paymentMadaEnabled, onChange: setPaymentMadaEnabled,
+                    badge: (
+                      <span className="inline-flex items-center justify-center bg-white border rounded px-2 py-0.5 h-7 shadow-sm">
+                        <svg viewBox="0 0 52 20" width="40" height="15" xmlns="http://www.w3.org/2000/svg">
+                          <text x="2" y="15" fontFamily="Arial" fontWeight="bold" fontSize="13" fill="#004B87">mada</text>
+                          <circle cx="44" cy="10" r="6" fill="#00A651"/>
+                          <circle cx="40" cy="10" r="6" fill="#004B87" opacity="0.85"/>
+                        </svg>
+                      </span>
+                    )
+                  },
+                  {
+                    key: 'applepay', label: 'Apple Pay', description: 'الدفع عبر Apple Pay (يتطلب إعداداً خاصاً مع Moyasar)',
+                    checked: paymentApplePayEnabled, onChange: setPaymentApplePayEnabled,
+                    badge: (
+                      <span className="inline-flex items-center justify-center bg-black border rounded px-2 py-0.5 h-7 shadow-sm gap-1">
+                        <svg viewBox="0 0 16 20" width="9" height="12" fill="white" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M13.18 10.5c-.02-2.08 1.7-3.08 1.78-3.13-0.97-1.42-2.48-1.61-3.02-1.63-1.29-.13-2.52.76-3.17.76-.65 0-1.66-.74-2.73-.72C4.6 5.8 3.1 6.65 2.27 8.02 0.57 10.8 1.83 14.92 3.47 17.2c.82 1.17 1.79 2.48 3.07 2.43 1.23-.05 1.7-.79 3.19-.79 1.49 0 1.91.79 3.22.77 1.33-.02 2.17-1.2 2.98-2.38.94-1.36 1.33-2.68 1.35-2.75-.03-.01-2.58-1-2.6-3.98zm-2.44-7.3c.68-.82 1.14-1.97 1.01-3.11-.98.04-2.16.65-2.86 1.47-.63.72-1.18 1.88-1.03 2.99 1.09.08 2.2-.55 2.88-1.35z"/>
+                        </svg>
+                        <span style={{ color: 'white', fontSize: '10px', fontFamily: 'Arial', fontWeight: 600 }}>Pay</span>
+                      </span>
+                    )
+                  },
+                  {
+                    key: 'stcpay', label: 'STC Pay', description: 'المحفظة الرقمية من STC',
+                    checked: paymentStcPayEnabled, onChange: setPaymentStcPayEnabled,
+                    badge: (
+                      <span className="inline-flex items-center justify-center bg-white border rounded px-2 py-0.5 h-7 shadow-sm">
+                        <svg viewBox="0 0 54 20" width="42" height="15" xmlns="http://www.w3.org/2000/svg">
+                          <text x="1" y="15" fontFamily="Arial" fontWeight="bold" fontSize="11" fill="#6D2077">STC</text>
+                          <rect x="30" y="2" width="22" height="16" rx="3" fill="#6D2077"/>
+                          <text x="33" y="14" fontFamily="Arial" fontWeight="bold" fontSize="10" fill="white">Pay</text>
+                        </svg>
+                      </span>
+                    )
+                  },
+                ].map(({ key, label, description, checked, onChange, badge }) => (
+                  <div key={key} className="flex items-center justify-between p-3 border rounded-lg bg-muted/20">
+                    <div className="flex items-center gap-3">
+                      {badge}
+                      <div>
+                        <p className="text-sm font-medium">{label}</p>
+                        <p className="text-xs text-muted-foreground">{description}</p>
+                      </div>
+                    </div>
+                    <Switch checked={checked} onCheckedChange={onChange} />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
         </TabsContent>
 
         <TabsContent value="info" className="space-y-6">

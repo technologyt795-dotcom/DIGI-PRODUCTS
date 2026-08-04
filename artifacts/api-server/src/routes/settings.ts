@@ -83,6 +83,12 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
     popupMessage: row.popupMessage ?? null,
     popupDiscountCode: row.popupDiscountCode ?? null,
     popupDelay: row.popupDelay ?? 3,
+    // Payment method badges
+    paymentVisaEnabled: row.paymentVisaEnabled ?? true,
+    paymentMastercardEnabled: row.paymentMastercardEnabled ?? true,
+    paymentMadaEnabled: row.paymentMadaEnabled ?? true,
+    paymentApplePayEnabled: row.paymentApplePayEnabled ?? false,
+    paymentStcPayEnabled: row.paymentStcPayEnabled ?? false,
   };
 }
 
@@ -143,6 +149,12 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if ((data as any).popupMessage !== undefined) updateValues.popupMessage = (data as any).popupMessage;
   if ((data as any).popupDiscountCode !== undefined) updateValues.popupDiscountCode = (data as any).popupDiscountCode;
   if ((data as any).popupDelay !== undefined) updateValues.popupDelay = (data as any).popupDelay;
+  // Payment method badges
+  if ((data as any).paymentVisaEnabled !== undefined) updateValues.paymentVisaEnabled = (data as any).paymentVisaEnabled;
+  if ((data as any).paymentMastercardEnabled !== undefined) updateValues.paymentMastercardEnabled = (data as any).paymentMastercardEnabled;
+  if ((data as any).paymentMadaEnabled !== undefined) updateValues.paymentMadaEnabled = (data as any).paymentMadaEnabled;
+  if ((data as any).paymentApplePayEnabled !== undefined) updateValues.paymentApplePayEnabled = (data as any).paymentApplePayEnabled;
+  if ((data as any).paymentStcPayEnabled !== undefined) updateValues.paymentStcPayEnabled = (data as any).paymentStcPayEnabled;
 
   try {
     // Upsert: insert if not exists, update otherwise
