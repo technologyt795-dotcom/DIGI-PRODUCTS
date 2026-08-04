@@ -56,7 +56,7 @@ export function Footer() {
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="text-2xl font-bold leading-none tracking-tight text-white">{storeName}</span>
+                <span className={`text-2xl font-bold leading-none tracking-tight ${headingCls}`} style={headingStyle}>{storeName}</span>
                 {settings?.tagline && (
                   <span className="text-xs uppercase tracking-wider text-secondary font-medium mt-1">
                     {settings.tagline}
@@ -64,29 +64,29 @@ export function Footer() {
                 )}
               </div>
             </Link>
-            <p className="text-primary-foreground/70 text-sm leading-relaxed max-w-xs">
+            <p className={`text-sm leading-relaxed max-w-xs ${bodyCls}`} style={bodyStyle}>
               وجهتك الموثوقة للتسوق الإلكتروني. نجمع لك أفضل المنتجات تحت سقف واحد بمعايير جودة عالية.
             </p>
             <div className="flex gap-4 pt-2">
               {settings?.instagramUrl && (
-                <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Instagram className="h-5 w-5" /></a>
+                <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className={`${bodyCls} hover:text-secondary transition-colors`} style={bodyStyle}><Instagram className="h-5 w-5" /></a>
               )}
               {settings?.twitterUrl && (
-                <a href={settings.twitterUrl} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Twitter className="h-5 w-5" /></a>
+                <a href={settings.twitterUrl} target="_blank" rel="noopener noreferrer" className={`${bodyCls} hover:text-secondary transition-colors`} style={bodyStyle}><Twitter className="h-5 w-5" /></a>
               )}
               {settings?.facebookUrl && (
-                <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-secondary transition-colors"><Facebook className="h-5 w-5" /></a>
+                <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className={`${bodyCls} hover:text-secondary transition-colors`} style={bodyStyle}><Facebook className="h-5 w-5" /></a>
               )}
               {settings?.whatsappNumber && (
-                <a href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/70 hover:text-secondary transition-colors"><FaWhatsapp className="h-5 w-5" /></a>
+                <a href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className={`${bodyCls} hover:text-secondary transition-colors`} style={bodyStyle}><FaWhatsapp className="h-5 w-5" /></a>
               )}
             </div>
           </div>
 
           {/* Links */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-6">روابط سريعة</h3>
-            <ul className="space-y-3 text-sm text-primary-foreground/70">
+            <h3 className={`text-lg font-bold mb-6 ${headingCls}`} style={headingStyle}>روابط سريعة</h3>
+            <ul className={`space-y-3 text-sm ${bodyCls}`} style={bodyStyle}>
               <li><Link href="/" className="hover:text-secondary transition-colors">الرئيسية</Link></li>
               <li><Link href="/products" className="hover:text-secondary transition-colors">كل المنتجات</Link></li>
               <li><Link href="/cart" className="hover:text-secondary transition-colors">سلة المشتريات</Link></li>
@@ -100,8 +100,8 @@ export function Footer() {
           {/* Categories — dynamic, hidden categories are excluded */}
           {visibleCategories.length > 0 && (
             <div>
-              <h3 className="text-lg font-bold text-white mb-6">الفئات</h3>
-              <ul className="space-y-3 text-sm text-primary-foreground/70">
+              <h3 className={`text-lg font-bold mb-6 ${headingCls}`} style={headingStyle}>الفئات</h3>
+              <ul className={`space-y-3 text-sm ${bodyCls}`} style={bodyStyle}>
                 {visibleCategories.map((cat) => (
                   <li key={cat.id}>
                     <Link
@@ -118,8 +118,8 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-6">تواصل معنا</h3>
-            <ul className="space-y-4 text-sm text-primary-foreground/70">
+            <h3 className={`text-lg font-bold mb-6 ${headingCls}`} style={headingStyle}>تواصل معنا</h3>
+            <ul className={`space-y-4 text-sm ${bodyCls}`} style={bodyStyle}>
               {settings?.address && (
                 <li className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-secondary shrink-0" />
