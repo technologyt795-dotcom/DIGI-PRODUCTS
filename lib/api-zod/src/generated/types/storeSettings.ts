@@ -96,4 +96,9 @@ export interface StoreSettings {
   popupDiscountCode?: string | null;
   /** @nullable */
   popupDelay?: number | null;
+  paymentVisaEnabled?: boolean;
+  paymentMastercardEnabled?: boolean;
+  paymentMadaEnabled?: boolean;
+  paymentApplePayEnabled?: boolean;
+  paymentStcPayEnabled?: boolean;
 }

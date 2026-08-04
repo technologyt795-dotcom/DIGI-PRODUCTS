@@ -438,7 +438,12 @@ export const GetSettingsResponse = zod.object({
   "popupTitle": zod.string().nullish(),
   "popupMessage": zod.string().nullish(),
   "popupDiscountCode": zod.string().nullish(),
-  "popupDelay": zod.number().nullish()
+  "popupDelay": zod.number().nullish(),
+  "paymentVisaEnabled": zod.boolean().optional(),
+  "paymentMastercardEnabled": zod.boolean().optional(),
+  "paymentMadaEnabled": zod.boolean().optional(),
+  "paymentApplePayEnabled": zod.boolean().optional(),
+  "paymentStcPayEnabled": zod.boolean().optional()
 })
 
 
@@ -492,7 +497,12 @@ export const UpdateSettingsBody = zod.object({
   "popupTitle": zod.string().nullish(),
   "popupMessage": zod.string().nullish(),
   "popupDiscountCode": zod.string().nullish(),
-  "popupDelay": zod.number().nullish()
+  "popupDelay": zod.number().nullish(),
+  "paymentVisaEnabled": zod.boolean().optional(),
+  "paymentMastercardEnabled": zod.boolean().optional(),
+  "paymentMadaEnabled": zod.boolean().optional(),
+  "paymentApplePayEnabled": zod.boolean().optional(),
+  "paymentStcPayEnabled": zod.boolean().optional()
 })
 
 export const UpdateSettingsResponse = zod.object({
@@ -528,7 +538,12 @@ export const UpdateSettingsResponse = zod.object({
   "popupTitle": zod.string().nullish(),
   "popupMessage": zod.string().nullish(),
   "popupDiscountCode": zod.string().nullish(),
-  "popupDelay": zod.number().nullish()
+  "popupDelay": zod.number().nullish(),
+  "paymentVisaEnabled": zod.boolean().optional(),
+  "paymentMastercardEnabled": zod.boolean().optional(),
+  "paymentMadaEnabled": zod.boolean().optional(),
+  "paymentApplePayEnabled": zod.boolean().optional(),
+  "paymentStcPayEnabled": zod.boolean().optional()
 })
 
 

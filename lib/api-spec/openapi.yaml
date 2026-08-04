@@ -1634,6 +1634,16 @@ components:
           type: ["string", "null"]
         popupDelay:
           type: ["integer", "null"]
+        paymentVisaEnabled:
+          type: boolean
+        paymentMastercardEnabled:
+          type: boolean
+        paymentMadaEnabled:
+          type: boolean
+        paymentApplePayEnabled:
+          type: boolean
+        paymentStcPayEnabled:
+          type: boolean
 
     StoreSettingsUpdate:
       type: object
@@ -1730,6 +1740,16 @@ components:
           type: ["string", "null"]
         popupDelay:
           type: ["integer", "null"]
+        paymentVisaEnabled:
+          type: boolean
+        paymentMastercardEnabled:
+          type: boolean
+        paymentMadaEnabled:
+          type: boolean
+        paymentApplePayEnabled:
+          type: boolean
+        paymentStcPayEnabled:
+          type: boolean
 
     # ── Order schemas ────────────────────────────────────────────────────────
 

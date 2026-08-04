@@ -235,6 +235,11 @@ export interface StoreSettings {
   popupDiscountCode?: string | null;
   /** @nullable */
   popupDelay?: number | null;
+  paymentVisaEnabled?: boolean;
+  paymentMastercardEnabled?: boolean;
+  paymentMadaEnabled?: boolean;
+  paymentApplePayEnabled?: boolean;
+  paymentStcPayEnabled?: boolean;
 }
 
 export type StoreSettingsUpdateActiveTheme = typeof StoreSettingsUpdateActiveTheme[keyof typeof StoreSettingsUpdateActiveTheme];
@@ -351,6 +356,11 @@ export interface StoreSettingsUpdate {
   popupDiscountCode?: string | null;
   /** @nullable */
   popupDelay?: number | null;
+  paymentVisaEnabled?: boolean;
+  paymentMastercardEnabled?: boolean;
+  paymentMadaEnabled?: boolean;
+  paymentApplePayEnabled?: boolean;
+  paymentStcPayEnabled?: boolean;
 }
 
 export interface OrderItem {
