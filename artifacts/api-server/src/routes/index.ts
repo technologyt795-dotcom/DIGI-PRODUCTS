@@ -15,6 +15,7 @@ import storageRouter from "./storage";
 import paymentsRouter from "./payments";
 import marketingRouter from "./marketing";
 import otpRouter from "./otp";
+import sitemapRouter from "./sitemap";
 
 const router: IRouter = Router();
 
@@ -34,5 +35,6 @@ router.use(storageRouter);
 router.use(paymentsRouter);
 router.use(marketingRouter);
 router.use(otpRouter);
+router.use(sitemapRouter);
 
 export default router;
