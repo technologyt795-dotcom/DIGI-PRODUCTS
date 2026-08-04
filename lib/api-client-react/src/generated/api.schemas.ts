@@ -144,6 +144,7 @@ export const StoreSettingsActiveTheme = {
   ocean: 'ocean',
   glass: 'glass',
   digital: 'digital',
+  emerald: 'emerald',
 } as const;
 
 export interface StoreSettings {
@@ -253,6 +254,7 @@ export const StoreSettingsUpdateActiveTheme = {
   ocean: 'ocean',
   glass: 'glass',
   digital: 'digital',
+  emerald: 'emerald',
 } as const;
 
 export interface StoreSettingsUpdate {

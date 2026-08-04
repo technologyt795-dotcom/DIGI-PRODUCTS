@@ -207,6 +207,14 @@ export default function AdminSettings() {
       preview: 'bg-[#030712] border-[#0e7490]',
       primary: 'bg-[#00d4d4]',
       secondary: 'bg-[#8b5cf6]'
+    },
+    {
+      id: 'emerald' as StoreSettingsUpdateActiveTheme,
+      name: 'زمرد (Emerald)',
+      description: 'غابة داكنة عميقة مع زمرد متوهج وذهب فاخر',
+      preview: 'bg-[#060f0a] border-[#1a6640]',
+      primary: 'bg-[#14a04b]',
+      secondary: 'bg-[#c9952a]'
     }
   ];
 

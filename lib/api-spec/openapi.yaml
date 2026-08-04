@@ -1562,7 +1562,7 @@ components:
           type: ["string", "null"]
         activeTheme:
           type: string
-          enum: [classic, modern, minimal, luxury, ocean, glass, digital]
+          enum: [classic, modern, minimal, luxury, ocean, glass, digital, emerald]
         contactEmail:
           type: string
         contactPhone:
@@ -1657,7 +1657,7 @@ components:
           type: ["string", "null"]
         activeTheme:
           type: string
-          enum: [classic, modern, minimal, luxury, ocean, glass, digital]
+          enum: [classic, modern, minimal, luxury, ocean, glass, digital, emerald]
         contactEmail:
           type: string
         contactPhone:

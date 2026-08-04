@@ -439,6 +439,158 @@
   transition: all 0.3s ease;
 }
 
+/* ── Emerald Theme ──────────────────────────────────────────────────────── */
+[data-theme="emerald"] {
+  --background: 158 45% 4%;          /* #060f0a deep forest black */
+  --foreground: 150 25% 93%;         /* soft mint white */
+
+  --border: 152 55% 18%;
+  --input: 155 40% 8%;
+  --ring: 152 80% 40%;
+
+  --card: 155 45% 7%;
+  --card-foreground: 150 25% 93%;
+  --card-border: 152 55% 16%;
+
+  --popover: 155 48% 6%;
+  --popover-foreground: 150 25% 93%;
+  --popover-border: 152 55% 20%;
+
+  --primary: 152 80% 38%;            /* rich emerald green */
+  --primary-foreground: 158 45% 4%;  /* dark on green */
+
+  --secondary: 45 78% 48%;           /* warm gold */
+  --secondary-foreground: 158 45% 4%;
+
+  --muted: 155 35% 10%;
+  --muted-foreground: 152 20% 58%;
+
+  --accent: 152 80% 38%;
+  --accent-foreground: 158 45% 4%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --radius: 0.625rem;
+}
+
+/* Deep forest gradient backdrop */
+[data-theme="emerald"] body {
+  background-image:
+    radial-gradient(ellipse at 15% 10%, rgba(16, 120, 60, 0.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 90%, rgba(12, 90, 45, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(6, 50, 22, 0.15) 0%, transparent 70%),
+    radial-gradient(ellipse at 80% 15%, rgba(180, 140, 30, 0.07) 0%, transparent 40%);
+}
+
+/* Card glow — emerald shimmer */
+[data-theme="emerald"] .rounded-xl.border,
+[data-theme="emerald"] .rounded-2xl.border,
+[data-theme="emerald"] .rounded-lg.border,
+[data-theme="emerald"] .rounded-md.border {
+  border-color: rgba(30, 180, 90, 0.2) !important;
+  box-shadow:
+    0 0 0 1px rgba(30, 180, 90, 0.06),
+    0 4px 24px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(30, 180, 90, 0.06);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="emerald"] .rounded-xl.border:hover,
+[data-theme="emerald"] .rounded-2xl.border:hover,
+[data-theme="emerald"] .rounded-lg.border:hover,
+[data-theme="emerald"] .rounded-md.border:hover {
+  border-color: rgba(30, 180, 90, 0.5) !important;
+  box-shadow:
+    0 0 0 1px rgba(30, 180, 90, 0.15),
+    0 0 28px rgba(20, 160, 75, 0.16),
+    0 8px 32px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(30, 180, 90, 0.1);
+}
+
+/* Navbar */
+[data-theme="emerald"] nav,
+[data-theme="emerald"] header {
+  background: rgba(6, 15, 10, 0.92) !important;
+  border-bottom: 1px solid rgba(30, 180, 90, 0.18) !important;
+  box-shadow: 0 1px 32px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Primary button — emerald with dark text + glow */
+[data-theme="emerald"] .bg-primary {
+  background: linear-gradient(135deg, hsl(152, 80%, 38%), hsl(145, 85%, 32%)) !important;
+  color: hsl(158, 45%, 4%) !important;
+  font-weight: 700;
+  box-shadow:
+    0 0 18px rgba(20, 160, 75, 0.45),
+    0 4px 16px rgba(20, 160, 75, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="emerald"] .bg-primary:hover {
+  box-shadow:
+    0 0 30px rgba(20, 160, 75, 0.65),
+    0 6px 22px rgba(20, 160, 75, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Outline buttons */
+[data-theme="emerald"] .border-primary {
+  border-color: rgba(30, 180, 90, 0.55) !important;
+  color: hsl(152, 80%, 45%) !important;
+}
+
+[data-theme="emerald"] .border-primary:hover {
+  background: rgba(30, 180, 90, 0.1) !important;
+  border-color: rgba(30, 180, 90, 0.85) !important;
+  box-shadow: 0 0 14px rgba(20, 160, 75, 0.22);
+}
+
+/* Input fields */
+[data-theme="emerald"] input,
+[data-theme="emerald"] textarea,
+[data-theme="emerald"] select {
+  background: rgba(6, 14, 8, 0.9) !important;
+  border-color: rgba(30, 180, 90, 0.2) !important;
+  caret-color: hsl(152, 80%, 42%);
+}
+
+[data-theme="emerald"] input:focus,
+[data-theme="emerald"] textarea:focus {
+  border-color: rgba(30, 180, 90, 0.6) !important;
+  box-shadow:
+    0 0 0 3px rgba(30, 180, 90, 0.12),
+    0 0 14px rgba(20, 160, 75, 0.1) !important;
+  outline: none;
+}
+
+/* Gold badges */
+[data-theme="emerald"] .bg-secondary {
+  background: rgba(180, 140, 30, 0.18) !important;
+  color: hsl(45, 78%, 62%) !important;
+  border: 1px solid rgba(180, 140, 30, 0.35);
+}
+
+/* Price text glow */
+[data-theme="emerald"] .text-primary {
+  text-shadow: 0 0 16px rgba(20, 160, 75, 0.4);
+}
+
+/* Scrollbar */
+[data-theme="emerald"] ::-webkit-scrollbar {
+  width: 6px;
+  background: hsl(158, 45%, 4%);
+}
+[data-theme="emerald"] ::-webkit-scrollbar-thumb {
+  background: rgba(30, 180, 90, 0.28);
+  border-radius: 3px;
+}
+[data-theme="emerald"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 180, 90, 0.52);
+}
+
 .dark {
   --background: 222 47% 11%;
   --foreground: 210 40% 98%;
