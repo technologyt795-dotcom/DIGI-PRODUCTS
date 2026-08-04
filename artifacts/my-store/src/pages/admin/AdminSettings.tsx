@@ -694,10 +694,11 @@ export default function AdminSettings() {
                     checked: paymentMadaEnabled, onChange: setPaymentMadaEnabled,
                     badge: (
                       <span className="inline-flex items-center justify-center bg-white border rounded px-2 py-0.5 h-7 shadow-sm">
-                        <svg viewBox="0 0 52 20" width="40" height="15" xmlns="http://www.w3.org/2000/svg">
-                          <text x="2" y="15" fontFamily="Arial" fontWeight="bold" fontSize="13" fill="#004B87">mada</text>
-                          <circle cx="44" cy="10" r="6" fill="#00A651"/>
-                          <circle cx="40" cy="10" r="6" fill="#004B87" opacity="0.85"/>
+                        <svg viewBox="0 0 86 28" width="60" height="20" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="86" height="28" rx="3" fill="white"/>
+                          <circle cx="16" cy="14" r="11" fill="#00B6AD"/>
+                          <circle cx="27" cy="14" r="11" fill="#003F8A" opacity="0.88"/>
+                          <text x="42" y="19" fontFamily="Arial" fontWeight="800" fontSize="13" fill="#003F8A">mada</text>
                         </svg>
                       </span>
                     )

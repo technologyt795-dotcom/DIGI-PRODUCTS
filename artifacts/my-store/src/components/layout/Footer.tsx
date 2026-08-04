@@ -181,11 +181,14 @@ export function Footer() {
                 {/* Mada */}
                 {(settings as any)?.paymentMadaEnabled && (
                   <span className="inline-flex items-center justify-center bg-white rounded px-2 py-1 h-8 shadow-sm">
-                    <svg viewBox="0 0 52 20" width="42" height="16" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="0" y="0" width="52" height="20" rx="3" fill="white"/>
-                      <text x="4" y="15" fontFamily="Arial" fontWeight="bold" fontSize="13" fill="#004B87">mada</text>
-                      <circle cx="44" cy="10" r="6" fill="#00A651"/>
-                      <circle cx="40" cy="10" r="6" fill="#004B87" opacity="0.85"/>
+                    <svg viewBox="0 0 86 28" width="64" height="21" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="86" height="28" rx="3" fill="white"/>
+                      {/* Left teal circle */}
+                      <circle cx="16" cy="14" r="11" fill="#00B6AD"/>
+                      {/* Right dark-blue circle — overlaps to create Mada's signature look */}
+                      <circle cx="27" cy="14" r="11" fill="#003F8A" opacity="0.88"/>
+                      {/* "mada" wordmark */}
+                      <text x="42" y="19" fontFamily="Arial" fontWeight="800" fontSize="13" fill="#003F8A">mada</text>
                     </svg>
                   </span>
                 )}
