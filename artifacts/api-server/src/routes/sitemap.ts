@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db, productsTable, categoriesTable } from "@workspace/db";
-import { eq, and } from "drizzle-orm"; // أضفنا and هنا
+import { eq, and } from "drizzle-orm";
 
 const router = Router();
 
@@ -10,10 +10,10 @@ router.get("/sitemap.xml", async (req, res): Promise<void> => {
     const host = req.headers["x-forwarded-host"] || req.headers.host || "";
     const baseUrl = `${proto}://${host}`;
 
-    // جلب المنتجات والتصنيفات مع التحقق من حالة الإخفاء لكليهما
+    // جلب البيانات مع التأكد من الربط الصحيح
     const [products, categories] = await Promise.all([
       db
-        .select({ id: productsTable.id }) // استخدام الـ ID بدلاً من الـ Slug ليتوافق مع الموقع
+        .select({ id: productsTable.id })
         .from(productsTable)
         .innerJoin(
           categoriesTable,
@@ -22,7 +22,7 @@ router.get("/sitemap.xml", async (req, res): Promise<void> => {
         .where(
           and(
             eq(productsTable.isHidden, false),
-            eq(categoriesTable.isHidden, false), // التأكد أن التصنيف غير مخفي أيضاً
+            eq(categoriesTable.isHidden, false),
           ),
         ),
       db
@@ -32,59 +32,37 @@ router.get("/sitemap.xml", async (req, res): Promise<void> => {
     ]);
 
     const today = new Date().toISOString().split("T")[0];
-
-    const staticPages = [
-      { url: "/", priority: "1.0", changefreq: "daily" },
-      { url: "/products", priority: "0.9", changefreq: "daily" },
-      { url: "/cart", priority: "0.3", changefreq: "monthly" },
-      { url: "/my-orders", priority: "0.3", changefreq: "monthly" },
-    ];
-
     const urls: string[] = [];
 
-    // الصفحات الثابتة
-    for (const page of staticPages) {
-      urls.push(`
-  <url>
-    <loc>${baseUrl}${page.url}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>`);
-    }
+    // 1. الصفحات الثابتة
+    const staticPages = ["/", "/products", "/cart", "/my-orders"];
+    staticPages.forEach((path) => {
+      urls.push(
+        `<url><loc>${baseUrl}${path}</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>${path === "/" ? "1.0" : "0.8"}</priority></url>`,
+      );
+    });
 
-    // صفحات التصنيفات
-    for (const cat of categories) {
-      urls.push(`
-  <url>
-    <loc>${baseUrl}/category/${cat.slug}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>`);
-    }
+    // 2. صفحات التصنيفات
+    categories.forEach((cat) => {
+      urls.push(
+        `<url><loc>${baseUrl}/category/${cat.slug}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>`,
+      );
+    });
 
-    // صفحات المنتجات (تم تعديل الرابط ليستخدم ID)
-    for (const product of products) {
-      urls.push(`
-  <url>
-    <loc>${baseUrl}/product/${product.id}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`);
-    }
+    // 3. صفحات المنتجات (باستخدام ID لضمان العمل)
+    products.forEach((prod) => {
+      urls.push(
+        `<url><loc>${baseUrl}/product/${prod.id}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`,
+      );
+    });
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join("")}
-</urlset>`;
+    const xml = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join("")}</urlset>`;
 
     res.setHeader("Content-Type", "application/xml; charset=utf-8");
-    res.setHeader("Cache-Control", "public, max-age=3600");
     res.send(xml);
   } catch (err) {
     console.error("Sitemap Error:", err);
-    res.status(500).json({ error: "Failed to generate sitemap" });
+    res.status(500).send("Error generating sitemap");
   }
 });
 
