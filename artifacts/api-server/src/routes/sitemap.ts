@@ -1,22 +1,30 @@
 import { Router } from "express";
-import { db, productsTable, categoriesTable, settingsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { db, productsTable, categoriesTable } from "@workspace/db";
+import { eq, and } from "drizzle-orm"; // أضفنا and هنا
 
 const router = Router();
 
 router.get("/sitemap.xml", async (req, res): Promise<void> => {
   try {
-    // Detect site URL from request or settings
     const proto = req.headers["x-forwarded-proto"] || req.protocol || "https";
-    const host  = req.headers["x-forwarded-host"] || req.headers.host || "";
+    const host = req.headers["x-forwarded-host"] || req.headers.host || "";
     const baseUrl = `${proto}://${host}`;
 
-    // Fetch products and categories in parallel
+    // جلب المنتجات والتصنيفات مع التحقق من حالة الإخفاء لكليهما
     const [products, categories] = await Promise.all([
       db
-        .select({ slug: productsTable.slug })
+        .select({ id: productsTable.id }) // استخدام الـ ID بدلاً من الـ Slug ليتوافق مع الموقع
         .from(productsTable)
-        .where(eq(productsTable.isHidden, false)),
+        .innerJoin(
+          categoriesTable,
+          eq(productsTable.categoryId, categoriesTable.id),
+        )
+        .where(
+          and(
+            eq(productsTable.isHidden, false),
+            eq(categoriesTable.isHidden, false), // التأكد أن التصنيف غير مخفي أيضاً
+          ),
+        ),
       db
         .select({ slug: categoriesTable.slug })
         .from(categoriesTable)
@@ -26,15 +34,15 @@ router.get("/sitemap.xml", async (req, res): Promise<void> => {
     const today = new Date().toISOString().split("T")[0];
 
     const staticPages = [
-      { url: "/",            priority: "1.0", changefreq: "daily"   },
-      { url: "/products",    priority: "0.9", changefreq: "daily"   },
-      { url: "/cart",        priority: "0.3", changefreq: "monthly" },
-      { url: "/my-orders",   priority: "0.3", changefreq: "monthly" },
+      { url: "/", priority: "1.0", changefreq: "daily" },
+      { url: "/products", priority: "0.9", changefreq: "daily" },
+      { url: "/cart", priority: "0.3", changefreq: "monthly" },
+      { url: "/my-orders", priority: "0.3", changefreq: "monthly" },
     ];
 
     const urls: string[] = [];
 
-    // Static pages
+    // الصفحات الثابتة
     for (const page of staticPages) {
       urls.push(`
   <url>
@@ -45,7 +53,7 @@ router.get("/sitemap.xml", async (req, res): Promise<void> => {
   </url>`);
     }
 
-    // Category pages
+    // صفحات التصنيفات
     for (const cat of categories) {
       urls.push(`
   <url>
@@ -56,11 +64,11 @@ router.get("/sitemap.xml", async (req, res): Promise<void> => {
   </url>`);
     }
 
-    // Product pages
+    // صفحات المنتجات (تم تعديل الرابط ليستخدم ID)
     for (const product of products) {
       urls.push(`
   <url>
-    <loc>${baseUrl}/product/${product.slug}</loc>
+    <loc>${baseUrl}/product/${product.id}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -72,9 +80,10 @@ router.get("/sitemap.xml", async (req, res): Promise<void> => {
 </urlset>`;
 
     res.setHeader("Content-Type", "application/xml; charset=utf-8");
-    res.setHeader("Cache-Control", "public, max-age=3600"); // cache 1 hour
+    res.setHeader("Cache-Control", "public, max-age=3600");
     res.send(xml);
   } catch (err) {
+    console.error("Sitemap Error:", err);
     res.status(500).json({ error: "Failed to generate sitemap" });
   }
 });
