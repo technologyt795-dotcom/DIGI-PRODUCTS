@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { X, Copy, Check, Sparkles, Tag } from 'lucide-react';
+import { useEffect, useState, useCallback } from "react";
+import { X, Copy, Check, Sparkles, Tag } from "lucide-react";
 
 type PopupSettings = {
   popupEnabled: boolean;
@@ -11,33 +11,47 @@ type PopupSettings = {
   logoUrl: string | null;
 };
 
-const DISMISSED_KEY = 'promo-popup-dismissed';
+const DISMISSED_KEY = "promo-popup-dismissed";
 
 export function PromoPopup() {
   const [settings, setSettings] = useState<PopupSettings | null>(null);
   const [visible, setVisible] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const dismiss = useCallback(() => {
+    setVisible(false);
+    sessionStorage.setItem(DISMISSED_KEY, "1");
+  }, []);
+
+  // 1. جلب الإعدادات عند تحميل المكون
   useEffect(() => {
     if (sessionStorage.getItem(DISMISSED_KEY)) return;
 
-    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+    const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     fetch(`${base}/api/settings`)
-      .then(r => r.json())
+      .then((r) => r.json())
       .then((s: PopupSettings) => {
         if (s.popupEnabled && (s.popupTitle || s.popupMessage)) {
           setSettings(s);
-          const delay = Math.max(0, (s.popupDelay ?? 3)) * 1000;
-          setTimeout(() => setVisible(true), delay);
         }
       })
       .catch(() => {});
   }, []);
 
-  const dismiss = () => {
-    setVisible(false);
-    sessionStorage.setItem(DISMISSED_KEY, '1');
-  };
+  // 2. مستشعر نية الخروج (Exit-Intent)
+  useEffect(() => {
+    if (!settings || visible || sessionStorage.getItem(DISMISSED_KEY)) return;
+
+    const handleMouseLeave = (e: MouseEvent) => {
+      // يظهر فقط إذا تحرك الماوس خارج الجزء العلوي من المتصفح
+      if (e.clientY <= 0) {
+        setVisible(true);
+      }
+    };
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => document.removeEventListener("mouseleave", handleMouseLeave);
+  }, [settings, visible]);
 
   const copyCode = () => {
     if (!settings?.popupDiscountCode) return;
@@ -51,113 +65,122 @@ export function PromoPopup() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(8px)" }}
       onClick={dismiss}
     >
       <div
-        className="relative max-w-sm w-full overflow-hidden rounded-3xl shadow-2xl"
-        style={{ animation: 'popup-in 0.3s cubic-bezier(0.34,1.56,0.64,1)' }}
-        onClick={e => e.stopPropagation()}
+        className="relative max-w-sm w-full overflow-hidden rounded-[2.5rem] shadow-2xl bg-white"
+        style={{
+          animation: "popup-in 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+        }}
+        onClick={(e) => e.stopPropagation()}
         dir="rtl"
       >
-        {/* ── Gradient header ── */}
-        <div
-          className="relative px-6 pt-8 pb-10 text-white text-center overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)' }}
+        {/* زر الإغلاق "X" */}
+        <button
+          onClick={dismiss}
+          className="absolute top-4 left-4 z-[60] bg-white/20 hover:bg-white/40 text-white backdrop-blur-md p-2 rounded-full transition-all duration-300 hover:rotate-90 shadow-lg border border-white/30"
+          aria-label="إغلاق"
         >
-          {/* Decorative circles */}
-          <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-20" style={{ background: 'rgba(255,255,255,0.4)' }} />
-          <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-full opacity-15" style={{ background: 'rgba(255,255,255,0.4)' }} />
-          <div className="absolute top-4 left-8 w-3 h-3 rounded-full opacity-40 bg-white" />
-          <div className="absolute bottom-8 right-10 w-2 h-2 rounded-full opacity-30 bg-white" />
+          <X className="h-5 w-5" />
+        </button>
 
-          {/* Close button */}
-          <button
-            onClick={dismiss}
-            className="absolute top-3 left-3 text-white/70 hover:text-white transition-colors p-1.5 rounded-full hover:bg-white/20"
-            aria-label="إغلاق"
-          >
-            <X className="h-4 w-4" />
-          </button>
-
-          {/* Logo or icon */}
-          {settings.logoUrl ? (
-            <div className="flex justify-center mb-3">
-              <div className="h-12 w-12 rounded-2xl bg-white/20 p-1.5 flex items-center justify-center backdrop-blur-sm">
-                <img src={settings.logoUrl} alt={settings.storeName} className="h-full object-contain" />
-              </div>
+        {/* Header */}
+        <div
+          className="relative px-6 pt-12 pb-10 text-white text-center overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%)",
+          }}
+        >
+          <div className="flex justify-center mb-5">
+            <div className="relative h-16 w-16 rounded-3xl bg-white/25 flex items-center justify-center backdrop-blur-md border border-white/30 shadow-xl overflow-hidden">
+              {settings.logoUrl ? (
+                <img
+                  src={settings.logoUrl}
+                  alt={settings.storeName}
+                  className="h-10 w-10 object-contain"
+                />
+              ) : (
+                <Sparkles className="h-8 w-8 text-white" />
+              )}
             </div>
-          ) : (
-            <div className="flex justify-center mb-3">
-              <div className="h-14 w-14 rounded-2xl bg-white/25 flex items-center justify-center backdrop-blur-sm">
-                <Sparkles className="h-7 w-7 text-white" />
-              </div>
-            </div>
-          )}
+          </div>
 
           {settings.popupTitle && (
-            <h2 className="text-xl font-black leading-snug drop-shadow-sm">
+            <h2 className="text-2xl font-black leading-tight drop-shadow-md mb-2">
               {settings.popupTitle}
             </h2>
           )}
           {settings.popupMessage && (
-            <p className="text-sm text-white/85 mt-2 leading-relaxed font-medium">
+            <p className="text-base text-white/90 leading-relaxed font-medium px-2">
               {settings.popupMessage}
             </p>
           )}
         </div>
 
-        {/* ── White body ── */}
-        <div className="bg-card px-6 pb-6 -mt-1">
-          {/* Discount code */}
+        {/* Body */}
+        <div className="bg-white px-8 pb-8 pt-4">
           {settings.popupDiscountCode && (
-            <div className="relative -mt-5 mb-5">
+            <div className="relative -mt-10 mb-6">
               <button
                 onClick={copyCode}
-                className="w-full group relative overflow-hidden rounded-2xl border-2 border-dashed border-primary/40 hover:border-primary transition-all duration-200 p-4 text-center"
-                style={{ background: 'linear-gradient(135deg, hsl(var(--primary)/0.06) 0%, hsl(var(--primary)/0.12) 100%)' }}
+                className="w-full group relative overflow-hidden rounded-[1.5rem] border-2 border-dashed border-indigo-200 hover:border-indigo-400 transition-all duration-300 p-5 text-center bg-indigo-50/50"
               >
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Tag className="h-4 w-4 text-primary opacity-70" />
-                  <span className="text-xs text-muted-foreground font-semibold tracking-wide uppercase">كود الخصم</span>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Tag className="h-4 w-4 text-indigo-500" />
+                  <span className="text-xs text-indigo-600 font-bold tracking-widest uppercase">
+                    كود الخصم الحصري
+                  </span>
                 </div>
-                <div className="flex items-center justify-center gap-3">
-                  <span className="font-mono font-black text-2xl text-primary tracking-[0.2em]">
+                <div className="flex items-center justify-center gap-4">
+                  <span className="font-mono font-black text-3xl text-indigo-600 tracking-[0.15em]">
                     {settings.popupDiscountCode}
                   </span>
-                  <div className="h-8 w-8 rounded-lg bg-primary/15 flex items-center justify-center group-hover:bg-primary/25 transition-colors">
-                    {copied
-                      ? <Check className="h-4 w-4 text-green-600" />
-                      : <Copy className="h-4 w-4 text-primary" />}
+                  <div className="h-10 w-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                    {copied ? (
+                      <Check className="h-5 w-5" />
+                    ) : (
+                      <Copy className="h-5 w-5" />
+                    )}
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1.5">
-                  {copied ? '✅ تم نسخ الكود بنجاح!' : 'اضغط لنسخ الكود'}
-                </p>
+                <div className="mt-3">
+                  <p
+                    className={`text-sm font-bold transition-all duration-300 ${copied ? "text-green-600" : "text-indigo-400"}`}
+                  >
+                    {copied
+                      ? "✅ تم النسخ بنجاح!"
+                      : "انقر للنسخ والحصول على الخصم"}
+                  </p>
+                </div>
               </button>
             </div>
           )}
 
-          {/* CTA */}
           <button
             onClick={dismiss}
-            className="w-full rounded-2xl py-3.5 text-sm font-black text-white tracking-wide hover:opacity-90 active:scale-95 transition-all duration-150 shadow-lg"
-            style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}
+            className="w-full rounded-[1.25rem] py-4 text-base font-black text-white tracking-wide hover:brightness-110 active:scale-[0.98] transition-all duration-200 shadow-lg"
+            style={{
+              background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+            }}
           >
-            تسوق الآن ←
+            استخدم الخصم الآن
           </button>
 
-          <p className="text-xs text-muted-foreground/60 text-center mt-3 font-medium">
-            {settings.storeName}
-          </p>
+          <div className="mt-5 flex items-center justify-center gap-2 opacity-40">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">
+              {settings.storeName}
+            </span>
+          </div>
         </div>
       </div>
 
       <style>{`
         @keyframes popup-in {
-          from { opacity: 0; transform: scale(0.88) translateY(16px); }
-          to   { opacity: 1; transform: scale(1) translateY(0); }
+          0% { opacity: 0; transform: scale(0.9) translateY(30px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
         }
       `}</style>
     </div>
