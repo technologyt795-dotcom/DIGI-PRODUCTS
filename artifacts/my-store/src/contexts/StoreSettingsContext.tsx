@@ -1,10 +1,7 @@
-import React, { createContext, useContext, useEffect, ReactNode } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  useGetSettings,
-  getGetSettingsQueryKey,
-} from "@workspace/api-client-react";
-import type { StoreSettings } from "@workspace/api-client-react";
+import React, { createContext, useContext, useEffect, ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useGetSettings, getGetSettingsQueryKey } from '@workspace/api-client-react';
+import type { StoreSettings } from '@workspace/api-client-react';
 
 interface StoreSettingsContextValue {
   settings: StoreSettings | null;
@@ -12,9 +9,7 @@ interface StoreSettingsContextValue {
   refreshSettings: () => void;
 }
 
-const StoreSettingsContext = createContext<
-  StoreSettingsContextValue | undefined
->(undefined);
+const StoreSettingsContext = createContext<StoreSettingsContextValue | undefined>(undefined);
 
 export function StoreSettingsProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
@@ -29,9 +24,7 @@ export function StoreSettingsProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <StoreSettingsContext.Provider
-      value={{ settings, isLoading, refreshSettings }}
-    >
+    <StoreSettingsContext.Provider value={{ settings, isLoading, refreshSettings }}>
       {children}
     </StoreSettingsContext.Provider>
   );
@@ -40,9 +33,7 @@ export function StoreSettingsProvider({ children }: { children: ReactNode }) {
 export function useStoreSettings() {
   const context = useContext(StoreSettingsContext);
   if (context === undefined) {
-    throw new Error(
-      "useStoreSettings must be used within a StoreSettingsProvider",
-    );
+    throw new Error('useStoreSettings must be used within a StoreSettingsProvider');
   }
   return context;
 }
@@ -52,9 +43,9 @@ export function ThemeApplier() {
 
   useEffect(() => {
     if (settings?.activeTheme) {
-      document.documentElement.setAttribute("data-theme", settings.activeTheme);
+      document.documentElement.setAttribute('data-theme', settings.activeTheme);
     } else {
-      document.documentElement.setAttribute("data-theme", "classic"); // default
+      document.documentElement.setAttribute('data-theme', 'classic'); // default
     }
   }, [settings?.activeTheme]);
 
@@ -63,5 +54,5 @@ export function ThemeApplier() {
 
 export function useTheme() {
   const { settings } = useStoreSettings();
-  return settings?.activeTheme || "classic";
-} // هذا هو القوس الذي كان ناقصاً ويسبب الخطأ
+  return settings?.activeTheme || 'classic';
+}
