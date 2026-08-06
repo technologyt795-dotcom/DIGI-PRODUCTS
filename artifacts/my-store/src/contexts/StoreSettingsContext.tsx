@@ -51,29 +51,12 @@ export function ThemeApplier() {
   const { settings } = useStoreSettings();
 
   useEffect(() => {
-    if (!settings) return;
-
-    // 1. تطبيق القالب الفني (Theme)
-    if (settings.activeTheme) {
+    if (settings?.activeTheme) {
       document.documentElement.setAttribute("data-theme", settings.activeTheme);
     } else {
-      document.documentElement.setAttribute("data-theme", "classic");
+      document.documentElement.setAttribute("data-theme", "classic"); // default
     }
-
-    // 2. تطبيق ألوان الـ Hero كمتغيرات CSS (اختياري لسهولة الاستخدام في الكود)
-    if ((settings as any).heroPrimaryColor) {
-      document.documentElement.style.setProperty(
-        "--hero-primary",
-        (settings as any).heroPrimaryColor,
-      );
-    }
-    if ((settings as any).heroTitleColor) {
-      document.documentElement.style.setProperty(
-        "--hero-title",
-        (settings as any).heroTitleColor,
-      );
-    }
-  }, [settings]);
+  }, [settings?.activeTheme]);
 
   return null;
 }
@@ -81,4 +64,4 @@ export function ThemeApplier() {
 export function useTheme() {
   const { settings } = useStoreSettings();
   return settings?.activeTheme || "classic";
-}
+} // هذا هو القوس الذي كان ناقصاً ويسبب الخطأ

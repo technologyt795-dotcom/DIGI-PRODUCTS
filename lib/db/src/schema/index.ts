@@ -6,4 +6,3 @@ export * from "./orders";
 export * from "./discounts";
 export * from "./reviews";
 export * from "./emailCampaigns";
-export * from "./settings";
