@@ -97,7 +97,7 @@ function DigitalHero() {
         {[
           {
             icon: <FileCode className="h-5 w-5" />,
-            name: "قالب UI احترافي",
+            name: "نظام إدارة الميزانية",
             price: "٨٩",
             color: "border-cyan-500/30",
           },
@@ -182,8 +182,8 @@ function DigitalHero() {
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-            قوالب، أدوات، دورات، وملفات رقمية احترافية. اشترِ الآن وحمّل مباشرة
-            — بدون انتظار، بدون شحن.
+            أنظمة وأدوات رقمية احترافية تساعدك على إنجاز أعمالك وتنظيم حياتك.
+            اشترِ الآن وابدأ مباشرة — بدون انتظار، بدون شحن.
           </p>
 
           {/* CTA buttons */}
