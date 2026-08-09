@@ -2,3 +2,4 @@
 - [Design subagent invalid dynamic-hook pattern](design-subagent-dynamic-hook-bug.md) — watch for `import('react').then(({useEffect}) => useEffect(...))`, an invalid-hook-call bug the design subagent can introduce.
 - [Orval codegen naming mismatch](orval-zod-vs-ts-naming.md) — Zod schemas use operation-based names (`CreateXBody`) while TS types use component names (`XInput`); check the generated file, don't assume.
 - [Artifact secret refresh](artifact-secret-refresh.md) — restart the managed backend workflow after adding or changing a secret so the process receives the new environment snapshot.
+- [Keep generated API contracts in sync](generated-contract-sync.md) — settings can appear in UI/server code but be dropped by stale generated validation/types before persistence.

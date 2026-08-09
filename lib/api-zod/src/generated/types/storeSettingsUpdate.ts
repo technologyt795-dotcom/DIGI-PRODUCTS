@@ -66,6 +66,12 @@ export interface StoreSettingsUpdate {
      */
   heroBgImage?: string | null;
   /**
+     * Opacity of the hero background image from 0 (transparent) to 1 (fully visible)
+     * @minimum 0
+     * @maximum 1
+     */
+  heroBgOpacity?: number;
+  /**
      * Custom hex color for the footer background
      * @nullable
      */
