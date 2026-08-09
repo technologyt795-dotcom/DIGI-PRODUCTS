@@ -36,6 +36,9 @@ export const storeSettingsTable = pgTable("store_settings", {
   drawerTextColor: text("drawer_text_color"),
   refundPolicy: text("refund_policy"),
   heroBgImage: text("hero_bg_image"),
+  heroBgOpacity: numeric("hero_bg_opacity", { precision: 4, scale: 3 })
+    .notNull()
+    .default("0.3"),
   footerBgColor: text("footer_bg_color"),
   footerTextColor: text("footer_text_color"),
   footerPadding: text("footer_padding"),

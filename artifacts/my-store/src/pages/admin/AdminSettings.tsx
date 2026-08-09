@@ -43,6 +43,7 @@ export default function AdminSettings() {
   const [drawerColorsEnabled, setDrawerColorsEnabled] = useState(false);
   const [refundPolicy, setRefundPolicy] = useState<string>('');
   const [heroBgImage, setHeroBgImage] = useState<string | null>(null);
+  const [heroBgOpacity, setHeroBgOpacity] = useState(0.3);
   const [footerBgColor, setFooterBgColor] = useState<string | null>(null);
   const [footerTextColor, setFooterTextColor] = useState<string | null>(null);
   const [footerPadding, setFooterPadding] = useState<string>('normal');
@@ -81,6 +82,7 @@ export default function AdminSettings() {
       setDrawerColorsEnabled(!!(settings.drawerBgColor || settings.drawerTextColor));
       setRefundPolicy(settings.refundPolicy ?? '');
       setHeroBgImage(settings.heroBgImage ?? null);
+      setHeroBgOpacity(settings.heroBgOpacity ?? 0.3);
       setFooterBgColor(settings.footerBgColor ?? null);
       setFooterTextColor(settings.footerTextColor ?? null);
       setFooterPadding(settings.footerPadding ?? 'normal');
@@ -131,6 +133,7 @@ export default function AdminSettings() {
         drawerTextColor: drawerColorsEnabled ? (drawerTextColor || null) : null,
         refundPolicy: refundPolicy || null,
         heroBgImage: heroBgImage || null,
+        heroBgOpacity,
         footerBgColor: footerColorsEnabled ? (footerBgColor || null) : null,
         footerTextColor: footerColorsEnabled ? (footerTextColor || null) : null,
         footerPadding: footerPadding || null,
@@ -543,13 +546,41 @@ export default function AdminSettings() {
                 label="صورة الخلفية"
               />
               {heroBgImage && (
-                <div className="mt-4 rounded-xl overflow-hidden border border-border h-40 relative">
-                  <img src={heroBgImage} alt="معاينة الخلفية" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <div className="mt-4 rounded-xl overflow-hidden border border-border h-40 relative bg-primary">
+                  <img
+                    src={heroBgImage}
+                    alt="معاينة الخلفية"
+                    className="w-full h-full object-cover"
+                    style={{ opacity: heroBgOpacity }}
+                  />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
                     <span className="text-white text-sm font-medium">معاينة الخلفية</span>
                   </div>
                 </div>
               )}
+              <div className="mt-5 space-y-3">
+                <div className="flex items-center justify-between gap-4">
+                  <Label htmlFor="heroBgOpacity">شفافية صورة الخلفية</Label>
+                  <span className="text-sm font-bold text-primary">
+                    {Math.round(heroBgOpacity * 100)}%
+                  </span>
+                </div>
+                <input
+                  id="heroBgOpacity"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={heroBgOpacity}
+                  onChange={(e) => setHeroBgOpacity(Number(e.target.value))}
+                  className="w-full accent-primary"
+                  aria-label="شفافية صورة الخلفية"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>شفافة</span>
+                  <span>واضحة بالكامل</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
 

@@ -28,6 +28,7 @@ const DEFAULT_SETTINGS = {
   drawerTextColor: null,
   refundPolicy: null,
   heroBgImage: null,
+  heroBgOpacity: "0.3",
   footerBgColor: null,
   footerTextColor: null,
   footerPadding: null,
@@ -69,6 +70,7 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
     drawerTextColor: row.drawerTextColor ?? null,
     refundPolicy: row.refundPolicy ?? null,
     heroBgImage: row.heroBgImage ?? null,
+    heroBgOpacity: parseFloat(row.heroBgOpacity),
     footerBgColor: row.footerBgColor ?? null,
     footerTextColor: row.footerTextColor ?? null,
     footerPadding: row.footerPadding ?? null,
@@ -135,6 +137,7 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if (data.drawerTextColor !== undefined) updateValues.drawerTextColor = data.drawerTextColor;
   if (data.refundPolicy !== undefined) updateValues.refundPolicy = data.refundPolicy;
   if (data.heroBgImage !== undefined) updateValues.heroBgImage = data.heroBgImage;
+  if (data.heroBgOpacity !== undefined) updateValues.heroBgOpacity = data.heroBgOpacity.toString();
   if (data.footerBgColor !== undefined) updateValues.footerBgColor = data.footerBgColor;
   if (data.footerTextColor !== undefined) updateValues.footerTextColor = data.footerTextColor;
   if (data.footerPadding !== undefined) updateValues.footerPadding = data.footerPadding;

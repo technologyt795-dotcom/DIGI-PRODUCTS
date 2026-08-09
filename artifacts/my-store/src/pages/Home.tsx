@@ -14,7 +14,6 @@ import {
   FileCode,
   Lock,
   Infinity,
-  Star,
   Globe,
 } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
@@ -217,38 +216,6 @@ function DigitalHero() {
             </Button>
           </div>
 
-          {/* Stats */}
-          <div
-            className="flex flex-wrap gap-8 pt-4 border-t"
-            style={{ borderColor: "rgba(0,212,212,0.12)" }}
-          >
-            {[
-              { value: "+٢٠٠", label: "منتج رقمي" },
-              { value: "+١٥٠٠", label: "عميل سعيد" },
-              {
-                value: "٤.٩",
-                label: "تقييم المتجر",
-                icon: <Star className="h-3 w-3 fill-current" />,
-              },
-              { value: "فوري", label: "التسليم" },
-            ].map((s, i) => (
-              <div key={i} className="flex flex-col">
-                <span
-                  className="text-2xl font-black flex items-center gap-1"
-                  style={{
-                    color: "hsl(186,100%,52%)",
-                    textShadow: "0 0 16px rgba(0,212,212,0.4)",
-                  }}
-                >
-                  {s.icon}
-                  {s.value}
-                </span>
-                <span className="text-xs text-muted-foreground mt-0.5">
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Right decorative panel — terminal window */}
@@ -342,12 +309,13 @@ function StandardHero() {
   const bgImageUrl =
     settings?.heroBgImage ||
     "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2000&auto=format&fit=crop";
+  const bgImageOpacity = settings?.heroBgOpacity ?? 0.3;
 
   return (
     <section className="relative overflow-hidden bg-primary text-primary-foreground">
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-30"
-        style={{ backgroundImage: `url('${bgImageUrl}')` }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url('${bgImageUrl}')`, opacity: bgImageOpacity }}
       />
       <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/55 to-black/10" />
       <div className="container relative z-10 mx-auto px-4 py-24 md:py-32 lg:py-40 flex flex-col md:flex-row items-center">
@@ -388,9 +356,8 @@ function StandardHero() {
 }
 
 /* ─── Trust Features ────────────────────────────────────────── */
-function TrustFeatures({ isDigital }: { isDigital: boolean }) {
-  const features = isDigital
-    ? [
+function TrustFeatures() {
+  const features = [
         {
           icon: <Download className="h-8 w-8" />,
           title: "تحميل فوري",
@@ -405,23 +372,6 @@ function TrustFeatures({ isDigital }: { isDigital: boolean }) {
           icon: <Lock className="h-8 w-8" />,
           title: "دفع آمن 100%",
           desc: "بياناتك محمية بأحدث معايير التشفير",
-        },
-      ]
-    : [
-        {
-          icon: <ShieldCheck className="h-8 w-8" />,
-          title: "جودة مضمونة",
-          desc: "منتجات أصلية 100% ومختارة بعناية",
-        },
-        {
-          icon: <Truck className="h-8 w-8" />,
-          title: "شحن سريع وآمن",
-          desc: "توصيل لجميع مناطق المملكة",
-        },
-        {
-          icon: <HeadphonesIcon className="h-8 w-8" />,
-          title: "دعم فني متميز",
-          desc: "متواجدون لخدمتك على مدار الساعة",
         },
       ];
 
@@ -456,17 +406,13 @@ export default function Home() {
   const { data: featuredProducts, isLoading: isLoadingFeatured } =
     useListFeaturedProducts();
   const theme = useTheme();
-  const isDigital =
-    theme === "digital" ||
-    (featuredProducts != null &&
-      featuredProducts.length > 0 &&
-      featuredProducts.every((product) => product.isDigital));
+  const isDigital = theme === "digital";
 
   return (
     <div className="flex flex-col w-full">
       {isDigital ? <DigitalHero /> : <StandardHero />}
 
-      <TrustFeatures isDigital={isDigital} />
+      <TrustFeatures />
 
       {/* Categories */}
       <section className="py-20 bg-muted/30">
