@@ -24,31 +24,31 @@ export function PromoPopup() {
   }, []);
 
   useEffect(() => {
-    // 1. ط§ظ„طھط­ظ‚ظ‚ ظ…ظ…ط§ ط¥ط°ط§ ظƒط§ظ†طھ ط§ظ„ظ†ط§ظپط°ط© ظ‚ط¯ ط£ظڈط؛ظ„ظ‚طھ ط¨ط§ظ„ظپط¹ظ„ ظپظٹ ظ‡ط°ظ‡ ط§ظ„ط¬ظ„ط³ط©
+    // 1. التحقق مما إذا كانت النافذة قد أُغلقت بالفعل في هذه الجلسة
     if (sessionStorage.getItem(DISMISSED_KEY)) return;
 
     const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-    // 2. ط¬ظ„ط¨ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ظ…ظ† ط§ظ„ط®ط§ط¯ظ…
+    // 2. جلب الإعدادات من الخادم
     fetch(`${base}/api/settings`)
       .then((r) => r.json())
       .then((s: PopupSettings) => {
         if (s.popupEnabled && (s.popupTitle || s.popupMessage)) {
           setSettings(s);
 
-          // 3. ط¥ط¶ط§ظپط© ظ…ط³طھط´ط¹ط± "ظ†ظٹط© ط§ظ„ط®ط±ظˆط¬" (Exit-Intent)
+          // 3. إضافة مستشعر "نية الخروج" (Exit-Intent)
           const handleMouseLeave = (e: MouseEvent) => {
-            // ظٹط¸ظ‡ط± ظپظ‚ط· ط¥ط°ط§ طھط­ط±ظƒ ط§ظ„ظ…ط§ظˆط³ ط®ط§ط±ط¬ ط§ظ„ط¬ط²ط، ط§ظ„ط¹ظ„ظˆظٹ ظ…ظ† ط§ظ„ظ…طھطµظپط­ (ظ†ظٹط© ط¥ط؛ظ„ط§ظ‚ ط§ظ„طھط¨ظˆظٹط¨ ط£ظˆ ظƒطھط§ط¨ط© URL ط¬ط¯ظٹط¯)
+            // يظهر فقط إذا تحرك الماوس خارج الجزء العلوي من المتصفح (نية إغلاق التبويب أو كتابة URL جديد)
             if (e.clientY <= 0) {
               setVisible(true);
-              // ط¥ط²ط§ظ„ط© ط§ظ„ظ…ط³طھط´ط¹ط± ط¨ط¹ط¯ ط§ظ„ط¸ظ‡ظˆط± ظ„ط£ظˆظ„ ظ…ط±ط© ظ„ط¶ظ…ط§ظ† ط¹ط¯ظ… طھظƒط±ط§ط± ط§ظ„ط¥ط²ط¹ط§ط¬
+              // إزالة المستشعر بعد الظهور لأول مرة لضمان عدم تكرار الإزعاج
               document.removeEventListener("mouseleave", handleMouseLeave);
             }
           };
 
           document.addEventListener("mouseleave", handleMouseLeave);
 
-          // طھظ†ط¸ظٹظپ ط§ظ„ظ…ط³طھط´ط¹ط± ط¹ظ†ط¯ ظ…ط³ط­ ط§ظ„ظ…ظƒظˆظ†
+          // تنظيف المستشعر عند مسح المكون
           return () =>
             document.removeEventListener("mouseleave", handleMouseLeave);
         }
@@ -81,16 +81,16 @@ export function PromoPopup() {
         onClick={(e) => e.stopPropagation()}
         dir="rtl"
       >
-        {/* â”€â”€ ط²ط± ط§ظ„ط¥ط؛ظ„ط§ظ‚ ط§ظ„ط§ط­طھط±ط§ظپظٹ "X" â”€â”€ */}
+        {/* ── زر الإغلاق الاحترافي "X" ── */}
         <button
           onClick={dismiss}
           className="absolute top-4 left-4 z-[60] bg-white/20 hover:bg-white/40 text-white backdrop-blur-md p-2 rounded-full transition-all duration-300 hover:rotate-90 active:scale-90 shadow-lg border border-white/30"
-          aria-label="ط¥ط؛ظ„ط§ظ‚"
+          aria-label="إغلاق"
         >
           <X className="h-5 w-5" />
         </button>
 
-        {/* â”€â”€ Header Gradient â”€â”€ */}
+        {/* ── Header Gradient ── */}
         <div
           className="relative px-6 pt-12 pb-10 text-white text-center overflow-hidden"
           style={{
@@ -132,7 +132,7 @@ export function PromoPopup() {
           )}
         </div>
 
-        {/* â”€â”€ Body Content â”€â”€ */}
+        {/* ── Body Content ── */}
         <div className="bg-white px-8 pb-8 pt-4">
           {/* Discount Code Section */}
           {settings.popupDiscountCode && (
@@ -144,7 +144,7 @@ export function PromoPopup() {
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Tag className="h-4 w-4 text-indigo-500" />
                   <span className="text-xs text-indigo-600 font-bold tracking-widest uppercase">
-                    ظƒظˆط¯ ط§ظ„ط®طµظ… ط§ظ„ط­طµط±ظٹ
+                    كود الخصم الحصري
                   </span>
                 </div>
                 <div className="flex items-center justify-center gap-4">
@@ -164,8 +164,8 @@ export function PromoPopup() {
                     className={`text-sm font-bold transition-all duration-300 ${copied ? "text-green-600 -translate-y-0" : "text-indigo-400"}`}
                   >
                     {copied
-                      ? "âœ… طھظ… ط§ظ„ظ†ط³ط®! ط§ط³طھط®ط¯ظ…ظ‡ ط¹ظ†ط¯ ط§ظ„ط¯ظپط¹"
-                      : "ط§ظ†ظ‚ط± ظ„ظ„ظ†ط³ط® ظˆط§ظ„ط­طµظˆظ„ ط¹ظ„ظ‰ ط§ظ„ط®طµظ…"}
+                      ? "✅ تم النسخ! استخدمه عند الدفع"
+                      : "انقر للنسخ والحصول على الخصم"}
                   </p>
                 </div>
               </button>
@@ -180,7 +180,7 @@ export function PromoPopup() {
               background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
             }}
           >
-            ط§ط³طھط®ط¯ظ… ط§ظ„ط®طµظ… ط§ظ„ط¢ظ†
+            استخدم الخصم الآن
           </button>
 
           <div className="mt-5 flex items-center justify-center gap-2 opacity-40 hover:opacity-60 transition-opacity">
