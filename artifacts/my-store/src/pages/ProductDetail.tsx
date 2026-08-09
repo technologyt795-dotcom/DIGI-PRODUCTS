@@ -56,6 +56,8 @@ export default function ProductDetail() {
     addItem(product, quantity);
   };
 
+  const totalPrice = product.price * quantity;
+
   const increaseQuantity = () => {
     if (quantity < product.stock) {
       setQuantity(q => q + 1);
@@ -131,11 +133,18 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              <div className="flex items-end gap-3 mb-8">
-                <span className="text-4xl font-black text-primary">{formatPrice(product.price)}</span>
-                {product.compareAtPrice && (
-                  <span className="text-xl text-muted-foreground line-through mb-1">{formatPrice(product.compareAtPrice)}</span>
-                )}
+              <div className="flex flex-wrap items-end gap-x-6 gap-y-3 mb-8">
+                <div>
+                  <span className="block text-sm text-muted-foreground mb-1">سعر الوحدة</span>
+                  <span className="text-2xl font-bold text-foreground">{formatPrice(product.price)}</span>
+                  {product.compareAtPrice && (
+                    <span className="text-sm text-muted-foreground line-through mr-2">{formatPrice(product.compareAtPrice)}</span>
+                  )}
+                </div>
+                <div className="border-r border-border pr-6">
+                  <span className="block text-sm text-muted-foreground mb-1">الإجمالي للكمية المحددة</span>
+                  <span className="text-4xl font-black text-primary">{formatPrice(totalPrice)}</span>
+                </div>
               </div>
               
               <p className="text-muted-foreground text-lg leading-relaxed mb-8 whitespace-pre-line">
