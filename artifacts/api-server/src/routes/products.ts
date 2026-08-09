@@ -363,6 +363,8 @@ router.get("/products/:id/related", async (req, res): Promise<void> => {
       and(
         eq(productsTable.categoryId, product.categoryId),
         ne(productsTable.id, params.data.id),
+        eq(productsTable.isHidden, false),
+        eq(categoriesTable.isHidden, false),
       ),
     )
     .limit(4);
