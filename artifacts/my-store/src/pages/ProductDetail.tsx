@@ -6,7 +6,7 @@ import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProductCard } from '@/components/ProductCard';
-import { ChevronRight, Minus, Plus, ShoppingCart, Star, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import { ChevronRight, Minus, Plus, ShoppingCart, Star, ShieldCheck, Truck, RotateCcw, Download, Lock, HeadphonesIcon } from 'lucide-react';
 
 export default function ProductDetail() {
   const [, params] = useRoute('/product/:id');
@@ -187,24 +187,49 @@ export default function ProductDetail() {
 
               {/* Trust Indicators */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-border">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                    <ShieldCheck className="h-5 w-5" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">ضمان الجودة</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                    <Truck className="h-5 w-5" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">شحن مجاني للطلبات فوق 500 ريال</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                    <RotateCcw className="h-5 w-5" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">استرجاع خلال 14 يوم</span>
-                </div>
+                {product.isDigital ? (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
+                        <Download className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-medium text-foreground">تحميل فوري بعد الدفع</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
+                        <Lock className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-medium text-foreground">دفع إلكتروني آمن</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
+                        <HeadphonesIcon className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-medium text-foreground">دعم فني للمنتج</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
+                        <ShieldCheck className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-medium text-foreground">ضمان الجودة</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
+                        <Truck className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-medium text-foreground">شحن مجاني للطلبات فوق 500 ريال</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0">
+                        <RotateCcw className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-medium text-foreground">استرجاع خلال 14 يوم</span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 

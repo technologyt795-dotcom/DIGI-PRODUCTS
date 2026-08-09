@@ -456,7 +456,11 @@ export default function Home() {
   const { data: featuredProducts, isLoading: isLoadingFeatured } =
     useListFeaturedProducts();
   const theme = useTheme();
-  const isDigital = theme === "digital";
+  const isDigital =
+    theme === "digital" ||
+    (featuredProducts != null &&
+      featuredProducts.length > 0 &&
+      featuredProducts.every((product) => product.isDigital));
 
   return (
     <div className="flex flex-col w-full">
