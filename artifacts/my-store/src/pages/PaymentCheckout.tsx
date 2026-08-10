@@ -3,6 +3,7 @@ import { useLocation, Link } from 'wouter';
 import { ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
+import { SEO } from '@/components/SEO';
 
 // Augment window for Moyasar
 declare global {
@@ -102,6 +103,12 @@ export default function PaymentCheckout() {
   if (!orderNumber || !total) {
     return (
       <div className="container mx-auto px-4 py-24 text-center">
+        <SEO
+          title="إتمام الدفع"
+          description="أكمل عملية الدفع بأمان لإتمام طلبك."
+          path="/payment-checkout"
+          noIndex
+        />
         <p className="text-muted-foreground text-lg mb-6">رابط الدفع غير صالح</p>
         <Button asChild><Link href="/cart">العودة للسلة</Link></Button>
       </div>
@@ -110,6 +117,12 @@ export default function PaymentCheckout() {
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-xl" dir="rtl">
+      <SEO
+        title="إتمام الدفع"
+        description="أكمل عملية الدفع بأمان لإتمام طلبك."
+        path="/payment-checkout"
+        noIndex
+      />
       <div className="mb-8">
         <Button variant="ghost" size="sm" className="gap-2 mb-4" asChild>
           <Link href="/cart"><ArrowRight className="h-4 w-4" /> العودة</Link>

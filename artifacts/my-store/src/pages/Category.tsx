@@ -4,6 +4,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'wouter';
 import { ChevronRight } from 'lucide-react';
+import { SEO } from '@/components/SEO';
 
 export default function Category() {
   const [, params] = useRoute('/category/:slug');
@@ -46,12 +47,28 @@ export default function Category() {
 
   return (
     <div className="pb-24">
+      <SEO
+        title={`${category.name} | منتجات رقمية`}
+        description={`${category.description || `تصفح منتجات ${category.name} الرقمية المختارة من Digl Products بأسعار ذكية.`}`.slice(0, 160)}
+        path={`/category/${category.slug}`}
+        image={category.image}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: category.name,
+          description: category.description,
+          url: `${window.location.origin}/category/${category.slug}`,
+          inLanguage: "ar",
+        }}
+      />
       {/* Category Header */}
       <div className="relative h-[300px] md:h-[400px] flex items-center justify-center overflow-hidden mb-12">
         <div className="absolute inset-0 bg-black">
           <img 
             src={category.image || `https://placehold.co/1200x400/1e293b/d4af37?text=${encodeURIComponent(category.name)}`}
             alt={category.name}
+            width="1200"
+            height="400"
             className="w-full h-full object-cover opacity-50"
           />
         </div>

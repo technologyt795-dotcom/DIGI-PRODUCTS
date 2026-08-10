@@ -4,6 +4,8 @@ import { ProductCard } from '@/components/ProductCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLocation } from 'wouter';
 import { Search, SlidersHorizontal } from 'lucide-react';
+import { SEO } from '@/components/SEO';
+import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 
 export default function Products() {
   const [location] = useLocation();
@@ -14,6 +16,7 @@ export default function Products() {
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [sort, setSort] = useState<'newest'|'price_asc'|'price_desc'|'rating'>('newest');
+  const { settings } = useStoreSettings();
 
   // Simple debounce for search
   useEffect(() => {
@@ -30,6 +33,12 @@ export default function Products() {
 
   return (
     <div className="container mx-auto px-4 py-12">
+      <SEO
+        title="المنتجات الرقمية"
+        description="تصفح أفضل المنتجات الرقمية الأصلية من Digl Products، واختر حلولًا عملية بأسعار ذكية مع تحميل فوري."
+        path="/products"
+        image={settings?.heroBgImage || settings?.logoUrl}
+      />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
         <div>
           <h1 className="text-4xl font-black text-foreground mb-4">كل المنتجات</h1>

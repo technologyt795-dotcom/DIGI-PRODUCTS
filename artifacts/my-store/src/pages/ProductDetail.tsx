@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProductCard } from '@/components/ProductCard';
 import { ChevronRight, Minus, Plus, ShoppingCart, Star, ShieldCheck, Truck, RotateCcw, Download, Lock, HeadphonesIcon } from 'lucide-react';
+import { SEO } from '@/components/SEO';
 
 export default function ProductDetail() {
   const [, params] = useRoute('/product/:id');
@@ -72,6 +73,48 @@ export default function ProductDetail() {
 
   return (
     <div className="pb-24">
+      <SEO
+        title={`${product.name} | شراء منتج رقمي`}
+        description={`${product.description || `اشترِ ${product.name} من Digl Products بسعر ذكي مع تحميل فوري.`}`.slice(0, 160)}
+        path={`/product/${product.id}`}
+        image={product.images?.[0]}
+        type="product"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: product.description,
+          image: product.images,
+          sku: String(product.id),
+          category: product.categoryName,
+          brand: {
+            "@type": "Brand",
+            name: "Digl Products",
+          },
+          offers: {
+            "@type": "Offer",
+            url: `${window.location.origin}/product/${product.id}`,
+            priceCurrency: "SAR",
+            price: product.price.toFixed(2),
+            availability:
+              product.stock > 0
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+            itemCondition: "https://schema.org/NewCondition",
+          },
+          ...(product.reviewCount > 0
+            ? {
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: product.rating,
+                  reviewCount: product.reviewCount,
+                  bestRating: 5,
+                  worstRating: 1,
+                },
+              }
+            : {}),
+        }}
+      />
       <div className="bg-muted/30 border-b border-border/50 py-4 mb-8">
         <div className="container mx-auto px-4 flex items-center gap-2 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-primary transition-colors">الرئيسية</Link>
@@ -94,7 +137,14 @@ export default function ProductDetail() {
                   onClick={() => setActiveImage(idx)}
                   className={`relative aspect-square w-24 md:w-full shrink-0 rounded-xl overflow-hidden border-2 transition-all ${activeImage === idx ? 'border-primary ring-2 ring-primary/20 ring-offset-1' : 'border-transparent opacity-70 hover:opacity-100'}`}
                 >
-                  <img src={img} alt={`${product.name} - ${idx + 1}`} className="w-full h-full object-cover bg-muted" />
+                  <img
+                    src={img}
+                    alt={`${product.name} - ${idx + 1}`}
+                    loading="lazy"
+                    width="400"
+                    height="400"
+                    className="w-full h-full object-cover bg-muted"
+                  />
                 </button>
               ))}
             </div>
@@ -102,6 +152,8 @@ export default function ProductDetail() {
               <img 
                 src={product.images[activeImage]} 
                 alt={product.name} 
+                width="800"
+                height="800"
                 className="w-full h-full object-cover"
               />
               {product.badge && (

@@ -1,7 +1,10 @@
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /api/
+Disallow: /cart
+Disallow: /my-orders
+Disallow: /payment-
+Disallow: /api/admin/
 
 # Sitemap
 Sitemap: /api/sitemap.xml

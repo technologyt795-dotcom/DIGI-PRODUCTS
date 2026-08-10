@@ -35,7 +35,7 @@ router.get("/sitemap.xml", async (req, res): Promise<void> => {
     const urls: string[] = [];
 
     // 1. الصفحات الثابتة
-    const staticPages = ["/", "/products", "/cart", "/my-orders"];
+    const staticPages = ["/", "/products", "/refund-policy"];
     staticPages.forEach((path) => {
       urls.push(
         `<url><loc>${baseUrl}${path}</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>${path === "/" ? "1.0" : "0.8"}</priority></url>`,

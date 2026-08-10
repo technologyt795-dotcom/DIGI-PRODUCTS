@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { cn } from '@/lib/utils';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
+import { SEO } from '@/components/SEO';
 
 const navItems = [
   { name: 'لوحة التحكم', path: '/admin', icon: LayoutDashboard },
@@ -112,6 +113,11 @@ export function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-[100dvh] flex flex-col md:flex-row bg-muted/30 text-foreground font-sans" dir="rtl">
+      <SEO
+        title="لوحة تحكم المتجر"
+        description="لوحة إدارة متجر Digl Products."
+        noIndex
+      />
 
       {/* ── Desktop Sidebar ── */}
       <aside className="hidden md:flex md:w-64 shrink-0 border-l border-border bg-background flex-col h-[100dvh] sticky top-0">

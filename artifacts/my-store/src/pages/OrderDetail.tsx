@@ -7,6 +7,7 @@ import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/utils';
+import { SEO } from '@/components/SEO';
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
 
@@ -87,6 +88,12 @@ export default function OrderDetail() {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-10 max-w-4xl" dir="rtl">
+        <SEO
+          title="تفاصيل الطلب"
+          description="تابع تفاصيل طلبك وحالة الشحن والتحميلات الرقمية."
+          path={`/my-orders/${orderNumber || ''}`}
+          noIndex
+        />
         <div className="space-y-4">
           <div className="h-8 w-48 bg-muted animate-pulse rounded-md" />
           <div className="h-96 bg-muted animate-pulse rounded-xl" />
@@ -98,6 +105,12 @@ export default function OrderDetail() {
   if (isError || !order) {
     return (
       <div className="container mx-auto px-4 py-10 max-w-3xl text-center" dir="rtl">
+        <SEO
+          title="تفاصيل الطلب"
+          description="تابع تفاصيل طلبك وحالة الشحن والتحميلات الرقمية."
+          path={`/my-orders/${orderNumber || ''}`}
+          noIndex
+        />
         <Package className="h-16 w-16 text-muted-foreground/40 mx-auto mb-4" />
         <h2 className="text-xl font-semibold mb-2">الطلب غير موجود</h2>
         <p className="text-muted-foreground mb-6">تعذّر العثور على هذا الطلب في حسابك.</p>
@@ -129,6 +142,12 @@ export default function OrderDetail() {
 
   return (
     <>
+      <SEO
+        title="تفاصيل الطلب"
+        description="تابع تفاصيل طلبك وحالة الشحن والتحميلات الرقمية."
+        path={`/my-orders/${orderNumber}`}
+        noIndex
+      />
       <style>{`
         /* ── Theme-aware invoice variables ──────────────────── */
         .invoice-root {

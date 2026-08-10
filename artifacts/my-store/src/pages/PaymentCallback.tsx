@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { CheckCircle, XCircle, Loader2, Download, ExternalLink, Package, AlertCircle, CreditCard, RefreshCw, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { SEO } from '@/components/SEO';
 
 type DigitalItem = {
   idx: number;
@@ -122,6 +123,12 @@ export default function PaymentCallback() {
   if (status === 'loading') {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
+        <SEO
+          title="حالة الدفع والطلب"
+          description="تحقق من حالة عملية الدفع واطّلع على تفاصيل طلبك."
+          path="/payment-callback"
+          noIndex
+        />
         <div className="text-center space-y-4">
           <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
           <p className="text-xl font-bold">جاري التحقق من الدفع...</p>
@@ -133,6 +140,12 @@ export default function PaymentCallback() {
   if (status === 'success') {
     return (
       <div className="min-h-[60vh] flex items-center justify-center container px-4 py-12">
+        <SEO
+          title="حالة الدفع والطلب"
+          description="تحقق من حالة عملية الدفع واطّلع على تفاصيل طلبك."
+          path="/payment-callback"
+          noIndex
+        />
         <div className="max-w-lg w-full text-center space-y-6" dir="rtl">
           {/* Success icon */}
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -236,6 +249,12 @@ export default function PaymentCallback() {
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center container px-4 py-12">
+      <SEO
+        title="حالة الدفع والطلب"
+        description="تحقق من حالة عملية الدفع واطّلع على تفاصيل طلبك."
+        path="/payment-callback"
+        noIndex
+      />
       <div className="max-w-md w-full text-center space-y-6" dir="rtl">
         {/* Icon */}
         <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto">

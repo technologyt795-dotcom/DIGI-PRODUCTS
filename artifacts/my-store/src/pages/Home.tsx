@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DEFAULT_DESCRIPTION, SEO, SITE_NAME } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { useTheme, useStoreSettings } from "@/contexts/StoreSettingsContext";
 
@@ -406,10 +407,39 @@ export default function Home() {
   const { data: featuredProducts, isLoading: isLoadingFeatured } =
     useListFeaturedProducts();
   const theme = useTheme();
+  const { settings } = useStoreSettings();
   const isDigital = theme === "digital";
 
   return (
     <div className="flex flex-col w-full">
+      <SEO
+        title={`${SITE_NAME} | منتجات رقمية بأسعار ذكية`}
+        description={DEFAULT_DESCRIPTION}
+        path="/"
+        image={settings?.heroBgImage || settings?.logoUrl}
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: SITE_NAME,
+            url: window.location.origin,
+            logo: `${window.location.origin}/favicon.svg`,
+            description: DEFAULT_DESCRIPTION,
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: SITE_NAME,
+            url: window.location.origin,
+            inLanguage: "ar",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: `${window.location.origin}/products?search={search_term_string}`,
+              "query-input": "required name=search_term_string",
+            },
+          },
+        ]}
+      />
       {isDigital ? <DigitalHero /> : <StandardHero />}
 
       <TrustFeatures />
@@ -446,6 +476,9 @@ export default function Home() {
                           `https://placehold.co/600x800/1e293b/d4af37?text=${encodeURIComponent(category.name)}`
                         }
                         alt={category.name}
+                        loading="lazy"
+                        width="600"
+                        height="800"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                     </div>

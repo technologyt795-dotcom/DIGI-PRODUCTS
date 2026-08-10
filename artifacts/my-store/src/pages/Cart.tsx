@@ -11,6 +11,7 @@ import { useValidateDiscount, useCreateOrder } from '@workspace/api-client-react
 import { useCustomerAuth } from '@/hooks/use-customer-auth';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { SEO } from '@/components/SEO';
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
 
@@ -209,6 +210,12 @@ export default function Cart() {
   if (items.length === 0) {
     return (
       <div className="container mx-auto px-4 py-24">
+        <SEO
+          title="سلة التسوق"
+          description="راجع المنتجات التي اخترتها قبل إتمام الطلب."
+          path="/cart"
+          noIndex
+        />
         <div className="max-w-md mx-auto text-center flex flex-col items-center">
           <div className="w-32 h-32 bg-muted/50 rounded-full flex items-center justify-center mb-8">
             <ShoppingBag className="h-16 w-16 text-muted-foreground/50" />
@@ -227,6 +234,12 @@ export default function Cart() {
 
   return (
     <div className="container mx-auto px-4 py-12">
+      <SEO
+        title="سلة التسوق"
+        description="راجع المنتجات التي اخترتها قبل إتمام الطلب."
+        path="/cart"
+        noIndex
+      />
       <h1 className="text-4xl font-black mb-10">إتمام الشراء</h1>
 
       <div className="flex flex-col lg:flex-row gap-10">

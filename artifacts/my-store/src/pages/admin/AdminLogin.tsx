@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { useAdminLogin } from '@workspace/api-client-react';
 import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { toast } from 'sonner';
+import { SEO } from '@/components/SEO';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -33,6 +34,12 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4">
+      <SEO
+        title="دخول لوحة تحكم المتجر"
+        description="تسجيل الدخول إلى لوحة إدارة متجر Digl Products."
+        path="/admin/login"
+        noIndex
+      />
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-sm bg-card border border-border rounded-2xl p-8 shadow-sm"

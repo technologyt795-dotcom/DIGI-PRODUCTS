@@ -20,6 +20,9 @@ export function ProductCard({ product }: { product: Product }) {
         <img
           src={product.images[0] || 'https://placehold.co/400x600/e2e8f0/1e293b?text=Product'}
           alt={product.name}
+          loading="lazy"
+          width="400"
+          height="400"
           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
         />
         {product.badge && (

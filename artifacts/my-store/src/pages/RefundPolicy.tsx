@@ -2,12 +2,18 @@ import { Link } from 'wouter';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 import { Button } from '@/components/ui/button';
+import { SEO } from '@/components/SEO';
 
 export default function RefundPolicy() {
   const { settings, isLoading } = useStoreSettings();
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-3xl" dir="rtl">
+      <SEO
+        title="سياسة الاسترجاع والاسترداد"
+        description="اطّلع على سياسة الاسترجاع والاسترداد الخاصة بمتجر Digl Products قبل إتمام الشراء."
+        path="/refund-policy"
+      />
       {/* Back */}
       <div className="mb-8 no-print">
         <Button variant="ghost" asChild className="gap-2 text-muted-foreground hover:text-foreground">

@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { SEO } from '@/components/SEO';
 
 const STATUS_MAP: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
   pending: { label: 'قيد الانتظار', variant: 'secondary' },
@@ -83,6 +84,12 @@ export default function MyOrders() {
 
   return (
     <>
+      <SEO
+        title="طلباتي"
+        description="تابع حالة طلباتك واطّلع على تفاصيل مشترياتك."
+        path="/my-orders"
+        noIndex
+      />
       <div className="container mx-auto px-4 py-10 max-w-3xl" dir="rtl">
         <div className="flex items-center gap-3 mb-8">
           <Package className="h-6 w-6 text-primary" />

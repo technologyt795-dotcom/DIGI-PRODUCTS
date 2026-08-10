@@ -1,10 +1,16 @@
 import { Link } from "wouter";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 
 export default function NotFound() {
   return (
     <div className="flex w-full items-center justify-center min-h-[60vh] bg-background">
+      <SEO
+        title="الصفحة غير موجودة"
+        description="عذرًا، الصفحة التي تبحث عنها غير موجودة."
+        noIndex
+      />
       <div className="text-center p-8 max-w-md w-full bg-card border border-border rounded-3xl shadow-sm">
         <div className="flex justify-center mb-6">
           <div className="h-20 w-20 bg-destructive/10 rounded-full flex items-center justify-center">
