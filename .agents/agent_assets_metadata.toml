@@ -18,3 +18,10 @@ id = "CVhtHrYsi1e6PAmGxrq57"
 uri = "file://attached_assets/logos/logo3.png"
 type = "image"
 title = "الشعار الثالث — ماسة رقمية"
+
+[[outputs]]
+id = "5aupZlzFnsjroPY57mU5O"
+uri = "file://guides/%D8%AF%D9%84%D9%8A%D9%84-%D8%B8%D9%87%D9%88%D8%B1-%D9%85%D8%AA%D8%AC%D8%B1-Digl-Products-%D9%81%D9%8A-Google.pdf"
+type = "pdf"
+title = "كتيب دليل ظهور متجر Digl Products في Google"
+description = "كتيب عربي احترافي من 17 صفحة بخط Tajawal، يشرح نشر المتجر وربط الدومين وGoogle Search Console وإرسال Sitemap وتحسين المنتجات والمتابعة."
