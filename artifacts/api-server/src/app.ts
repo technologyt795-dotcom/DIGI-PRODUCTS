@@ -1,5 +1,5 @@
 import path from "path";
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import helmet from "helmet";
 import cors from "cors";
 import pinoHttp from "pino-http";
@@ -8,7 +8,6 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
-// تعطيل Content Security Policy مؤقتاً لضمان عدم حجب واجهات المظهر
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -54,15 +53,17 @@ app.use("/api", router);
 // --- خدمة الواجهة الأمامية (mockup-sandbox) ---
 const clientDistPath = path.resolve(import.meta.dirname, "..", "..", "mockup-sandbox", "dist");
 
-// تقديم الملفات الثابتة الخاصة بالواجهة
 app.use(express.static(clientDistPath));
 
-// توجيه جميع الزيارات الأخرى لـ index.html لتعمل الصفحات والواجهة
-app.get("*", (req, res, next) => {
-  if (req.path.startsWith("/api")) return next();
+app.get("*", (req: Request, res: Response, next: NextFunction) => {
+  if (req.path.startsWith("/api")) {
+    next();
+    return;
+  }
+
   res.sendFile(path.resolve(clientDistPath, "index.html"), (err) => {
     if (err) {
-      next();
+      next(err);
     }
   });
 });
