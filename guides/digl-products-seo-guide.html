@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>الدليل العملي لظهور متجر Digl Products في Google</title>
+  <style>
+    @font-face {
+      font-family: "Tajawal";
+      src: url("fonts/Tajawal-Regular.ttf") format("truetype");
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "Tajawal";
+      src: url("fonts/Tajawal-Bold.ttf") format("truetype");
+      font-weight: 700 900;
+    }
+
+    :root {
+      --navy: #082337;
+      --deep: #061925;
+      --cyan: #11b7d1;
+      --cyan-dark: #087e9c;
+      --gold: #efa955;
+      --ink: #183247;
+      --muted: #607487;
+      --paper: #f7fafc;
+      --line: #d9e6ed;
+      --soft-cyan: #e8f7fa;
+      --soft-gold: #fff5e6;
+      --green: #187a61;
+      --red: #a84343;
+    }
+
+    @page {
+      size: A4;
+      margin: 17mm 17mm 18mm;
+      @bottom-right {
+        content: "Digl Products  •  دليل الظهور في Google";
+        color: #7b8d99;
+        font-family: "Tajawal";
+        font-size: 8.5pt;
+      }
+      @bottom-left {
+        content: "صفحة " counter(page);
+        color: #7b8d99;
+        font-family: "Tajawal";
+        font-size: 8.5pt;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      direction: rtl;
+      font-family: "Tajawal", sans-serif;
+      color: var(--ink);
+      background: white;
+      font-size: 10.5pt;
+      line-height: 1.8;
+      text-align: right;
+    }
+    h1, h2, h3, h4, p, ul, ol { margin-top: 0; }
+    h1, h2, h3, h4 { color: var(--navy); line-height: 1.35; }
+    h1 { font-size: 27pt; margin-bottom: 10px; }
+    h2 {
+      font-size: 18pt;
+      margin: 0 0 14px;
+      padding-right: 13px;
+      border-right: 5px solid var(--cyan);
+    }
+    h3 { font-size: 13.5pt; margin: 20px 0 8px; color: var(--cyan-dark); }
+    h4 { font-size: 11.5pt; margin: 14px 0 5px; }
+    p { margin-bottom: 9px; }
+    ul, ol { padding-right: 23px; margin-bottom: 12px; }
+    li { margin-bottom: 4px; }
+    strong { color: var(--navy); }
+    a { color: var(--cyan-dark); }
+    code, .url {
+      direction: ltr;
+      unicode-bidi: plaintext;
+      font-family: "DejaVu Sans Mono", monospace;
+      font-size: 8.7pt;
+    }
+    .url {
+      display: inline-block;
+      color: var(--cyan-dark);
+      background: #eef8fb;
+      border: 1px solid #c7e9ef;
+      border-radius: 5px;
+      padding: 0 6px;
+      line-height: 1.55;
+    }
+    .page { page-break-before: always; }
+    .avoid { page-break-inside: avoid; }
+    .small { font-size: 8.8pt; color: var(--muted); }
+    .muted { color: var(--muted); }
+    .center { text-align: center; }
+
+    .cover {
+      height: 255mm;
+      margin: -17mm -17mm -18mm;
+      padding: 26mm 21mm 20mm;
+      color: white;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(17,183,209,.32), transparent 32%),
+        radial-gradient(circle at 90% 80%, rgba(239,169,85,.20), transparent 30%),
+        linear-gradient(145deg, var(--deep) 0%, var(--navy) 65%, #0b4159 100%);
+      position: relative;
+      overflow: hidden;
+      text-align: right;
+    }
+    .cover:before, .cover:after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 50%;
+    }
+    .cover:before { width: 185mm; height: 185mm; left: -95mm; top: 118mm; }
+    .cover:after { width: 100mm; height: 100mm; right: -48mm; top: -31mm; }
+    .cover .brand {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #dff9fd;
+      font-size: 16pt;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .cover .brand img {
+      width: 25mm;
+      height: 25mm;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,.22));
+    }
+    .cover .eyebrow {
+      position: relative;
+      z-index: 1;
+      margin-top: 45mm;
+      color: #72dbea;
+      font-weight: 700;
+      font-size: 12pt;
+      letter-spacing: .4px;
+    }
+    .cover h1 {
+      position: relative;
+      z-index: 1;
+      color: white;
+      font-size: 31pt;
+      max-width: 155mm;
+      margin: 9px 0 15px;
+    }
+    .cover .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 143mm;
+      color: #d9eaf1;
+      font-size: 13pt;
+      line-height: 1.9;
+    }
+    .cover .meta {
+      position: absolute;
+      z-index: 1;
+      right: 21mm;
+      bottom: 29mm;
+      color: #b8d2dd;
+      font-size: 10pt;
+      border-top: 1px solid rgba(255,255,255,.22);
+      padding-top: 11px;
+      width: 118mm;
+    }
+    .cover .badge {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 4px 12px;
+      color: var(--navy);
+      background: var(--gold);
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 9.5pt;
+    }
+
+    .intro-box {
+      background: linear-gradient(135deg, #eefafd, #f9fcfd);
+      border: 1px solid #ccecf1;
+      border-radius: 12px;
+      padding: 17px 19px;
+      margin: 15px 0 20px;
+    }
+    .callout {
+      border-radius: 10px;
+      padding: 13px 16px;
+      margin: 13px 0;
+      page-break-inside: avoid;
+    }
+    .callout.info { background: var(--soft-cyan); border-right: 4px solid var(--cyan); }
+    .callout.tip { background: var(--soft-gold); border-right: 4px solid var(--gold); }
+    .callout.warning { background: #fff0f0; border-right: 4px solid #d36a6a; }
+    .callout.success { background: #ebf8f3; border-right: 4px solid #35a47f; }
+    .callout .label {
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 3px;
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 22px;
+      margin-top: 18px;
+    }
+    .toc-item {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      border-bottom: 1px dashed #c8d9e2;
+      padding: 7px 0;
+    }
+    .toc-num {
+      color: var(--cyan-dark);
+      font-size: 13pt;
+      font-weight: 700;
+      min-width: 22px;
+    }
+    .toc-title { font-weight: 700; }
+    .toc-sub { display: block; color: var(--muted); font-size: 8.5pt; }
+
+    .section-number {
+      display: inline-block;
+      width: 31px;
+      height: 31px;
+      margin-left: 8px;
+      color: white;
+      background: var(--cyan);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 31px;
+      font-size: 13pt;
+      vertical-align: 2px;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      margin: 11px 0;
+      page-break-inside: avoid;
+    }
+    .step-num {
+      width: 29px;
+      height: 29px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: white;
+      font-weight: 700;
+      text-align: center;
+      line-height: 29px;
+      margin-top: 3px;
+    }
+    .step-title { font-weight: 700; color: var(--navy); }
+    .checklist {
+      list-style: none;
+      padding-right: 0;
+      margin: 8px 0;
+    }
+    .checklist li {
+      position: relative;
+      padding: 5px 27px 5px 0;
+      border-bottom: 1px solid #edf2f5;
+    }
+    .checklist li:before {
+      content: "□";
+      position: absolute;
+      right: 0;
+      top: 3px;
+      color: var(--cyan-dark);
+      font-size: 17pt;
+      line-height: 1;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 16px;
+      font-size: 9.2pt;
+      page-break-inside: avoid;
+    }
+    th {
+      background: var(--navy);
+      color: white;
+      font-weight: 700;
+      padding: 8px 9px;
+      text-align: right;
+    }
+    td {
+      border: 1px solid var(--line);
+      padding: 7px 9px;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f6fafc; }
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 13px 15px;
+      margin: 10px 0;
+      page-break-inside: avoid;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+    .two-col > * { min-width: 0; }
+    .formula {
+      background: #142f43;
+      color: #e9fbff;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 9.5pt;
+      margin: 10px 0;
+    }
+    .formula strong { color: var(--gold); }
+    .sample {
+      background: #f7f9fb;
+      border: 1px solid #dce7ec;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin: 9px 0;
+    }
+    .sample .sample-label {
+      color: var(--cyan-dark);
+      font-size: 9pt;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: var(--soft-cyan);
+      color: var(--cyan-dark);
+      font-size: 8.5pt;
+      font-weight: 700;
+    }
+    .footer-note {
+      margin-top: 25px;
+      padding-top: 11px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 8.5pt;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="cover">
+    <div class="brand">
+      <img src="../attached_assets/logos/logo3_large.png" alt="Digl Products">
+      <span>Digl Products</span>
+    </div>
+    <div class="eyebrow">الدليل العملي الشامل</div>
+    <h1>كيف تجعل متجرك جاهزًا للظهور في Google؟</h1>
+    <p class="lead">
+      شرح عربي مفصل، خطوة بخطوة، من نشر المتجر وربط الدومين إلى
+      Google Search Console وإرسال خريطة الموقع وتحسين صفحات المنتجات.
+    </p>
+    <span class="badge">إصدار مبسط للمبتدئين — مع قوائم تحقق وأمثلة جاهزة</span>
+    <div class="meta">
+      إعداد خاص لمتجر Digl Products<br>
+      الهدف: فهم العملية وتنفيذها بهدوء دون تخمين
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>قبل أن تبدأ: ما الذي سيعلمك هذا الكتيب؟</h2>
+    <div class="intro-box">
+      <p><strong>الفكرة الأساسية:</strong> تم تجهيز المتجر تقنيًا ليكون مفهومًا لمحركات البحث، لكن Google لا تعرضه تلقائيًا في النتائج فورًا. يجب أولًا أن يصبح الموقع منشورًا ويمكن الوصول إليه، ثم نخبر Google بوجوده ونرسل لها خريطة الصفحات العامة.</p>
+      <p>هذا الكتيب يشرح الفرق بين <strong>جاهزية الموقع لمحركات البحث</strong> وبين <strong>ظهوره الفعلي في النتائج</strong>، ثم يحول العملية إلى خطوات عملية قابلة للتنفيذ والمتابعة.</p>
+    </div>
+    <div class="callout info">
+      <div class="label">معلومة مهمة جدًا</div>
+      تهيئة محركات البحث SEO ليست زرًا يجعل الموقع يحتل المركز الأول. هي تأسيس صحيح، ثم تحتاج Google إلى وقت، ويحتاج المتجر إلى محتوى جيد وروابط وزيارات وتحسين مستمر.
+    </div>
+    <h3>ما الذي ستحتاجه أثناء التطبيق؟</h3>
+    <ul class="checklist">
+      <li>حساب Replit الذي يملك المتجر أو يملك صلاحية نشره.</li>
+      <li>حساب Google يمكن استخدامه في Google Search Console.</li>
+      <li>رابط المتجر بعد النشر، أو دومين خاص مثل <span class="url">www.diglproducts.com</span>.</li>
+      <li>بيانات دخول حساب الدومين إذا أردت ربط دومين خاص.</li>
+      <li>أسماء ووصف وصور واضحة لكل منتج.</li>
+    </ul>
+    <div class="callout warning">
+      <div class="label">تنبيه أمني</div>
+      كلمة مرور لوحة الإدارة وSecrets لا تُكتب في هذا الكتيب، ولا في Google Search Console، ولا تُرسل في المحادثات أو لقطات الشاشة. خزّنها في مدير كلمات مرور أو في Secrets فقط.
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>الفهرس</h2>
+    <div class="toc">
+      <div class="toc-item"><span class="toc-num">١</span><div><span class="toc-title">الصورة الكبيرة</span><span class="toc-sub">ما الذي تم تجهيزه وما الذي ما زال مطلوبًا؟</span></div></div>
+      <div class="toc-item"><span class="toc-num">٢</span><div><span class="toc-title">نشر المتجر</span><span class="toc-sub">لماذا النشر شرط أساسي وكيف تتأكد منه؟</span></div></div>
+      <div class="toc-item"><span class="toc-num">٣</span><div><span class="toc-title">الدومين الخاص</span><span class="toc-sub">الشراء، DNS، الربط، والانتقال الآمن</span></div></div>
+      <div class="toc-item"><span class="toc-num">٤</span><div><span class="toc-title">Google Search Console</span><span class="toc-sub">إضافة الموقع وإثبات الملكية</span></div></div>
+      <div class="toc-item"><span class="toc-num">٥</span><div><span class="toc-title">إرسال Sitemap</span><span class="toc-sub">الرابط الصحيح وقراءة النتيجة</span></div></div>
+      <div class="toc-item"><span class="toc-num">٦</span><div><span class="toc-title">طلب الفهرسة</span><span class="toc-sub">فحص الصفحة وطلب الزحف يدويًا</span></div></div>
+      <div class="toc-item"><span class="toc-num">٧</span><div><span class="toc-title">تحسين المنتجات</span><span class="toc-sub">العنوان والوصف والصورة والسعر</span></div></div>
+      <div class="toc-item"><span class="toc-num">٨</span><div><span class="toc-title">التصنيفات والمشاركة</span><span class="toc-sub">صفحات قابلة للفهرسة وروابط جميلة</span></div></div>
+      <div class="toc-item"><span class="toc-num">٩</span><div><span class="toc-title">القياس والمتابعة</span><span class="toc-sub">ماذا تراقب أسبوعيًا؟</span></div></div>
+      <div class="toc-item"><span class="toc-num">١٠</span><div><span class="toc-title">الأخطاء الشائعة</span><span class="toc-sub">المشكلات المتوقعة وحلولها</span></div></div>
+      <div class="toc-item"><span class="toc-num">١١</span><div><span class="toc-title">خطة ٣٠ يومًا</span><span class="toc-sub">خطة تنفيذ واضحة بدون ضغط</span></div></div>
+      <div class="toc-item"><span class="toc-num">١٢</span><div><span class="toc-title">قائمة التسليم النهائية</span><span class="toc-sub">تأكد أن كل شيء اكتمل</span></div></div>
+    </div>
+    <div class="callout tip" style="margin-top:25px">
+      <div class="label">طريقة استخدام الكتيب</div>
+      اقرأ الفصل مرة لفهم الفكرة، ثم نفّذ الخطوات بالترتيب. لا تنتقل إلى الفصل التالي قبل وضع علامة على قائمة التحقق الخاصة بالفصل الحالي.
+    </div>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">١</span>الصورة الكبيرة: أين نحن الآن؟</h2>
+    <p>عملية الظهور في Google تتكون من أربع مراحل مترابطة. إذا توقفت عند مرحلة، فلن تستفيد من المراحل التي بعدها بالشكل الكامل.</p>
+    <div class="two-col">
+      <div class="mini-card">
+        <span class="pill">المرحلة ١</span>
+        <h3>التجهيز التقني</h3>
+        <p>العناوين، الأوصاف، الروابط، البيانات المنظمة، وملفات مثل Sitemap وrobots.txt.</p>
+      </div>
+      <div class="mini-card">
+        <span class="pill">المرحلة ٢</span>
+        <h3>النشر والوصول</h3>
+        <p>يجب أن يكون المتجر منشورًا على رابط عام، لا مجرد معاينة داخلية.</p>
+      </div>
+      <div class="mini-card">
+        <span class="pill">المرحلة ٣</span>
+        <h3>التعريف لدى Google</h3>
+        <p>إضافة الموقع إلى Search Console وإرسال Sitemap وطلب فهرسة الصفحات المهمة.</p>
+      </div>
+      <div class="mini-card">
+        <span class="pill">المرحلة ٤</span>
+        <h3>التحسين والمتابعة</h3>
+        <p>تحسين المحتوى، مشاركة الروابط، مراقبة الظهور، وإصلاح المشكلات المتكررة.</p>
+      </div>
+    </div>
+    <h3>ما الذي تم تجهيزه في متجر Digl Products؟</h3>
+    <ul>
+      <li>صفحات المنتجات لها عنوان ووصف ورابط مستقل.</li>
+      <li>يمكن إظهار صورة المنتج وبيانات السعر والتوفر عند مشاركة الرابط.</li>
+      <li>التصنيفات العامة لها صفحات قابلة للفهرسة.</li>
+      <li>خريطة الموقع تُنشأ تلقائيًا من الصفحات العامة والمنتجات والتصنيفات الظاهرة.</li>
+      <li>الصفحات الحساسة مثل السلة والطلبات والدفع ولوحة الإدارة ليست صفحات مناسبة لنتائج Google.</li>
+    </ul>
+    <h3>ما الذي لا تعنيه هذه التجهيزات؟</h3>
+    <p>لا تعني ضمان المركز الأول، ولا تعني أن كل صفحة ستظهر في البحث، ولا تعني أن Google ستفهرس الموقع في نفس اليوم. Google تقرر الصفحات التي تزحف إليها وتفهرسها بناءً على الجودة والوضوح والفائدة وتجربة المستخدم.</p>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">٢</span>نشر المتجر: تحويله إلى موقع عام</h2>
+    <p>المعاينة الداخلية مفيدة أثناء البناء، لكنها ليست رابطًا عامًا دائمًا يمكن للعملاء ومحركات البحث الوصول إليه. النشر ينشئ نسخة متاحة على الإنترنت.</p>
+    <h3>خطوات النشر</h3>
+    <div class="step"><div class="step-num">١</div><div><div class="step-title">افتح مشروع المتجر</div><p>اذهب إلى مشروع Digl Products في Replit، وتأكد من أن الصفحة الرئيسية تعمل وأن المنتجات تظهر بدون أخطاء.</p></div></div>
+    <div class="step"><div class="step-num">٢</div><div><div class="step-title">اختبر المتجر قبل النشر</div><p>افتح الصفحة الرئيسية، صفحة المنتجات، تصنيفًا، منتجًا، السلة، وصفحة الدفع. جرّب ذلك من نافذة خاصة إن أمكن.</p></div></div>
+    <div class="step"><div class="step-num">٣</div><div><div class="step-title">اضغط Publish / نشر</div><p>من واجهة Replit اختر زر النشر، ثم أكمل الإعدادات التي تظهر لك. قد تختلف أسماء الأزرار قليلًا حسب تحديثات الواجهة.</p></div></div>
+    <div class="step"><div class="step-num">٤</div><div><div class="step-title">انسخ رابط الإنتاج</div><p>بعد نجاح النشر، انسخ الرابط العام من صفحة النشر. لا تستخدم رابط المعاينة الداخلي عند إعداد Google.</p></div></div>
+    <div class="step"><div class="step-num">٥</div><div><div class="step-title">اختبر الرابط من جهاز آخر</div><p>افتح الرابط من الهاتف أو من نافذة خاصة. إذا فتح بدون تسجيل دخول إلى Replit، فهذا مؤشر جيد على أنه عام.</p></div></div>
+    <div class="callout success">
+      <div class="label">علامة النجاح</div>
+      تستطيع فتح المتجر من متصفح لا يحتوي على جلسة Replit، ويستطيع شخص آخر فتحه دون امتلاك صلاحية داخل مشروعك.
+    </div>
+    <h3>قائمة تحقق النشر</h3>
+    <ul class="checklist">
+      <li>الرابط العام يفتح الصفحة الرئيسية.</li>
+      <li>الصور والمنتجات تظهر بشكل صحيح.</li>
+      <li>روابط المنتجات والتصنيفات تعمل.</li>
+      <li>الموقع يعمل على الهاتف.</li>
+      <li>لا توجد صفحة تجريبية أو رسالة خطأ للزائر.</li>
+      <li>احتفظت بالرابط في مكان آمن لاستخدامه في Search Console.</li>
+    </ul>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">٣</span>الدومين الخاص: لماذا وكيف؟</h2>
+    <p>الدومين هو العنوان الذي يكتبه العميل، مثل <span class="url">www.diglproducts.com</span>. يمكنك البدء بالرابط الذي يوفره Replit، ثم إضافة دومين خاص لاحقًا. الدومين ليس شرطًا تقنيًا للفهرسة، لكنه مفيد للثقة والعلامة التجارية.</p>
+    <h3>قبل شراء الدومين</h3>
+    <ul>
+      <li>اختر اسمًا سهل الكتابة والنطق والتذكر.</li>
+      <li>تأكد من عدم وجود أخطاء إملائية أو شرطات كثيرة.</li>
+      <li>تحقق من توفر الاسم في امتداد مناسب مثل <span class="url">.com</span> أو امتداد بلدك.</li>
+      <li>احتفظ بحساب الدومين والبريد المرتبط به؛ هذا الحساب هو مالك العنوان.</li>
+    </ul>
+    <h3>ماذا يحدث عند ربط الدومين؟</h3>
+    <p>تربط إعدادات DNS في شركة الدومين بعنوان الخدمة المنشورة. بعد انتشار التغيير، يصبح نفس المتجر متاحًا بعنوانك الخاص. قد يستغرق الانتشار من دقائق إلى ٤٨ ساعة حسب مزود الخدمة.</p>
+    <h3>خطوات الربط العامة</h3>
+    <div class="step"><div class="step-num">١</div><div><div class="step-title">من Replit افتح إعدادات النشر والدومين</div><p>ابحث عن خيار Domains أو Custom domain، ثم أضف اسم الدومين الذي تملكه.</p></div></div>
+    <div class="step"><div class="step-num">٢</div><div><div class="step-title">سجّل قيم DNS المطلوبة</div><p>ستظهر لك قيمة أو أكثر يجب إضافتها لدى شركة الدومين. انسخها كما هي، ولا تخمّن القيم.</p></div></div>
+    <div class="step"><div class="step-num">٣</div><div><div class="step-title">أضف السجلات في شركة الدومين</div><p>افتح DNS Management، وأضف السجل المطلوب. إذا وجدت سجلًا قديمًا لنفس الاسم، لا تحذفه قبل معرفة وظيفته.</p></div></div>
+    <div class="step"><div class="step-num">٤</div><div><div class="step-title">انتظر التحقق</div><p>ارجع إلى Replit واضغط Verify أو Check. إذا لم ينجح فورًا، انتظر قليلًا ثم أعد المحاولة.</p></div></div>
+    <div class="callout warning">
+      <div class="label">خطأ خطير يجب تجنبه</div>
+      لا تغيّر سجلات البريد مثل MX دون فهمها؛ قد يؤدي ذلك إلى توقف البريد الإلكتروني. عدّل سجل الموقع المطلوب فقط.
+    </div>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">٤</span>إضافة الموقع إلى Google Search Console</h2>
+    <p>Search Console هي لوحة مجانية من Google تخبرك كيف ترى Google موقعك، وما الصفحات المفهرسة، وما الكلمات التي جلبت زيارات.</p>
+    <h3>اختيار نوع الملكية</h3>
+    <table>
+      <tr><th>النوع</th><th>متى تستخدمه؟</th><th>طريقة الإثبات</th></tr>
+      <tr><td><strong>Domain</strong></td><td>عندما تريد متابعة كل نسخ الدومين، مثل www وبدونه ونسخ http/https.</td><td>إضافة سجل TXT في DNS.</td></tr>
+      <tr><td><strong>URL prefix</strong></td><td>عندما تريد إضافة رابط محدد فقط أو لا تملك التحكم الكامل في DNS.</td><td>ملف HTML أو وسم HTML أو Google Analytics/Tag Manager.</td></tr>
+    </table>
+    <h3>الخطوات</h3>
+    <div class="step"><div class="step-num">١</div><div><div class="step-title">افتح Search Console</div><p>استخدم حساب Google الذي تريد أن تبقى فيه بيانات المتجر. الحساب ليس بالضرورة نفس بريد الدومين، لكنه يجب أن يكون تحت سيطرتك.</p></div></div>
+    <div class="step"><div class="step-num">٢</div><div><div class="step-title">اضغط Add property</div><p>أضف رابط المتجر المنشور. إذا اخترت URL prefix، اكتب النسخة الصحيحة مثل <span class="url">https://www.example.com/</span>.</p></div></div>
+    <div class="step"><div class="step-num">٣</div><div><div class="step-title">ابدأ إثبات الملكية</div><p>ستعرض Google طريقة تحقق. إذا اخترت Domain، ستعطيك سجل TXT لإضافته إلى DNS.</p></div></div>
+    <div class="step"><div class="step-num">٤</div><div><div class="step-title">أضف سجل TXT</div><p>في شركة الدومين، افتح DNS، أضف نوع TXT، واترك Host/Name كما تطلب Google، ثم الصق قيمة التحقق في خانة Value.</p></div></div>
+    <div class="step"><div class="step-num">٥</div><div><div class="step-title">اضغط Verify</div><p>بعد الحفظ انتظر انتشار DNS، ثم اضغط Verify في Search Console. لا تحذف سجل TXT بعد نجاح التحقق؛ اتركه للحفاظ على الملكية.</p></div></div>
+    <div class="callout info">
+      <div class="label">إذا لم ينجح التحقق</div>
+      راجع نوع السجل، وتأكد أنك أضفته إلى الدومين الصحيح، واحذف المسافات الزائدة من القيمة فقط إذا طلب مزود DNS ذلك. قد تحتاج إلى الانتظار حتى تنتشر سجلات DNS.
+    </div>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">٥</span>إرسال خريطة الموقع Sitemap</h2>
+    <p>خريطة الموقع ملف XML يحتوي على قائمة بروابط الصفحات العامة التي تريد أن تكتشفها Google. في متجر Digl Products يتم توليدها تلقائيًا من المنتجات والتصنيفات الظاهرة.</p>
+    <h3>الرابط الصحيح</h3>
+    <p>استبدل <strong>دومينك</strong> بالدومين المنشور الفعلي:</p>
+    <div class="formula"><strong>https://دومينك.com/api/sitemap.xml</strong></div>
+    <p>مثال توضيحي:</p>
+    <div class="formula"><strong>https://www.diglproducts.com/api/sitemap.xml</strong></div>
+    <p>إذا لم تربط دومينًا خاصًا، استخدم رابط النشر العام الذي حصلت عليه من Replit.</p>
+    <h3>ماذا يوجد داخل الخريطة الحالية؟</h3>
+    <table>
+      <tr><th>نوع الصفحة</th><th>شكل الرابط</th><th>هل تظهر؟</th></tr>
+      <tr><td>الرئيسية</td><td><span class="url">/</span></td><td>نعم</td></tr>
+      <tr><td>صفحة المنتجات</td><td><span class="url">/products</span></td><td>نعم</td></tr>
+      <tr><td>سياسة الاسترجاع</td><td><span class="url">/refund-policy</span></td><td>نعم</td></tr>
+      <tr><td>تصنيف عام</td><td><span class="url">/category/اسم-التصنيف</span></td><td>نعم</td></tr>
+      <tr><td>منتج عام</td><td><span class="url">/product/معرّف-المنتج</span></td><td>نعم</td></tr>
+      <tr><td>السلة والدفع ولوحة الإدارة</td><td>صفحات خاصة</td><td>لا</td></tr>
+    </table>
+    <h3>إرسال الملف</h3>
+    <div class="step"><div class="step-num">١</div><div><div class="step-title">افتح الخاصية الصحيحة</div><p>في Search Console اختر الموقع الذي يطابق رابطك المنشور، وليس خاصية أخرى مشابهة.</p></div></div>
+    <div class="step"><div class="step-num">٢</div><div><div class="step-title">افتح Sitemaps</div><p>من القائمة الجانبية اختر Sitemaps.</p></div></div>
+    <div class="step"><div class="step-num">٣</div><div><div class="step-title">أدخل الجزء المطلوب</div><p>إذا كانت الخانة تضيف الدومين تلقائيًا، اكتب فقط <span class="url">api/sitemap.xml</span>. إذا طلبت رابطًا كاملًا، الصق الرابط الكامل.</p></div></div>
+    <div class="step"><div class="step-num">٤</div><div><div class="step-title">اضغط Submit</div><p>ستظهر حالة الإرسال. افتح الرابط في متصفح عادي للتأكد من أنه يعرض ملف XML وليس صفحة خطأ.</p></div></div>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">٦</span>طلب فهرسة الصفحات المهمة</h2>
+    <p>إرسال Sitemap يخبر Google بالقائمة، لكنه لا يعني أن كل صفحة ستُفهرس فورًا. للصفحات المهمة، يمكنك استخدام فحص الرابط وطلب الفهرسة.</p>
+    <h3>الطريقة</h3>
+    <div class="step"><div class="step-num">١</div><div><div class="step-title">انسخ رابطًا عامًا كاملًا</div><p>ابدأ بالصفحة الرئيسية، ثم صفحة المنتجات، ثم أفضل المنتجات والتصنيفات.</p></div></div>
+    <div class="step"><div class="step-num">٢</div><div><div class="step-title">استخدم URL Inspection</div><p>الصق الرابط في شريط الفحص أعلى Search Console وانتظر نتيجة Google.</p></div></div>
+    <div class="step"><div class="step-num">٣</div><div><div class="step-title">اقرأ النتيجة</div><p>قد ترى أن الرابط موجود في Google، أو غير موجود، أو أن هناك مشكلة تمنع الفهرسة.</p></div></div>
+    <div class="step"><div class="step-num">٤</div><div><div class="step-title">اضغط Request indexing</div><p>إذا كانت الصفحة عامة وصالحة، اطلب الفهرسة. لا تكرر الطلب عشرات المرات؛ الطلب الواحد يكفي وانتظر.</p></div></div>
+    <h3>أي صفحات أطلب فهرستها أولًا؟</h3>
+    <ol>
+      <li>الصفحة الرئيسية.</li>
+      <li>صفحة المنتجات العامة.</li>
+      <li>أفضل تصنيفين أو ثلاثة.</li>
+      <li>المنتجات التي تريد بيعها أو اختبار ظهورها.</li>
+      <li>صفحة سياسة الاسترجاع أو الشروط إذا كانت مهمة للثقة.</li>
+    </ol>
+    <div class="callout warning">
+      <div class="label">لا تطلب فهرسة هذه الصفحات</div>
+      السلة، صفحة الدفع، الطلبات الشخصية، لوحة الإدارة، صفحات تسجيل الدخول، والصفحات المخفية أو التجريبية. هذه ليست صفحات بحث، وقد تحتوي على بيانات خاصة.
+    </div>
+    <h3>لماذا قد تقول Google إن الصفحة غير مفهرسة؟</h3>
+    <ul>
+      <li>الموقع جديد ولم تزحف Google إليه بعد.</li>
+      <li>الرابط غير عام أو يعيد خطأ.</li>
+      <li>الصفحة مخفية أو غير مرتبطة من صفحات أخرى.</li>
+      <li>المحتوى قليل جدًا أو مشابه لصفحات أخرى.</li>
+      <li>هناك منع من الفهرسة أو مشكلة تقنية.</li>
+    </ul>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">٧</span>تحسين صفحات المنتجات بطريقة احترافية</h2>
+    <p>كل منتج هو فرصة للظهور على كلمة يبحث عنها العميل. لا تكتب للروبوت فقط؛ اكتب إنسانًا يفهم المنتج ويعرف لماذا يشتريه.</p>
+    <h3>تركيبة العنوان الجيد</h3>
+    <div class="formula"><strong>اسم المنتج + الفائدة الأساسية + الاستخدام أو الفئة</strong></div>
+    <div class="sample">
+      <div class="sample-label">عنوان ضعيف</div>
+      قالب ميزانية
+      <div class="sample-label" style="margin-top:8px">عنوان أفضل</div>
+      قالب ميزانية شهري جاهز لإدارة المصروفات الشخصية
+    </div>
+    <h3>كيف تكتب وصفًا مقنعًا؟</h3>
+    <ol>
+      <li><strong>ابدأ بالمشكلة:</strong> ما الشيء الذي يواجهه العميل؟</li>
+      <li><strong>اشرح الحل:</strong> كيف يساعد المنتج العميل؟</li>
+      <li><strong>اذكر ما سيحصل عليه:</strong> الملفات، الصفحات، الأقسام، المقاسات أو الصيغ.</li>
+      <li><strong>وضح لمن يناسب:</strong> طالب، أسرة، صاحب مشروع، مصمم، أو غير ذلك.</li>
+      <li><strong>اذكر طريقة الاستخدام:</strong> ماذا يفعل العميل بعد الشراء؟</li>
+      <li><strong>اختم بدعوة واضحة:</strong> مثل “ابدأ بتنظيم ميزانيتك اليوم”.</li>
+    </ol>
+    <h3>مثال وصف جاهز</h3>
+    <div class="sample">
+      <p>قالب ميزانية شهري عملي يساعدك على تسجيل دخلك ومصروفاتك ومتابعة أهدافك المالية في مكان واحد. صُمم ليكون واضحًا وسهل الاستخدام للأفراد والعائلات، مع أقسام مرتبة للمصروفات والادخار والالتزامات.</p>
+      <p>بعد الشراء، حمّل الملف وافتحه في البرنامج المتوافق، ثم أضف أرقامك الشهرية وابدأ بمتابعة تقدمك. مناسب لمن يريد رؤية أمواله بوضوح واتخاذ قرارات مالية أفضل.</p>
+    </div>
+    <h3>قائمة فحص كل منتج</h3>
+    <ul class="checklist">
+      <li>العنوان يذكر ما هو المنتج وفائدته.</li>
+      <li>الوصف يجيب عن: ماذا؟ لمن؟ لماذا؟ وكيف أستخدمه؟</li>
+      <li>الصورة واضحة وبجودة جيدة واسم الملف مفهوم.</li>
+      <li>السعر مكتوب بوضوح والعملة صحيحة.</li>
+      <li>حالة التوفر صحيحة.</li>
+      <li>التصنيف المناسب محدد والمنتج غير مخفي.</li>
+      <li>الرابط يفتح في نافذة خاصة ويظهر بدون أخطاء.</li>
+    </ul>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">٨</span>التصنيفات والمشاركة الاجتماعية</h2>
+    <h3>لماذا التصنيفات مهمة؟</h3>
+    <p>التصنيف ليس مجرد طريقة لترتيب المنتجات داخل المتجر. عندما يكون التصنيف عامًا وله اسم واضح ووصف مفيد، يصبح صفحة يمكن أن تفهمها Google ويجدها العميل عند البحث عن مجموعة منتجات.</p>
+    <div class="two-col">
+      <div class="mini-card">
+        <h3>اسم واضح</h3>
+        <p>استخدم “قوالب الميزانية” بدل اسم داخلي لا يفهمه العميل.</p>
+      </div>
+      <div class="mini-card">
+        <h3>وصف مفيد</h3>
+        <p>اشرح نوع المنتجات الموجودة ولمن تناسب، دون تكرار الكلمات بشكل مزعج.</p>
+      </div>
+    </div>
+    <h3>تحسين رابط المشاركة في واتساب</h3>
+    <p>عند مشاركة رابط المنتج، تحاول المنصات قراءة العنوان والوصف والصورة من الصفحة. لذلك افعل الآتي:</p>
+    <ul>
+      <li>استخدم صورة رئيسية واضحة ومناسبة للعرض المصغر.</li>
+      <li>اجعل العنوان مفهومًا حتى عند قراءته خارج المتجر.</li>
+      <li>اكتب وصفًا قصيرًا يشرح الفائدة بدل حشو الكلمات المفتاحية.</li>
+      <li>اختبر الرابط بإرساله إلى محادثة خاصة أو أداة معاينة الروابط.</li>
+    </ul>
+    <h3>نصوص مشاركة جاهزة</h3>
+    <div class="sample">
+      <div class="sample-label">منتج رقمي</div>
+      رتّب ميزانيتك بسهولة مع قالب عملي جاهز. مناسب للمتابعة الشهرية وتسجيل المصروفات. شاهد التفاصيل: [ضع رابط المنتج]
+    </div>
+    <div class="sample">
+      <div class="sample-label">منتج عام</div>
+      منتج عملي يساعدك على حل [المشكلة]. تعرّف على المزايا والسعر من هنا: [ضع الرابط]
+    </div>
+    <div class="callout tip">
+      <div class="label">لا تخلط بين المشاركة والسبام</div>
+      شارك الرابط في أماكن مناسبة وبمحتوى مفيد. نشر الرابط عشوائيًا في مجموعات غير مهتمة قد يضر الثقة أكثر مما يفيد.
+    </div>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">٩</span>القياس والمتابعة: كيف تعرف أن الخطة تعمل؟</h2>
+    <p>النتائج لا تظهر دائمًا على شكل “أصبح المنتج في المركز الأول”. راقب مؤشرات صغيرة تتراكم مع الوقت.</p>
+    <table>
+      <tr><th>المؤشر</th><th>ماذا يعني؟</th><th>متى تراجعه؟</th></tr>
+      <tr><td>عدد الصفحات المفهرسة</td><td>عدد الصفحات التي قبلتها Google في فهرسها.</td><td>أسبوعيًا أو كل أسبوعين.</td></tr>
+      <tr><td>الظهور Impressions</td><td>عدد مرات ظهور صفحاتك في نتائج البحث، حتى دون نقر.</td><td>أسبوعيًا.</td></tr>
+      <tr><td>النقرات Clicks</td><td>عدد الزيارات القادمة من بحث Google.</td><td>أسبوعيًا.</td></tr>
+      <tr><td>نسبة النقر CTR</td><td>هل العنوان والوصف جذابان عندما يظهران؟</td><td>بعد توفر بيانات كافية.</td></tr>
+      <tr><td>متوسط الموضع</td><td>ترتيب تقريبي للكلمات والصفحات، وليس ضمانًا ثابتًا.</td><td>مع باقي المؤشرات.</td></tr>
+    </table>
+    <h3>روتين أسبوعي بسيط</h3>
+    <div class="step"><div class="step-num">١</div><div><div class="step-title">افتح Performance</div><p>شاهد هل زادت الظهورات أو النقرات مقارنة بالأسبوع السابق.</p></div></div>
+    <div class="step"><div class="step-num">٢</div><div><div class="step-title">راجع الكلمات</div><p>سجّل الكلمات التي ظهر فيها المتجر، حتى لو كان عدد النقرات قليلًا.</p></div></div>
+    <div class="step"><div class="step-num">٣</div><div><div class="step-title">حسّن صفحة واحدة</div><p>اختر منتجًا له ظهور لكن نقراته قليلة، وحسّن عنوانه أو وصفه أو صورته.</p></div></div>
+    <div class="step"><div class="step-num">٤</div><div><div class="step-title">افحص الأخطاء</div><p>راجع Pages وSitemaps لمعرفة إن كانت هناك صفحات بها مشكلة.</p></div></div>
+    <div class="callout info">
+      <div class="label">توقع واقعي</div>
+      لا تقارن متجرًا جديدًا بموقع قديم لديه سنوات من الروابط والمحتوى. قارن المتجر بنفسه: هل يتحسن عدد الصفحات، الظهور، النقرات، وجودة الزيارات؟
+    </div>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">١٠</span>الأخطاء الشائعة وحلولها</h2>
+    <table>
+      <tr><th>المشكلة</th><th>السبب المحتمل</th><th>الحل العملي</th></tr>
+      <tr><td>Sitemap لا يفتح</td><td>الرابط خاطئ أو الموقع غير منشور أو يوجد خطأ في الخادم.</td><td>افتح الرابط في المتصفح، وتأكد من الدومين ووجود <span class="url">/api/sitemap.xml</span>.</td></tr>
+      <tr><td>Google لا تفهرس بسرعة</td><td>الموقع جديد أو لم تكتشف Google الصفحات بعد.</td><td>أرسل Sitemap، اطلب فهرسة الصفحات المهمة، وانتظر عدة أيام.</td></tr>
+      <tr><td>التحقق من الملكية فشل</td><td>سجل TXT في الدومين الخطأ أو لم ينتشر DNS.</td><td>راجع السجل وانتظر ثم أعد Verify.</td></tr>
+      <tr><td>المنتج لا يظهر في الخريطة</td><td>المنتج مخفي أو التصنيف مخفي أو الرابط غير عام.</td><td>اجعل المنتج والتصنيف عامين واختبر الصفحة مباشرة.</td></tr>
+      <tr><td>العنوان الظاهر غير مناسب</td><td>العنوان داخل الصفحة عام أو مكرر.</td><td>اكتب عنوانًا يصف المنتج والفائدة بوضوح.</td></tr>
+      <tr><td>الصورة لا تظهر في المشاركة</td><td>الصورة غير مناسبة أو المنصة لم تحدّث المعاينة.</td><td>استخدم صورة واضحة، ثم أعد فحص الرابط وانتظر تحديث الكاش.</td></tr>
+      <tr><td>الموقع يظهر في البحث لكن لا توجد مبيعات</td><td>الظهور لا يضمن التحويل؛ قد تكون الصفحة أو العرض غير مقنع.</td><td>حسّن الوصف، السعر، الصور، الثقة، وسهولة الدفع.</td></tr>
+    </table>
+    <h3>تفسير الفرق بين ثلاثة أشياء</h3>
+    <div class="two-col">
+      <div class="mini-card"><h3>الاكتشاف</h3><p>Google عرفت أن الرابط موجود.</p></div>
+      <div class="mini-card"><h3>الفهرسة</h3><p>Google قررت إدخال الرابط في قاعدة نتائجها.</p></div>
+      <div class="mini-card"><h3>الترتيب</h3><p>الموضع الذي يظهر فيه الرابط عند بحث معين.</p></div>
+      <div class="mini-card"><h3>التحويل</h3><p>الزائر قام بإجراء مفيد، مثل الشراء أو التواصل.</p></div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">١١</span>خطة تنفيذ عملية لمدة ٣٠ يومًا</h2>
+    <p>هذه الخطة تمنع التشتت. نفّذ القليل بشكل صحيح، ثم راقب النتيجة.</p>
+    <table>
+      <tr><th>الفترة</th><th>المهام</th><th>النتيجة المطلوبة</th></tr>
+      <tr><td><strong>اليوم ١</strong></td><td>اختبار المتجر، التأكد من المنتجات والتصنيفات، إصلاح الروابط المكسورة.</td><td>نسخة جاهزة للنشر.</td></tr>
+      <tr><td><strong>اليوم ٢–٣</strong></td><td>نشر المتجر، حفظ الرابط، اختباره من الهاتف ومنافذ مختلفة.</td><td>رابط عام يعمل.</td></tr>
+      <tr><td><strong>اليوم ٤–٧</strong></td><td>ربط الدومين إن وجد، ثم إنشاء خاصية Search Console وإثبات الملكية.</td><td>ملكية مثبتة.</td></tr>
+      <tr><td><strong>الأسبوع ٢</strong></td><td>إرسال Sitemap، طلب فهرسة الرئيسية وصفحة المنتجات وأهم المنتجات.</td><td>Google بدأت الاكتشاف.</td></tr>
+      <tr><td><strong>الأسبوع ٣</strong></td><td>تحسين ٥–١٠ منتجات: العنوان، الوصف، الصورة، التصنيف، السعر.</td><td>محتوى أفضل.</td></tr>
+      <tr><td><strong>الأسبوع ٤</strong></td><td>مشاركة روابط مختارة، قراءة الأداء، وتسجيل ما تحسن وما يحتاج تعديلًا.</td><td>أول خط أساس للقياس.</td></tr>
+    </table>
+    <h3>سجل المتابعة الخاص بك</h3>
+    <table>
+      <tr><th>البيان</th><th>اكتب هنا</th></tr>
+      <tr><td>رابط المتجر المنشور</td><td style="height:28px"></td></tr>
+      <tr><td>الدومين الخاص</td><td style="height:28px"></td></tr>
+      <tr><td>حساب Google المستخدم</td><td style="height:28px"></td></tr>
+      <tr><td>تاريخ إثبات الملكية</td><td style="height:28px"></td></tr>
+      <tr><td>تاريخ إرسال Sitemap</td><td style="height:28px"></td></tr>
+      <tr><td>آخر مراجعة للأداء</td><td style="height:28px"></td></tr>
+    </table>
+  </section>
+
+  <section class="page">
+    <h2><span class="section-number">١٢</span>قائمة التسليم النهائية</h2>
+    <p>استخدم هذه الصفحة كاختبار أخير. إذا وضعت علامة على معظم البنود، فقد نفذت الأساس الصحيح.</p>
+    <h3>النشر والوصول</h3>
+    <ul class="checklist">
+      <li>المتجر منشور وله رابط عام.</li>
+      <li>الرابط يفتح من الهاتف ومن نافذة خاصة.</li>
+      <li>الصفحة الرئيسية وصفحة المنتجات تعملان.</li>
+      <li>صفحات المنتج والتصنيف تعملان.</li>
+    </ul>
+    <h3>الدومين وGoogle</h3>
+    <ul class="checklist">
+      <li>الدومين الخاص مربوط، أو تم حفظ رابط النشر العام.</li>
+      <li>تمت إضافة الموقع إلى Google Search Console.</li>
+      <li>تم إثبات الملكية بنجاح.</li>
+      <li>تم إرسال <span class="url">/api/sitemap.xml</span> من الخاصية الصحيحة.</li>
+      <li>تم طلب فهرسة الصفحات الأساسية.</li>
+    </ul>
+    <h3>المحتوى</h3>
+    <ul class="checklist">
+      <li>كل منتج له عنوان واضح وغير مكرر.</li>
+      <li>كل منتج له وصف مفيد يشرح الفائدة وطريقة الاستخدام.</li>
+      <li>الصور واضحة ومناسبة للمشاركة.</li>
+      <li>الأسعار والتوفر والتصنيفات صحيحة.</li>
+      <li>المنتجات المخفية ليست ضمن خطة الفهرسة.</li>
+    </ul>
+    <div class="callout success">
+      <div class="label">الخلاصة</div>
+      المتجر أصبح جاهزًا للانطلاق عندما يكون منشورًا، قابلًا للوصول، مضافًا إلى Search Console، وخريطة الموقع مرسلة، ومحتواه واضحًا. بعد ذلك يأتي دور الصبر والتحسين المستمر، وليس انتظار نتيجة فورية.
+    </div>
+    <div class="footer-note">
+      هذا الكتيب شرح عملي مبني على إعدادات متجر Digl Products الحالية. قد تتغير أسماء الأزرار في Replit أو Google مع تحديث الواجهات، لكن المبدأ والخطوات العامة تبقى نفسها. لا تشارك كلمات المرور أو مفاتيح Secrets مع أي شخص.
+    </div>
+  </section>
+
+</body>
+</html>
