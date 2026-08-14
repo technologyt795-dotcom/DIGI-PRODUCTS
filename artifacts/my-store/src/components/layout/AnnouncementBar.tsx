@@ -65,6 +65,8 @@ export function AnnouncementBar() {
       const t = requestAnimationFrame(() => setMounted(true));
       return () => cancelAnimationFrame(t);
     }
+
+    return undefined;
   }, [settings?.announcementBarEnabled, settings?.announcementBarText, dismissed]);
 
   if (!settings?.announcementBarEnabled || !settings?.announcementBarText || dismissed) {

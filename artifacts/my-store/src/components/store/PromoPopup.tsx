@@ -52,6 +52,8 @@ export function PromoPopup() {
           return () =>
             document.removeEventListener("mouseleave", handleMouseLeave);
         }
+
+        return undefined;
       })
       .catch(() => {});
   }, []);
