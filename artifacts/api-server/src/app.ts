@@ -1,5 +1,5 @@
 import path from "path";
-import express, { type Express, type Request, type Response, type NextFunction } from "express";
+import express, { type Express } from "express";
 import helmet from "helmet";
 import cors from "cors";
 import pinoHttp from "pino-http";
@@ -7,12 +7,7 @@ import router from "./routes";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
-
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-  })
-);
+app.use(helmet());
 
 app.use(
   pinoHttp({
@@ -50,22 +45,23 @@ app.use(
 // --- مسارات الـ API الرئيسية ---
 app.use("/api", router);
 
-// --- خدمة الواجهة الأمامية (mockup-sandbox) ---
-const clientDistPath = path.resolve(import.meta.dirname, "..", "..", "mockup-sandbox", "dist");
+// --- خدمة ملفات الواجهة الأمامية (mockup-sandbox) ---
+const clientDistPath = path.resolve(
+  import.meta.dirname,
+  "..",
+  "..",
+  "mockup-sandbox",
+  "dist",
+);
 
 app.use(express.static(clientDistPath));
 
-app.get("*", (req: Request, res: Response, next: NextFunction) => {
-  if (req.path.startsWith("/api")) {
+app.use((req, res, next) => {
+  if (req.method === "GET" && !req.path.startsWith("/api")) {
+    res.sendFile(path.resolve(clientDistPath, "index.html"));
+  } else {
     next();
-    return;
   }
-
-  res.sendFile(path.resolve(clientDistPath, "index.html"), (err) => {
-    if (err) {
-      next(err);
-    }
-  });
 });
 
 export default app;
