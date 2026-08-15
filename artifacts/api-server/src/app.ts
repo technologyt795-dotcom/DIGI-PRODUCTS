@@ -50,7 +50,7 @@ const clientDistPath = path.resolve(
   import.meta.dirname,
   "..",
   "..",
-  "storefront",
+  "my-store",
   "dist",
 );
 
