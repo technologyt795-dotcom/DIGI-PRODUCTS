@@ -45,12 +45,12 @@ app.use(
 // --- مسارات الـ API الرئيسية ---
 app.use("/api", router);
 
-// --- خدمة ملفات الواجهة الأمامية (mockup-sandbox) ---
+// --- خدمة ملفات الواجهة الأمامية للمتجر ---
 const clientDistPath = path.resolve(
   import.meta.dirname,
   "..",
   "..",
-  "mockup-sandbox",
+  "storefront",
   "dist",
 );
 
