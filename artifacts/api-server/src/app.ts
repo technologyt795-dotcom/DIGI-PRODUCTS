@@ -52,6 +52,7 @@ const clientDistPath = path.resolve(
   "..",
   "my-store",
   "dist",
+  "public", // 👈 إضافة هذا المجلد هنا
 );
 
 app.use(express.static(clientDistPath));
