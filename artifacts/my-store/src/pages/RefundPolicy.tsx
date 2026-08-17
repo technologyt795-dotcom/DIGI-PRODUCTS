@@ -52,9 +52,26 @@ export default function RefundPolicy() {
               {settings.refundPolicy}
             </div>
           ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <ShieldCheck className="h-12 w-12 mx-auto mb-3 opacity-30" />
-              <p>لم تُضَف سياسة الاسترجاع بعد.</p>
+            <div className="space-y-8 text-[15px] leading-8 text-muted-foreground">
+              <section>
+                <h2 className="text-xl font-black text-foreground mb-3">مدة طلب الاسترجاع</h2>
+                <p>يمكنك التواصل معنا لطلب الاسترجاع أو الاستبدال خلال المدة الموضحة في صفحة المنتج أو الفاتورة، مع مراعاة الحالات والاستثناءات التي تنص عليها الأنظمة المعمول بها.</p>
+              </section>
+              <section>
+                <h2 className="text-xl font-black text-foreground mb-3">شروط قبول المنتج</h2>
+                <ul className="list-disc pr-5 space-y-2">
+                  <li>أن يكون المنتج بالحالة التي استلمته بها، مع الملحقات والتغليف متى كان ذلك ممكنًا.</li>
+                  <li>إرفاق رقم الطلب ووصف واضح للسبب، وصور المنتج عند وجود تلف أو خطأ في الشحنة.</li>
+                  <li>قد لا تشمل سياسة الاسترجاع المنتجات الرقمية بعد بدء التحميل أو الوصول إليها، إلا عند وجود عيب يمنع الانتفاع بها أو بحسب ما تقرره الأنظمة.</li>
+                </ul>
+              </section>
+              <section>
+                <h2 className="text-xl font-black text-foreground mb-3">التكلفة وإعادة المبلغ</h2>
+                <p>تُحدد مسؤولية تكلفة الشحن بحسب سبب الإرجاع. بعد اعتماد الطلب، تتم إعادة المبلغ إلى وسيلة الدفع الأصلية أو بالطريقة المتاحة، وقد تحتاج العملية عدة أيام عمل من طرف البنك أو مزود الدفع.</p>
+              </section>
+              <section className="rounded-xl bg-muted/60 p-4 text-sm">
+                <p>للمساعدة، تواصل معنا مع ذكر رقم الطلب وتفاصيل المشكلة. لا تتردد في الاطلاع على <Link href="/policies" className="font-bold text-primary hover:underline">مركز سياسات المتجر</Link> لبقية السياسات.</p>
+              </section>
             </div>
           )}
         </div>

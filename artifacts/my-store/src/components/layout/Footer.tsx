@@ -91,9 +91,9 @@ export function Footer() {
               <li><Link href="/products" className="hover:text-secondary transition-colors">كل المنتجات</Link></li>
               <li><Link href="/cart" className="hover:text-secondary transition-colors">سلة المشتريات</Link></li>
               <li><Link href="/my-orders" className="hover:text-secondary transition-colors">تتبع طلبك</Link></li>
-              {settings?.refundPolicy && (
-                <li><Link href="/refund-policy" className="hover:text-secondary transition-colors">سياسة الاسترجاع</Link></li>
-              )}
+              <li><Link href="/policies" className="hover:text-secondary transition-colors">سياسات المتجر</Link></li>
+              <li><Link href="/refund-policy" className="hover:text-secondary transition-colors">الاسترجاع والاسترداد</Link></li>
+              <li><Link href="/policies/privacy" className="hover:text-secondary transition-colors">الخصوصية</Link></li>
             </ul>
           </div>
 

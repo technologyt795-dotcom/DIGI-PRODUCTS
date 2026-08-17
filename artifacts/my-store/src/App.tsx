@@ -20,6 +20,7 @@ import Cart from '@/pages/Cart';
 import MyOrders from '@/pages/MyOrders';
 import OrderDetail from '@/pages/OrderDetail';
 import RefundPolicy from '@/pages/RefundPolicy';
+import { PoliciesIndex, PolicyRoute } from '@/pages/Policies';
 import PaymentCallback from '@/pages/PaymentCallback';
 import PaymentCheckout from '@/pages/PaymentCheckout';
 
@@ -65,6 +66,8 @@ function StoreRouter() {
       <Route path="/cart" component={Cart} />
       <Route path="/my-orders/:orderNumber" component={OrderDetail} />
       <Route path="/my-orders" component={MyOrders} />
+      <Route path="/policies" component={PoliciesIndex} />
+      <Route path="/policies/:policyKey" component={PolicyRoute} />
       <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/payment-callback" component={PaymentCallback} />
       <Route path="/payment-checkout" component={PaymentCheckout} />

@@ -45,6 +45,7 @@ export default function Cart() {
   const [discountCode, setDiscountCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number } | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'online'>('cash');
+  const [policyAccepted, setPolicyAccepted] = useState(false);
 
   // OTP state
   const [otpStep, setOtpStep] = useState(false);
@@ -139,6 +140,10 @@ export default function Cart() {
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (items.length === 0) return;
+    if (!policyAccepted) {
+      toast.error('يرجى الموافقة على سياسات المتجر قبل إتمام الطلب');
+      return;
+    }
 
     const orderItems = items.map(item => ({
       productId: item.product.id,
@@ -332,6 +337,31 @@ export default function Cart() {
                 <Label>ملاحظات إضافية (اختياري)</Label>
                 <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="أي تعليمات خاصة للمندوب..." className="resize-none" rows={2} disabled={otpStep} />
               </div>
+              <label className="flex items-start gap-3 rounded-2xl border border-border bg-muted/30 p-4 text-sm leading-6">
+                <input
+                  type="checkbox"
+                  checked={policyAccepted}
+                  onChange={e => setPolicyAccepted(e.target.checked)}
+                  disabled={otpStep}
+                  required
+                  className="mt-1 h-4 w-4 shrink-0 accent-primary"
+                />
+                <span>
+                  أوافق على{' '}
+                  <Link href="/policies/terms" className="font-bold text-primary hover:underline" target="_blank">
+                    الشروط والأحكام
+                  </Link>{' '}
+                  و
+                  <Link href="/refund-policy" className="font-bold text-primary hover:underline" target="_blank">
+                    سياسة الاسترجاع
+                  </Link>{' '}
+                  و
+                  <Link href="/policies/privacy" className="font-bold text-primary hover:underline" target="_blank">
+                    سياسة الخصوصية
+                  </Link>
+                  .
+                </span>
+              </label>
             </form>
           </div>
 
