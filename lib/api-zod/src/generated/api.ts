@@ -223,6 +223,153 @@ export const CreateProductResponse = zod.object({
 
 
 /**
+ * @summary List published blog posts
+ */
+export const ListBlogPostsResponseItem = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImage": zod.string().nullable(),
+  "seoTitle": zod.string().nullable(),
+  "seoDescription": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListBlogPostsResponse = zod.array(ListBlogPostsResponseItem)
+
+
+/**
+ * @summary Create a blog post (admin)
+ */
+
+
+
+
+
+export const CreateBlogPostBody = zod.object({
+  "slug": zod.string().min(1),
+  "title": zod.string().min(1),
+  "excerpt": zod.string().optional(),
+  "content": zod.string().min(1),
+  "coverImage": zod.string().nullish(),
+  "seoTitle": zod.string().nullish(),
+  "seoDescription": zod.string().nullish(),
+  "isPublished": zod.boolean().optional()
+})
+
+export const CreateBlogPostResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImage": zod.string().nullable(),
+  "seoTitle": zod.string().nullable(),
+  "seoDescription": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Get a published blog post by slug
+ */
+export const GetBlogPostParams = zod.object({
+  "slug": zod.coerce.string()
+})
+
+export const GetBlogPostResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImage": zod.string().nullable(),
+  "seoTitle": zod.string().nullable(),
+  "seoDescription": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary List all blog posts including drafts (admin)
+ */
+export const ListAdminBlogPostsResponseItem = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImage": zod.string().nullable(),
+  "seoTitle": zod.string().nullable(),
+  "seoDescription": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListAdminBlogPostsResponse = zod.array(ListAdminBlogPostsResponseItem)
+
+
+/**
+ * @summary Update a blog post by id (admin)
+ */
+export const UpdateBlogPostParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+
+
+
+
+export const UpdateBlogPostBody = zod.object({
+  "slug": zod.string().min(1).optional(),
+  "title": zod.string().min(1).optional(),
+  "excerpt": zod.string().optional(),
+  "content": zod.string().min(1).optional(),
+  "coverImage": zod.string().nullish(),
+  "seoTitle": zod.string().nullish(),
+  "seoDescription": zod.string().nullish(),
+  "isPublished": zod.boolean().optional()
+})
+
+export const UpdateBlogPostResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "title": zod.string(),
+  "excerpt": zod.string(),
+  "content": zod.string(),
+  "coverImage": zod.string().nullable(),
+  "seoTitle": zod.string().nullable(),
+  "seoDescription": zod.string().nullable(),
+  "isPublished": zod.boolean(),
+  "publishedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a blog post by id (admin)
+ */
+export const DeleteBlogPostParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteBlogPostResponse = zod.void()
+
+
+/**
  * @summary List featured products for the homepage
  */
 export const ListFeaturedProductsResponseItem = zod.object({
@@ -405,6 +552,11 @@ export const ListRelatedProductsResponse = zod.array(ListRelatedProductsResponse
 /**
  * @summary Get current store settings (public)
  */
+export const getSettingsResponseHeroBgOpacityMin = 0;
+export const getSettingsResponseHeroBgOpacityMax = 1;
+
+
+
 export const GetSettingsResponse = zod.object({
   "storeName": zod.string(),
   "tagline": zod.string(),
@@ -426,8 +578,17 @@ export const GetSettingsResponse = zod.object({
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
   "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
   "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers'),
+  "privacyPolicy": zod.string().nullish().describe('Store privacy policy text shown to customers'),
+  "termsPolicy": zod.string().nullish().describe('Store terms and conditions text shown to customers'),
+  "shippingPolicy": zod.string().nullish().describe('Store shipping and delivery policy text shown to customers'),
+  "paymentPolicy": zod.string().nullish().describe('Store payment policy text shown to customers'),
+  "warrantyPolicy": zod.string().nullish().describe('Store warranty policy text shown to customers'),
+  "digitalPolicy": zod.string().nullish().describe('Store digital products policy text shown to customers'),
+  "promotionsPolicy": zod.string().nullish().describe('Store promotions and coupons policy text shown to customers'),
+  "complaintsPolicy": zod.string().nullish().describe('Store complaints and customer service policy text shown to customers'),
+  "cookiesPolicy": zod.string().nullish().describe('Store cookies policy text shown to customers'),
   "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
-  "heroBgOpacity": zod.number().min(0).max(1).describe('Opacity of the hero background image from 0 (transparent) to 1 (fully visible)'),
+  "heroBgOpacity": zod.number().min(getSettingsResponseHeroBgOpacityMin).max(getSettingsResponseHeroBgOpacityMax).optional().describe('Opacity of the hero background image from 0 (transparent) to 1 (fully visible)'),
   "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
   "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
   "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)'),
@@ -457,6 +618,9 @@ export const updateSettingsBodyFlatShippingRateMin = 0;
 export const updateSettingsBodyTaxRateMin = 0;
 export const updateSettingsBodyTaxRateMax = 100;
 
+export const updateSettingsBodyHeroBgOpacityMin = 0;
+export const updateSettingsBodyHeroBgOpacityMax = 1;
+
 
 
 export const UpdateSettingsBody = zod.object({
@@ -480,8 +644,17 @@ export const UpdateSettingsBody = zod.object({
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
   "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
   "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers'),
+  "privacyPolicy": zod.string().nullish().describe('Store privacy policy text shown to customers'),
+  "termsPolicy": zod.string().nullish().describe('Store terms and conditions text shown to customers'),
+  "shippingPolicy": zod.string().nullish().describe('Store shipping and delivery policy text shown to customers'),
+  "paymentPolicy": zod.string().nullish().describe('Store payment policy text shown to customers'),
+  "warrantyPolicy": zod.string().nullish().describe('Store warranty policy text shown to customers'),
+  "digitalPolicy": zod.string().nullish().describe('Store digital products policy text shown to customers'),
+  "promotionsPolicy": zod.string().nullish().describe('Store promotions and coupons policy text shown to customers'),
+  "complaintsPolicy": zod.string().nullish().describe('Store complaints and customer service policy text shown to customers'),
+  "cookiesPolicy": zod.string().nullish().describe('Store cookies policy text shown to customers'),
   "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
-  "heroBgOpacity": zod.number().min(0).max(1).optional().describe('Opacity of the hero background image from 0 (transparent) to 1 (fully visible)'),
+  "heroBgOpacity": zod.number().min(updateSettingsBodyHeroBgOpacityMin).max(updateSettingsBodyHeroBgOpacityMax).optional().describe('Opacity of the hero background image from 0 (transparent) to 1 (fully visible)'),
   "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
   "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
   "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)'),
@@ -507,6 +680,11 @@ export const UpdateSettingsBody = zod.object({
   "paymentStcPayEnabled": zod.boolean().optional()
 })
 
+export const updateSettingsResponseHeroBgOpacityMin = 0;
+export const updateSettingsResponseHeroBgOpacityMax = 1;
+
+
+
 export const UpdateSettingsResponse = zod.object({
   "storeName": zod.string(),
   "tagline": zod.string(),
@@ -528,8 +706,17 @@ export const UpdateSettingsResponse = zod.object({
   "drawerBgColor": zod.string().nullish().describe('Custom hex color for the mobile drawer background'),
   "drawerTextColor": zod.string().nullish().describe('Custom hex color for the mobile drawer text'),
   "refundPolicy": zod.string().nullish().describe('Store refund\/return policy text shown to customers'),
+  "privacyPolicy": zod.string().nullish().describe('Store privacy policy text shown to customers'),
+  "termsPolicy": zod.string().nullish().describe('Store terms and conditions text shown to customers'),
+  "shippingPolicy": zod.string().nullish().describe('Store shipping and delivery policy text shown to customers'),
+  "paymentPolicy": zod.string().nullish().describe('Store payment policy text shown to customers'),
+  "warrantyPolicy": zod.string().nullish().describe('Store warranty policy text shown to customers'),
+  "digitalPolicy": zod.string().nullish().describe('Store digital products policy text shown to customers'),
+  "promotionsPolicy": zod.string().nullish().describe('Store promotions and coupons policy text shown to customers'),
+  "complaintsPolicy": zod.string().nullish().describe('Store complaints and customer service policy text shown to customers'),
+  "cookiesPolicy": zod.string().nullish().describe('Store cookies policy text shown to customers'),
   "heroBgImage": zod.string().nullish().describe('URL of the hero section background image'),
-  "heroBgOpacity": zod.number().min(0).max(1).describe('Opacity of the hero background image from 0 (transparent) to 1 (fully visible)'),
+  "heroBgOpacity": zod.number().min(updateSettingsResponseHeroBgOpacityMin).max(updateSettingsResponseHeroBgOpacityMax).optional().describe('Opacity of the hero background image from 0 (transparent) to 1 (fully visible)'),
   "footerBgColor": zod.string().nullish().describe('Custom hex color for the footer background'),
   "footerTextColor": zod.string().nullish().describe('Custom hex color for the footer text'),
   "footerPadding": zod.string().nullish().describe('Footer padding size (compact, normal, large)'),

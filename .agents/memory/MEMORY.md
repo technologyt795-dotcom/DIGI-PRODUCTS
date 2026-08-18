@@ -4,3 +4,4 @@
 - [Artifact secret refresh](artifact-secret-refresh.md) — restart the managed backend workflow after adding or changing a secret so the process receives the new environment snapshot.
 - [Keep generated API contracts in sync](generated-contract-sync.md) — settings can appear in UI/server code but be dropped by stale generated validation/types before persistence.
 - [Vite HTML relative asset references](vite-html-relative-asset-refs.md) — avoid `./` directory-like HTML asset refs; build canonical URLs dynamically when no production domain exists.
+- [Orval codegen input validation](orval-codegen-input-validation.md) — validate OpenAPI YAML before codegen; duplicate keys can make Orval delete generated output before failing.

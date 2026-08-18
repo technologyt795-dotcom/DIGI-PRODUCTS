@@ -35,6 +35,15 @@ export const storeSettingsTable = pgTable("store_settings", {
   drawerBgColor: text("drawer_bg_color"),
   drawerTextColor: text("drawer_text_color"),
   refundPolicy: text("refund_policy"),
+  privacyPolicy: text("privacy_policy"),
+  termsPolicy: text("terms_policy"),
+  shippingPolicy: text("shipping_policy"),
+  paymentPolicy: text("payment_policy"),
+  warrantyPolicy: text("warranty_policy"),
+  digitalPolicy: text("digital_policy"),
+  promotionsPolicy: text("promotions_policy"),
+  complaintsPolicy: text("complaints_policy"),
+  cookiesPolicy: text("cookies_policy"),
   heroBgImage: text("hero_bg_image"),
   heroBgOpacity: numeric("hero_bg_opacity", { precision: 4, scale: 3 })
     .notNull()

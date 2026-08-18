@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { SEO } from '@/components/SEO';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
+import type { StoreSettings } from '@workspace/api-client-react';
 
 type PolicyKey =
   | 'privacy'
@@ -325,6 +326,18 @@ const policyOrder: PolicyKey[] = [
   'cookies',
 ];
 
+const policySettingsKeys: Record<PolicyKey, keyof StoreSettings> = {
+  privacy: 'privacyPolicy',
+  terms: 'termsPolicy',
+  shipping: 'shippingPolicy',
+  payment: 'paymentPolicy',
+  warranty: 'warrantyPolicy',
+  digital: 'digitalPolicy',
+  promotions: 'promotionsPolicy',
+  complaints: 'complaintsPolicy',
+  cookies: 'cookiesPolicy',
+};
+
 function PolicyHeader({ title, description, icon: Icon }: Pick<PolicyDefinition, 'title' | 'description' | 'icon'>) {
   const { settings } = useStoreSettings();
   return (
@@ -437,6 +450,7 @@ export function PolicyDetail({ policyKey }: { policyKey: PolicyKey }) {
   const { settings } = useStoreSettings();
   const contactEmail = settings?.contactEmail;
   const contactPhone = settings?.contactPhone;
+  const customContent = settings?.[policySettingsKeys[policyKey]] as string | null | undefined;
   const updatedAt = new Intl.DateTimeFormat('ar-SA', {
     year: 'numeric',
     month: 'long',
@@ -453,31 +467,37 @@ export function PolicyDetail({ policyKey }: { policyKey: PolicyKey }) {
             <span>آخر تحديث: {updatedAt}</span>
             {settings?.storeName && <span>{settings.storeName}</span>}
           </div>
-          <div className="space-y-9">
-            {policy.sections.map((section) => (
-              <section key={section.title}>
-                <h2 className="mb-3 flex items-center gap-2 text-xl font-black">
-                  <CheckCircle2 className="h-5 w-5 text-secondary" />
-                  {section.title}
-                </h2>
-                {section.paragraphs?.map((paragraph) => (
-                  <p key={paragraph} className="mb-3 text-[15px] leading-8 text-muted-foreground last:mb-0">
-                    {paragraph}
-                  </p>
-                ))}
-                {section.items && (
-                  <ul className="mt-3 space-y-3 text-[15px] leading-7 text-muted-foreground">
-                    {section.items.map((item) => (
-                      <li key={item} className="flex items-start gap-3">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-            ))}
-          </div>
+          {customContent?.trim() ? (
+            <div className="whitespace-pre-wrap text-[15px] leading-8 text-muted-foreground">
+              {customContent}
+            </div>
+          ) : (
+            <div className="space-y-9">
+              {policy.sections.map((section) => (
+                <section key={section.title}>
+                  <h2 className="mb-3 flex items-center gap-2 text-xl font-black">
+                    <CheckCircle2 className="h-5 w-5 text-secondary" />
+                    {section.title}
+                  </h2>
+                  {section.paragraphs?.map((paragraph) => (
+                    <p key={paragraph} className="mb-3 text-[15px] leading-8 text-muted-foreground last:mb-0">
+                      {paragraph}
+                    </p>
+                  ))}
+                  {section.items && (
+                    <ul className="mt-3 space-y-3 text-[15px] leading-7 text-muted-foreground">
+                      {section.items.map((item) => (
+                        <li key={item} className="flex items-start gap-3">
+                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              ))}
+            </div>
+          )}
 
           {(contactEmail || contactPhone) && (
             <div className="mt-10 rounded-2xl bg-muted/60 p-5">

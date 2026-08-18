@@ -105,6 +105,59 @@ export interface AdminSession {
   token: string;
 }
 
+export interface BlogPost {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  /** @nullable */
+  coverImage: string | null;
+  /** @nullable */
+  seoTitle: string | null;
+  /** @nullable */
+  seoDescription: string | null;
+  isPublished: boolean;
+  /** @nullable */
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BlogPostInput {
+  /** @minLength 1 */
+  slug: string;
+  /** @minLength 1 */
+  title: string;
+  excerpt?: string;
+  /** @minLength 1 */
+  content: string;
+  /** @nullable */
+  coverImage?: string | null;
+  /** @nullable */
+  seoTitle?: string | null;
+  /** @nullable */
+  seoDescription?: string | null;
+  isPublished?: boolean;
+}
+
+export interface BlogPostUpdate {
+  /** @minLength 1 */
+  slug?: string;
+  /** @minLength 1 */
+  title?: string;
+  excerpt?: string;
+  /** @minLength 1 */
+  content?: string;
+  /** @nullable */
+  coverImage?: string | null;
+  /** @nullable */
+  seoTitle?: string | null;
+  /** @nullable */
+  seoDescription?: string | null;
+  isPublished?: boolean;
+}
+
 export interface Product {
   id: number;
   slug: string;
@@ -201,12 +254,61 @@ export interface StoreSettings {
      */
   refundPolicy?: string | null;
   /**
+     * Store privacy policy text shown to customers
+     * @nullable
+     */
+  privacyPolicy?: string | null;
+  /**
+     * Store terms and conditions text shown to customers
+     * @nullable
+     */
+  termsPolicy?: string | null;
+  /**
+     * Store shipping and delivery policy text shown to customers
+     * @nullable
+     */
+  shippingPolicy?: string | null;
+  /**
+     * Store payment policy text shown to customers
+     * @nullable
+     */
+  paymentPolicy?: string | null;
+  /**
+     * Store warranty policy text shown to customers
+     * @nullable
+     */
+  warrantyPolicy?: string | null;
+  /**
+     * Store digital products policy text shown to customers
+     * @nullable
+     */
+  digitalPolicy?: string | null;
+  /**
+     * Store promotions and coupons policy text shown to customers
+     * @nullable
+     */
+  promotionsPolicy?: string | null;
+  /**
+     * Store complaints and customer service policy text shown to customers
+     * @nullable
+     */
+  complaintsPolicy?: string | null;
+  /**
+     * Store cookies policy text shown to customers
+     * @nullable
+     */
+  cookiesPolicy?: string | null;
+  /**
      * URL of the hero section background image
      * @nullable
      */
   heroBgImage?: string | null;
-  /** Opacity of the hero background image from 0 (transparent) to 1 (fully visible) */
-  heroBgOpacity: number;
+  /**
+     * Opacity of the hero background image from 0 (transparent) to 1 (fully visible)
+     * @minimum 0
+     * @maximum 1
+     */
+  heroBgOpacity?: number;
   /**
      * Custom hex color for the footer background
      * @nullable
@@ -312,6 +414,51 @@ export interface StoreSettingsUpdate {
      * @nullable
      */
   refundPolicy?: string | null;
+  /**
+     * Store privacy policy text shown to customers
+     * @nullable
+     */
+  privacyPolicy?: string | null;
+  /**
+     * Store terms and conditions text shown to customers
+     * @nullable
+     */
+  termsPolicy?: string | null;
+  /**
+     * Store shipping and delivery policy text shown to customers
+     * @nullable
+     */
+  shippingPolicy?: string | null;
+  /**
+     * Store payment policy text shown to customers
+     * @nullable
+     */
+  paymentPolicy?: string | null;
+  /**
+     * Store warranty policy text shown to customers
+     * @nullable
+     */
+  warrantyPolicy?: string | null;
+  /**
+     * Store digital products policy text shown to customers
+     * @nullable
+     */
+  digitalPolicy?: string | null;
+  /**
+     * Store promotions and coupons policy text shown to customers
+     * @nullable
+     */
+  promotionsPolicy?: string | null;
+  /**
+     * Store complaints and customer service policy text shown to customers
+     * @nullable
+     */
+  complaintsPolicy?: string | null;
+  /**
+     * Store cookies policy text shown to customers
+     * @nullable
+     */
+  cookiesPolicy?: string | null;
   /**
      * URL of the hero section background image
      * @nullable

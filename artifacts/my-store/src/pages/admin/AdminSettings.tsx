@@ -11,9 +11,37 @@ import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { useUpdateSettings } from '@workspace/api-client-react';
 import { toast } from 'sonner';
-import { Loader2, Palette, Info, Truck, Link as LinkIcon } from 'lucide-react';
+import { Loader2, Palette, Info, Truck, FileText, Link as LinkIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { StoreSettingsUpdateActiveTheme } from '@workspace/api-client-react';
+
+type PolicyField =
+  | 'privacyPolicy'
+  | 'termsPolicy'
+  | 'shippingPolicy'
+  | 'paymentPolicy'
+  | 'warrantyPolicy'
+  | 'digitalPolicy'
+  | 'promotionsPolicy'
+  | 'complaintsPolicy'
+  | 'cookiesPolicy';
+
+const policyFields: Array<{
+  key: PolicyField;
+  title: string;
+  description: string;
+  placeholder: string;
+}> = [
+  { key: 'privacyPolicy', title: 'سياسة الخصوصية', description: 'كيف يجمع المتجر بيانات العملاء ويستخدمها ويحميها.', placeholder: 'اكتب سياسة الخصوصية الخاصة بمتجرك...' },
+  { key: 'termsPolicy', title: 'الشروط والأحكام', description: 'الشروط التي تنظم استخدام المتجر وإتمام الطلبات.', placeholder: 'اكتب الشروط والأحكام الخاصة بمتجرك...' },
+  { key: 'shippingPolicy', title: 'سياسة الشحن والتوصيل', description: 'مواعيد التوصيل، المناطق، الرسوم، والتأخيرات المحتملة.', placeholder: 'اكتب سياسة الشحن والتوصيل الخاصة بمتجرك...' },
+  { key: 'paymentPolicy', title: 'سياسة الدفع', description: 'وسائل الدفع، تأكيد العمليات، وإعادة المبالغ.', placeholder: 'اكتب سياسة الدفع الخاصة بمتجرك...' },
+  { key: 'warrantyPolicy', title: 'سياسة الضمان', description: 'نطاق الضمان وطريقة طلب الإصلاح أو الاستبدال.', placeholder: 'اكتب سياسة الضمان الخاصة بمتجرك...' },
+  { key: 'digitalPolicy', title: 'سياسة المنتجات الرقمية', description: 'الوصول والتحميل وحقوق استخدام المنتجات الرقمية.', placeholder: 'اكتب سياسة المنتجات الرقمية الخاصة بمتجرك...' },
+  { key: 'promotionsPolicy', title: 'سياسة العروض والخصومات', description: 'صلاحية الكوبونات وشروط العروض الترويجية.', placeholder: 'اكتب سياسة العروض والخصومات الخاصة بمتجرك...' },
+  { key: 'complaintsPolicy', title: 'سياسة الشكاوى وخدمة العملاء', description: 'قنوات التواصل وآلية متابعة الشكاوى والطلبات.', placeholder: 'اكتب سياسة الشكاوى وخدمة العملاء الخاصة بمتجرك...' },
+  { key: 'cookiesPolicy', title: 'سياسة ملفات الارتباط', description: 'استخدام ملفات الارتباط ووظائفها في المتجر.', placeholder: 'اكتب سياسة ملفات الارتباط الخاصة بمتجرك...' },
+];
 
 export default function AdminSettings() {
   const { settings, isLoading, refreshSettings } = useStoreSettings();
@@ -42,6 +70,17 @@ export default function AdminSettings() {
   const [drawerTextColor, setDrawerTextColor] = useState<string | null>(null);
   const [drawerColorsEnabled, setDrawerColorsEnabled] = useState(false);
   const [refundPolicy, setRefundPolicy] = useState<string>('');
+  const [policyContent, setPolicyContent] = useState<Record<PolicyField, string>>({
+    privacyPolicy: '',
+    termsPolicy: '',
+    shippingPolicy: '',
+    paymentPolicy: '',
+    warrantyPolicy: '',
+    digitalPolicy: '',
+    promotionsPolicy: '',
+    complaintsPolicy: '',
+    cookiesPolicy: '',
+  });
   const [heroBgImage, setHeroBgImage] = useState<string | null>(null);
   const [heroBgOpacity, setHeroBgOpacity] = useState(0.3);
   const [footerBgColor, setFooterBgColor] = useState<string | null>(null);
@@ -81,6 +120,17 @@ export default function AdminSettings() {
       setDrawerTextColor(settings.drawerTextColor ?? null);
       setDrawerColorsEnabled(!!(settings.drawerBgColor || settings.drawerTextColor));
       setRefundPolicy(settings.refundPolicy ?? '');
+      setPolicyContent({
+        privacyPolicy: settings.privacyPolicy ?? '',
+        termsPolicy: settings.termsPolicy ?? '',
+        shippingPolicy: settings.shippingPolicy ?? '',
+        paymentPolicy: settings.paymentPolicy ?? '',
+        warrantyPolicy: settings.warrantyPolicy ?? '',
+        digitalPolicy: settings.digitalPolicy ?? '',
+        promotionsPolicy: settings.promotionsPolicy ?? '',
+        complaintsPolicy: settings.complaintsPolicy ?? '',
+        cookiesPolicy: settings.cookiesPolicy ?? '',
+      });
       setHeroBgImage(settings.heroBgImage ?? null);
       setHeroBgOpacity(settings.heroBgOpacity ?? 0.3);
       setFooterBgColor(settings.footerBgColor ?? null);
@@ -132,6 +182,9 @@ export default function AdminSettings() {
         drawerBgColor: drawerColorsEnabled ? (drawerBgColor || null) : null,
         drawerTextColor: drawerColorsEnabled ? (drawerTextColor || null) : null,
         refundPolicy: refundPolicy || null,
+        ...Object.fromEntries(
+          policyFields.map(({ key }) => [key, policyContent[key] || null]),
+        ),
         heroBgImage: heroBgImage || null,
         heroBgOpacity,
         footerBgColor: footerColorsEnabled ? (footerBgColor || null) : null,
@@ -235,7 +288,7 @@ export default function AdminSettings() {
       </div>
 
       <Tabs defaultValue="appearance" className="w-full" dir="rtl">
-        <TabsList className="grid w-full grid-cols-4 lg:w-[600px] mb-8">
+         <TabsList className="grid w-full grid-cols-5 lg:w-[750px] mb-8">
           <TabsTrigger value="appearance" className="gap-2">
             <Palette className="h-4 w-4" />
             <span className="hidden sm:inline">المظهر</span>
@@ -252,6 +305,10 @@ export default function AdminSettings() {
             <LinkIcon className="h-4 w-4" />
             <span className="hidden sm:inline">التواصل</span>
           </TabsTrigger>
+           <TabsTrigger value="policies" className="gap-2">
+             <FileText className="h-4 w-4" />
+             <span className="hidden sm:inline">السياسات</span>
+           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="appearance" className="space-y-6">
@@ -822,25 +879,75 @@ export default function AdminSettings() {
             </CardContent>
           </Card>
 
-          {/* Refund Policy */}
+        </TabsContent>
+
+        <TabsContent value="policies" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Info className="h-5 w-5 text-primary" />
-                سياسة الاسترجاع
-              </CardTitle>
-              <CardDescription>
-                هذا النص يظهر للعملاء في صفحة سياسة الاسترجاع — اتركه فارغاً لإخفاء الصفحة من الفوتر
-              </CardDescription>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    سياسات المتجر
+                  </CardTitle>
+                  <CardDescription>
+                    عدّل النصوص التي تظهر للعملاء. اترك أي حقل فارغًا ليستخدم المتجر النص الافتراضي الجاهز.
+                  </CardDescription>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setRefundPolicy('');
+                    setPolicyContent({
+                      privacyPolicy: '',
+                      termsPolicy: '',
+                      shippingPolicy: '',
+                      paymentPolicy: '',
+                      warrantyPolicy: '',
+                      digitalPolicy: '',
+                      promotionsPolicy: '',
+                      complaintsPolicy: '',
+                      cookiesPolicy: '',
+                    });
+                  }}
+                >
+                  استعادة النصوص الافتراضية
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
-              <Textarea
-                id="refundPolicy"
-                value={refundPolicy}
-                onChange={(e) => setRefundPolicy(e.target.value)}
-                rows={8}
-                placeholder="مثال: يمكن استرجاع المنتجات خلال 7 أيام من تاريخ الاستلام بشرط..."
-              />
+            <CardContent className="space-y-6">
+              <div className="rounded-xl border border-secondary/30 bg-secondary/10 p-4 text-sm leading-7 text-muted-foreground">
+                استخدم نصًا عاديًا مع فقرات واضحة. لا تُضاف وسوم HTML، ويُفضّل مراجعة الشروط والخصوصية قانونيًا قبل النشر.
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="refundPolicy">سياسة الاسترجاع والاسترداد</Label>
+                  <p className="text-sm text-muted-foreground">شروط إرجاع المنتجات واستعادة المبالغ.</p>
+                  <Textarea
+                    id="refundPolicy"
+                    value={refundPolicy}
+                    onChange={(e) => setRefundPolicy(e.target.value)}
+                    rows={8}
+                    placeholder="مثال: يمكن استرجاع المنتجات خلال 7 أيام من تاريخ الاستلام بشرط..."
+                  />
+                </div>
+
+                {policyFields.map(({ key, title, description, placeholder }) => (
+                  <div key={key} className="space-y-2">
+                    <Label htmlFor={key}>{title}</Label>
+                    <p className="text-sm text-muted-foreground">{description}</p>
+                    <Textarea
+                      id={key}
+                      value={policyContent[key]}
+                      onChange={(e) => setPolicyContent((current) => ({ ...current, [key]: e.target.value }))}
+                      rows={8}
+                      placeholder={placeholder}
+                    />
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

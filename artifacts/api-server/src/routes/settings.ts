@@ -27,6 +27,15 @@ const DEFAULT_SETTINGS = {
   drawerBgColor: null,
   drawerTextColor: null,
   refundPolicy: null,
+  privacyPolicy: null,
+  termsPolicy: null,
+  shippingPolicy: null,
+  paymentPolicy: null,
+  warrantyPolicy: null,
+  digitalPolicy: null,
+  promotionsPolicy: null,
+  complaintsPolicy: null,
+  cookiesPolicy: null,
   heroBgImage: null,
   heroBgOpacity: "0.3",
   footerBgColor: null,
@@ -69,6 +78,15 @@ function toApiSettings(row: typeof storeSettingsTable.$inferSelect) {
     drawerBgColor: row.drawerBgColor ?? null,
     drawerTextColor: row.drawerTextColor ?? null,
     refundPolicy: row.refundPolicy ?? null,
+    privacyPolicy: row.privacyPolicy ?? null,
+    termsPolicy: row.termsPolicy ?? null,
+    shippingPolicy: row.shippingPolicy ?? null,
+    paymentPolicy: row.paymentPolicy ?? null,
+    warrantyPolicy: row.warrantyPolicy ?? null,
+    digitalPolicy: row.digitalPolicy ?? null,
+    promotionsPolicy: row.promotionsPolicy ?? null,
+    complaintsPolicy: row.complaintsPolicy ?? null,
+    cookiesPolicy: row.cookiesPolicy ?? null,
     heroBgImage: row.heroBgImage ?? null,
     heroBgOpacity: parseFloat(row.heroBgOpacity),
     footerBgColor: row.footerBgColor ?? null,
@@ -136,6 +154,15 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if (data.drawerBgColor !== undefined) updateValues.drawerBgColor = data.drawerBgColor;
   if (data.drawerTextColor !== undefined) updateValues.drawerTextColor = data.drawerTextColor;
   if (data.refundPolicy !== undefined) updateValues.refundPolicy = data.refundPolicy;
+  if (data.privacyPolicy !== undefined) updateValues.privacyPolicy = data.privacyPolicy;
+  if (data.termsPolicy !== undefined) updateValues.termsPolicy = data.termsPolicy;
+  if (data.shippingPolicy !== undefined) updateValues.shippingPolicy = data.shippingPolicy;
+  if (data.paymentPolicy !== undefined) updateValues.paymentPolicy = data.paymentPolicy;
+  if (data.warrantyPolicy !== undefined) updateValues.warrantyPolicy = data.warrantyPolicy;
+  if (data.digitalPolicy !== undefined) updateValues.digitalPolicy = data.digitalPolicy;
+  if (data.promotionsPolicy !== undefined) updateValues.promotionsPolicy = data.promotionsPolicy;
+  if (data.complaintsPolicy !== undefined) updateValues.complaintsPolicy = data.complaintsPolicy;
+  if (data.cookiesPolicy !== undefined) updateValues.cookiesPolicy = data.cookiesPolicy;
   if (data.heroBgImage !== undefined) updateValues.heroBgImage = data.heroBgImage;
   if (data.heroBgOpacity !== undefined) updateValues.heroBgOpacity = data.heroBgOpacity.toString();
   if (data.footerBgColor !== undefined) updateValues.footerBgColor = data.footerBgColor;

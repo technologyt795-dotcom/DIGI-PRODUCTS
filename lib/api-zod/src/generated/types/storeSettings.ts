@@ -61,14 +61,61 @@ export interface StoreSettings {
      */
   refundPolicy?: string | null;
   /**
+     * Store privacy policy text shown to customers
+     * @nullable
+     */
+  privacyPolicy?: string | null;
+  /**
+     * Store terms and conditions text shown to customers
+     * @nullable
+     */
+  termsPolicy?: string | null;
+  /**
+     * Store shipping and delivery policy text shown to customers
+     * @nullable
+     */
+  shippingPolicy?: string | null;
+  /**
+     * Store payment policy text shown to customers
+     * @nullable
+     */
+  paymentPolicy?: string | null;
+  /**
+     * Store warranty policy text shown to customers
+     * @nullable
+     */
+  warrantyPolicy?: string | null;
+  /**
+     * Store digital products policy text shown to customers
+     * @nullable
+     */
+  digitalPolicy?: string | null;
+  /**
+     * Store promotions and coupons policy text shown to customers
+     * @nullable
+     */
+  promotionsPolicy?: string | null;
+  /**
+     * Store complaints and customer service policy text shown to customers
+     * @nullable
+     */
+  complaintsPolicy?: string | null;
+  /**
+     * Store cookies policy text shown to customers
+     * @nullable
+     */
+  cookiesPolicy?: string | null;
+  /**
      * URL of the hero section background image
      * @nullable
      */
   heroBgImage?: string | null;
   /**
      * Opacity of the hero background image from 0 (transparent) to 1 (fully visible)
+     * @minimum 0
+     * @maximum 1
      */
-  heroBgOpacity: number;
+  heroBgOpacity?: number;
   /**
      * Custom hex color for the footer background
      * @nullable

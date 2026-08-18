@@ -441,12 +441,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
 
   /products/featured:
     get:
@@ -1852,6 +1846,33 @@ components:
         refundPolicy:
           type: ["string", "null"]
           description: Store refund/return policy text shown to customers
+        privacyPolicy:
+          type: ["string", "null"]
+          description: Store privacy policy text shown to customers
+        termsPolicy:
+          type: ["string", "null"]
+          description: Store terms and conditions text shown to customers
+        shippingPolicy:
+          type: ["string", "null"]
+          description: Store shipping and delivery policy text shown to customers
+        paymentPolicy:
+          type: ["string", "null"]
+          description: Store payment policy text shown to customers
+        warrantyPolicy:
+          type: ["string", "null"]
+          description: Store warranty policy text shown to customers
+        digitalPolicy:
+          type: ["string", "null"]
+          description: Store digital products policy text shown to customers
+        promotionsPolicy:
+          type: ["string", "null"]
+          description: Store promotions and coupons policy text shown to customers
+        complaintsPolicy:
+          type: ["string", "null"]
+          description: Store complaints and customer service policy text shown to customers
+        cookiesPolicy:
+          type: ["string", "null"]
+          description: Store cookies policy text shown to customers
         heroBgImage:
           type: ["string", "null"]
           description: URL of the hero section background image
@@ -1951,6 +1972,33 @@ components:
         refundPolicy:
           type: ["string", "null"]
           description: Store refund/return policy text shown to customers
+        privacyPolicy:
+          type: ["string", "null"]
+          description: Store privacy policy text shown to customers
+        termsPolicy:
+          type: ["string", "null"]
+          description: Store terms and conditions text shown to customers
+        shippingPolicy:
+          type: ["string", "null"]
+          description: Store shipping and delivery policy text shown to customers
+        paymentPolicy:
+          type: ["string", "null"]
+          description: Store payment policy text shown to customers
+        warrantyPolicy:
+          type: ["string", "null"]
+          description: Store warranty policy text shown to customers
+        digitalPolicy:
+          type: ["string", "null"]
+          description: Store digital products policy text shown to customers
+        promotionsPolicy:
+          type: ["string", "null"]
+          description: Store promotions and coupons policy text shown to customers
+        complaintsPolicy:
+          type: ["string", "null"]
+          description: Store complaints and customer service policy text shown to customers
+        cookiesPolicy:
+          type: ["string", "null"]
+          description: Store cookies policy text shown to customers
         heroBgImage:
           type: ["string", "null"]
           description: URL of the hero section background image
