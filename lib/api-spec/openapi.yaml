@@ -673,6 +673,52 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /auth/email-otp/send:
+    post:
+      operationId: sendEmailOtp
+      tags: [auth]
+      summary: Send an email verification code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailOtpInput"
+      responses:
+        "200":
+          description: Code sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailOtpSent"
+        "400":
+          description: Invalid email
+        "429":
+          description: Too many requests
+        "503":
+          description: SMTP is not configured
+
+  /auth/email-otp/verify:
+    post:
+      operationId: verifyEmailOtp
+      tags: [auth]
+      summary: Verify an email verification code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailOtpVerificationInput"
+      responses:
+        "200":
+          description: Email verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailOtpVerification"
+        "400":
+          description: Invalid or expired code
+
   /admin/orders:
     get:
       operationId: listOrders
@@ -2187,6 +2233,8 @@ components:
           type: string
           enum: [cash, online]
           description: Payment method (defaults to cash)
+        emailVerificationToken:
+          type: string
 
     MoyasarPaymentInput:
       type: object
@@ -2195,6 +2243,38 @@ components:
         orderNumber:
           type: string
           minLength: 1
+
+    EmailOtpInput:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+    EmailOtpVerificationInput:
+      type: object
+      required: [email, code]
+      properties:
+        email:
+          type: string
+          format: email
+        code:
+          type: string
+          pattern: "^[0-9]{6}$"
+    EmailOtpSent:
+      type: object
+      required: [sent]
+      properties:
+        sent:
+          type: boolean
+    EmailOtpVerification:
+      type: object
+      required: [verified, verificationToken]
+      properties:
+        verified:
+          type: boolean
+        verificationToken:
+          type: string
         callbackUrl:
           type: string
           minLength: 1

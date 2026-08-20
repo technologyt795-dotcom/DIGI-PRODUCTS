@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { eq, desc, inArray } from "drizzle-orm";
 import { db, ordersTable, discountsTable, customersTable, productsTable } from "@workspace/db";
 import { requireAdmin } from "../middlewares/adminAuth";
+import { isEmailVerificationTokenValid } from "./otp";
 import { z } from "zod";
 
 const router: IRouter = Router();
@@ -30,6 +31,7 @@ const CreateOrderBody = z.object({
   discountCode: z.string().optional(),
   notes: z.string().optional(),
   paymentMethod: z.enum(["cash", "online"]).default("cash"),
+  emailVerificationToken: z.string().min(1).optional(),
 });
 
 const UpdateOrderBody = z.object({
@@ -217,6 +219,10 @@ router.post("/orders", async (req, res): Promise<void> => {
   }
 
   const data = parsed.data;
+  if (!isEmailVerificationTokenValid(data.emailVerificationToken, data.customerEmail)) {
+    res.status(403).json({ error: "يجب التحقق من البريد الإلكتروني قبل إتمام الطلب" });
+    return;
+  }
 
   // Fetch digital product info for all ordered items
   const productIds = data.items.map((i) => i.productId);
