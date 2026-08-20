@@ -29,6 +29,7 @@ function toInsertValues(data: {
   isNew?: boolean;
   badge?: string | null;
   isDigital?: boolean;
+  digitalAvailabilityStatus?: "available" | "preparing";
   isHidden?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
@@ -50,6 +51,9 @@ function toInsertValues(data: {
     ...(data.isNew != null ? { isNew: data.isNew } : {}),
     ...(data.badge !== undefined ? { badge: data.badge } : {}),
     ...(data.isDigital != null ? { isDigital: data.isDigital } : {}),
+    ...(data.digitalAvailabilityStatus != null
+      ? { digitalAvailabilityStatus: data.digitalAvailabilityStatus }
+      : {}),
     ...(data.isHidden != null ? { isHidden: data.isHidden } : {}),
     ...(data.downloadUrls !== undefined ? { downloadUrls: data.downloadUrls } : {}),
     ...(data.downloadLabels !== undefined ? { downloadLabels: data.downloadLabels } : {}),
@@ -72,6 +76,7 @@ function toUpdateValues(data: {
   isNew?: boolean;
   badge?: string | null;
   isDigital?: boolean;
+  digitalAvailabilityStatus?: "available" | "preparing";
   isHidden?: boolean;
   downloadUrls?: string[];
   downloadLabels?: string[];
@@ -108,6 +113,7 @@ const productSelection = {
   isNew: productsTable.isNew,
   badge: productsTable.badge,
   isDigital: productsTable.isDigital,
+  digitalAvailabilityStatus: productsTable.digitalAvailabilityStatus,
   isHidden: productsTable.isHidden,
   downloadUrls: productsTable.downloadUrls,
   downloadLabels: productsTable.downloadLabels,

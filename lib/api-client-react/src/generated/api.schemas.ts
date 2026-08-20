@@ -44,6 +44,14 @@ export interface CategoryUpdate {
   isHidden?: boolean;
 }
 
+export type ProductInputDigitalAvailabilityStatus = typeof ProductInputDigitalAvailabilityStatus[keyof typeof ProductInputDigitalAvailabilityStatus];
+
+
+export const ProductInputDigitalAvailabilityStatus = {
+  available: 'available',
+  preparing: 'preparing',
+} as const;
+
 export interface ProductInput {
   /** @minLength 1 */
   slug: string;
@@ -63,12 +71,21 @@ export interface ProductInput {
   /** @nullable */
   badge?: string | null;
   isDigital?: boolean;
+  digitalAvailabilityStatus?: ProductInputDigitalAvailabilityStatus;
   downloadUrls?: string[];
   downloadLabels?: string[];
   /** @nullable */
   productUrl?: string | null;
   isHidden?: boolean;
 }
+
+export type ProductUpdateDigitalAvailabilityStatus = typeof ProductUpdateDigitalAvailabilityStatus[keyof typeof ProductUpdateDigitalAvailabilityStatus];
+
+
+export const ProductUpdateDigitalAvailabilityStatus = {
+  available: 'available',
+  preparing: 'preparing',
+} as const;
 
 export interface ProductUpdate {
   /** @minLength 1 */
@@ -89,6 +106,7 @@ export interface ProductUpdate {
   /** @nullable */
   badge?: string | null;
   isDigital?: boolean;
+  digitalAvailabilityStatus?: ProductUpdateDigitalAvailabilityStatus;
   downloadUrls?: string[];
   downloadLabels?: string[];
   /** @nullable */
@@ -158,6 +176,14 @@ export interface BlogPostUpdate {
   isPublished?: boolean;
 }
 
+export type ProductDigitalAvailabilityStatus = typeof ProductDigitalAvailabilityStatus[keyof typeof ProductDigitalAvailabilityStatus];
+
+
+export const ProductDigitalAvailabilityStatus = {
+  available: 'available',
+  preparing: 'preparing',
+} as const;
+
 export interface Product {
   id: number;
   slug: string;
@@ -178,6 +204,7 @@ export interface Product {
   /** @nullable */
   badge: string | null;
   isDigital: boolean;
+  digitalAvailabilityStatus: ProductDigitalAvailabilityStatus;
   isHidden: boolean;
   downloadUrls: string[];
   downloadLabels: string[];

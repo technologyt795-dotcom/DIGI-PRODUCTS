@@ -66,6 +66,7 @@ interface ProductFormState {
   isNew: boolean;
   badge: string;
   isDigital: boolean;
+  digitalAvailabilityStatus: 'available' | 'preparing';
   isHidden: boolean;
   downloadUrls: string[];
   downloadLabels: string[];
@@ -85,6 +86,7 @@ const emptyForm: ProductFormState = {
   isNew: false,
   badge: '',
   isDigital: false,
+  digitalAvailabilityStatus: 'available',
   isHidden: false,
   downloadUrls: [],
   downloadLabels: [],
@@ -179,6 +181,7 @@ export default function AdminProducts() {
       isNew: product.isNew,
       badge: product.badge || '',
       isDigital: product.isDigital,
+      digitalAvailabilityStatus: product.digitalAvailabilityStatus ?? 'available',
       isHidden: (product as any).isHidden ?? false,
       downloadUrls: product.downloadUrls || [],
       downloadLabels: product.downloadLabels || [],
@@ -204,6 +207,7 @@ export default function AdminProducts() {
       isNew: form.isNew,
       badge: form.badge || null,
       isDigital: form.isDigital,
+      digitalAvailabilityStatus: form.isDigital ? form.digitalAvailabilityStatus : 'available',
       isHidden: form.isHidden,
       // Keep only slots that have a URL, and carry their matching label at the same index
       downloadUrls: form.isDigital ? form.downloadUrls.filter(Boolean) : [],
@@ -458,6 +462,23 @@ export default function AdminProducts() {
 
             {form.isDigital && (
               <div className="space-y-3">
+                <div className="space-y-2">
+                  <Label>حالة توفر المنتج الرقمي</Label>
+                  <Select
+                    value={form.digitalAvailabilityStatus}
+                    onValueChange={(value: 'available' | 'preparing') =>
+                      setForm({ ...form, digitalAvailabilityStatus: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="available">متوفر</SelectItem>
+                      <SelectItem value="preparing">جاري تجهيز المنتج</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Label>ملفات التحميل الرقمية (حتى {MAX_DIGITAL_FILES} ملفات)</Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {Array.from({ length: MAX_DIGITAL_FILES }).map((_, idx) => {

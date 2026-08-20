@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ProductUpdateDigitalAvailabilityStatus } from './productUpdateDigitalAvailabilityStatus';
 
 export interface ProductUpdate {
   /** @minLength 1 */
@@ -25,6 +26,7 @@ export interface ProductUpdate {
   /** @nullable */
   badge?: string | null;
   isDigital?: boolean;
+  digitalAvailabilityStatus?: ProductUpdateDigitalAvailabilityStatus;
   downloadUrls?: string[];
   downloadLabels?: string[];
   /** @nullable */

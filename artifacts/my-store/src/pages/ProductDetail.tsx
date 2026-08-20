@@ -178,7 +178,13 @@ export default function ProductDetail() {
                   <span className="font-bold text-foreground">{product.rating.toFixed(1)}</span>
                   <span className="text-muted-foreground text-sm">({product.reviewCount} تقييم)</span>
                 </div>
-                {product.stock > 0 ? (
+                {product.isDigital ? (
+                  product.digitalAvailabilityStatus === 'preparing' ? (
+                    <span className="text-amber-700 bg-amber-50 px-3 py-1.5 rounded-lg text-sm font-bold">جاري تجهيز المنتج</span>
+                  ) : (
+                    <span className="text-green-600 bg-green-50 px-3 py-1.5 rounded-lg text-sm font-bold">متوفر</span>
+                  )
+                ) : product.stock > 0 ? (
                   <span className="text-green-600 bg-green-50 px-3 py-1.5 rounded-lg text-sm font-bold">متوفر في المخزون</span>
                 ) : (
                   <span className="text-red-600 bg-red-50 px-3 py-1.5 rounded-lg text-sm font-bold">نفذت الكمية</span>

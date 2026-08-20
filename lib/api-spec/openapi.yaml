@@ -1542,6 +1542,9 @@ components:
           type: ["string", "null"]
         isDigital:
           type: boolean
+        digitalAvailabilityStatus:
+          type: string
+          enum: [available, preparing]
         downloadUrls:
           type: array
           items:
@@ -1590,6 +1593,9 @@ components:
           type: ["string", "null"]
         isDigital:
           type: boolean
+        digitalAvailabilityStatus:
+          type: string
+          enum: [available, preparing]
         downloadUrls:
           type: array
           items:
@@ -1719,6 +1725,7 @@ components:
           isNew,
           badge,
           isDigital,
+           digitalAvailabilityStatus,
           isHidden,
           downloadUrls,
           downloadLabels,
@@ -1761,6 +1768,9 @@ components:
           type: ["string", "null"]
         isDigital:
           type: boolean
+        digitalAvailabilityStatus:
+          type: string
+          enum: [available, preparing]
         isHidden:
           type: boolean
         downloadUrls:
