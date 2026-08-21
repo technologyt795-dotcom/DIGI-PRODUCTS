@@ -21,4 +21,5 @@ export interface OrderInput {
   notes?: string;
   /** Payment method (defaults to cash) */
   paymentMethod?: OrderInputPaymentMethod;
+  emailVerificationToken?: string;
 }

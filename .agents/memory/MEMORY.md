@@ -5,3 +5,4 @@
 - [Keep generated API contracts in sync](generated-contract-sync.md) — settings can appear in UI/server code but be dropped by stale generated validation/types before persistence.
 - [Vite HTML relative asset references](vite-html-relative-asset-refs.md) — avoid `./` directory-like HTML asset refs; build canonical URLs dynamically when no production domain exists.
 - [Orval codegen input validation](orval-codegen-input-validation.md) — validate OpenAPI YAML before codegen; duplicate keys can make Orval delete generated output before failing.
+- [Moyasar payment status normalization](moyasar-payment-status-normalization.md) — normalize status casing and handle approved authorized/captured callbacks only after integrity checks.

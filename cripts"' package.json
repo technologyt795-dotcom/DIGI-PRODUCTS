@@ -1,0 +1,107 @@
+[1mdiff --git a/artifacts/my-store/src/pages/Cart.tsx b/artifacts/my-store/src/pages/Cart.tsx[m
+[1mindex 11b699a..4b68af1 100644[m
+[1m--- a/artifacts/my-store/src/pages/Cart.tsx[m
+[1m+++ b/artifacts/my-store/src/pages/Cart.tsx[m
+[36m@@ -8,3 +8,3 @@[m [mimport { Label } from '@/components/ui/label';[m
+ import { Textarea } from '@/components/ui/textarea';[m
+[31m-import { Minus, Plus, Trash2, ShoppingBag, Lock, Loader2, CheckCircle, Tag, MapPin, CreditCard, Truck, Phone, ShieldCheck, RefreshCw } from 'lucide-react';[m
+[32m+[m[32mimport { Minus, Plus, Trash2, ShoppingBag, Lock, Loader2, CheckCircle, Tag, MapPin, CreditCard, Truck, Mail, ShieldCheck, RefreshCw } from 'lucide-react';[m
+ import { useValidateDiscount, useCreateOrder } from '@workspace/api-client-react';[m
+[36m@@ -17,7 +17,7 @@[m [mconst BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';[m
+ [m
+[31m-async function sendOtp(phone: string): Promise<void> {[m
+[31m-  const res = await fetch(`${BASE}/auth/otp/send`, {[m
+[32m+[m[32masync function sendEmailOtp(email: string): Promise<void> {[m
+[32m+[m[32m  const res = await fetch(`${BASE}/auth/email-otp/send`, {[m
+     method: 'POST',[m
+     headers: { 'Content-Type': 'application/json' },[m
+[31m-    body: JSON.stringify({ phone }),[m
+[32m+[m[32m    body: JSON.stringify({ email }),[m
+   });[m
+[36m@@ -27,7 +27,7 @@[m [masync function sendOtp(phone: string): Promise<void> {[m
+ [m
+[31m-async function verifyOtp(phone: string, code: string): Promise<void> {[m
+[31m-  const res = await fetch(`${BASE}/auth/otp/verify`, {[m
+[32m+[m[32masync function verifyEmailOtp(email: string, code: string): Promise<string> {[m
+[32m+[m[32m  const res = await fetch(`${BASE}/auth/email-otp/verify`, {[m
+     method: 'POST',[m
+     headers: { 'Content-Type': 'application/json' },[m
+[31m-    body: JSON.stringify({ phone, code }),[m
+[32m+[m[32m    body: JSON.stringify({ email, code }),[m
+   });[m
+[36m@@ -35,2 +35,3 @@[m [masync function verifyOtp(phone: string, code: string): Promise<void> {[m
+   if (!res.ok) throw new Error(data.error || 'الكود غير صحيح');[m
+[32m+[m[32m  return data.verificationToken;[m
+ }[m
+[36m@@ -56,2 +57,3 @@[m [mexport default function Cart() {[m
+   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);[m
+[32m+[m[32m  const verificationTokenRef = useRef<string | null>(null);[m
+ [m
+[36m@@ -124,6 +126,6 @@[m [mexport default function Cart() {[m
+ [m
+[31m-  const handleSendOtp = async (phone: string) => {[m
+[32m+[m[32m  const handleSendOtp = async (email: string) => {[m
+     setOtpSending(true);[m
+     try {[m
+[31m-      await sendOtp(phone);[m
+[32m+[m[32m      await sendEmailOtp(email);[m
+       setOtpStep(true);[m
+[36m@@ -131,3 +133,3 @@[m [mexport default function Cart() {[m
+       startResendTimer();[m
+[31m-      toast.success(`تم إرسال كود التحقق إلى ${phone}`);[m
+[32m+[m[32m      toast.success(`تم إرسال كود التحقق إلى ${email}`);[m
+     } catch (err: any) {[m
+[36m@@ -161,2 +163,3 @@[m [mexport default function Cart() {[m
+         paymentMethod,[m
+[32m+[m[32m        emailVerificationToken: verificationTokenRef.current ?? undefined,[m
+       }[m
+[36m@@ -164,11 +167,9 @@[m [mexport default function Cart() {[m
+ [m
+[31m-    // If customer is already authenticated — skip OTP[m
+[31m-    if (isAuthenticated) {[m
+[31m-      await submitOrder(payload);[m
+[32m+[m[32m    // Require a fresh email verification before every public checkout.[m
+[32m+[m[32m    pendingPayloadRef.current = payload;[m
+[32m+[m[32m    if (!form.customerEmail.trim()) {[m
+[32m+[m[32m      toast.error('يرجى إدخال البريد الإلكتروني لإرسال رمز التحقق');[m
+       return;[m
+     }[m
+[31m-[m
+[31m-    // Require OTP verification for guests[m
+[31m-    pendingPayloadRef.current = payload;[m
+[31m-    await handleSendOtp(form.customerPhone);[m
+[32m+[m[32m    await handleSendOtp(form.customerEmail);[m
+   };[m
+[36m@@ -199,3 +200,8 @@[m [mexport default function Cart() {[m
+     try {[m
+[31m-      await verifyOtp(form.customerPhone, otpCode);[m
+[32m+[m[32m      const verificationToken = await verifyEmailOtp(form.customerEmail, otpCode);[m
+[32m+[m[32m      verificationTokenRef.current = verificationToken;[m
+[32m+[m[32m      pendingPayloadRef.current = {[m
+[32m+[m[32m        ...pendingPayloadRef.current,[m
+[32m+[m[32m        data: { ...pendingPayloadRef.current.data, emailVerificationToken: verificationToken },[m
+[32m+[m[32m      };[m
+       // OTP verified — submit the order[m
+[36m@@ -211,3 +217,3 @@[m [mexport default function Cart() {[m
+     if (otpResendTimer > 0) return;[m
+[31m-    await handleSendOtp(form.customerPhone);[m
+[32m+[m[32m    await handleSendOtp(form.customerEmail);[m
+   };[m
+[36m@@ -373,5 +379,5 @@[m [mexport default function Cart() {[m
+                 <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">[m
+[31m-                  <Phone className="h-8 w-8 text-primary" />[m
+[32m+[m[32m                  <Mail className="h-8 w-8 text-primary" />[m
+                 </div>[m
+[31m-                <h2 className="text-xl font-bold">التحقق من رقم الجوال</h2>[m
+[32m+[m[32m                <h2 className="text-xl font-bold">التحقق من البريد الإلكتروني</h2>[m
+                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">[m
+[36m@@ -379,3 +385,3 @@[m [mexport default function Cart() {[m
+                 </p>[m
+[31m-                <p className="font-bold text-foreground mt-1 dir-ltr" dir="ltr">{form.customerPhone}</p>[m
+[32m+[m[32m                <p className="font-bold text-foreground mt-1 dir-ltr" dir="ltr">{form.customerEmail}</p>[m
+               </div>[m
+[36m@@ -433,3 +439,3 @@[m [mexport default function Cart() {[m
+                   type="button"[m
+[31m-                  onClick={() => { setOtpStep(false); setOtpCode(''); }}[m
+[32m+[m[32m                  onClick={() => { setOtpStep(false); setOtpCode(''); verificationTokenRef.current = null; }}[m
+                   className="text-muted-foreground text-sm w-full text-center hover:text-foreground transition-colors"[m

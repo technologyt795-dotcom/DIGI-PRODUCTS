@@ -81,8 +81,10 @@ export default function PaymentCheckout() {
     if (!publishableKey) return; // wait for key before init
     initDoneRef.current = true;
 
+    // The order number is verified server-side from Moyasar metadata. Keeping
+    // the callback URL query-free prevents ambiguous query-string handling by 3DS redirects.
     const callbackUrl =
-      `${window.location.origin}${import.meta.env.BASE_URL}payment-callback?orderNumber=${encodeURIComponent(orderNumber)}`;
+      `${window.location.origin}${import.meta.env.BASE_URL}payment-callback`;
 
     window.Moyasar.init({
       element: '.mysr-form',

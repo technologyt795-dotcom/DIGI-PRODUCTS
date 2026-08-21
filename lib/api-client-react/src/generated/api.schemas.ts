@@ -658,13 +658,35 @@ export interface OrderInput {
   notes?: string;
   /** Payment method (defaults to cash) */
   paymentMethod?: OrderInputPaymentMethod;
+  emailVerificationToken?: string;
 }
 
 export interface MoyasarPaymentInput {
   /** @minLength 1 */
   orderNumber: string;
+}
+
+export interface EmailOtpInput {
+  /** @pattern ^[^@\s]+@[^@\s]+\.[^@\s]+$ */
+  email: string;
+}
+
+export interface EmailOtpVerificationInput {
+  /** @pattern ^[^@\s]+@[^@\s]+\.[^@\s]+$ */
+  email: string;
+  /** @pattern ^[0-9]{6}$ */
+  code: string;
+}
+
+export interface EmailOtpSent {
+  sent: boolean;
+}
+
+export interface EmailOtpVerification {
+  verified: boolean;
+  verificationToken: string;
   /** @minLength 1 */
-  callbackUrl: string;
+  callbackUrl?: string;
 }
 
 export interface MoyasarPaymentResponse {

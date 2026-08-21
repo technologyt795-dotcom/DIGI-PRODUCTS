@@ -168,6 +168,14 @@ router.put("/admin/settings", requireAdmin, async (req, res): Promise<void> => {
   if (data.footerBgColor !== undefined) updateValues.footerBgColor = data.footerBgColor;
   if (data.footerTextColor !== undefined) updateValues.footerTextColor = data.footerTextColor;
   if (data.footerPadding !== undefined) updateValues.footerPadding = data.footerPadding;
+  // SMTP credentials are stored for server-side mail delivery. They are never
+  // returned by the public settings response.
+  if ((data as any).smtpHost !== undefined) updateValues.smtpHost = (data as any).smtpHost || null;
+  if ((data as any).smtpPort !== undefined) updateValues.smtpPort = Number((data as any).smtpPort) || 587;
+  if ((data as any).smtpSecure !== undefined) updateValues.smtpSecure = Boolean((data as any).smtpSecure);
+  if ((data as any).smtpUser !== undefined) updateValues.smtpUser = (data as any).smtpUser || null;
+  if ((data as any).smtpPass !== undefined && (data as any).smtpPass !== '') updateValues.smtpPass = (data as any).smtpPass;
+  if ((data as any).smtpFrom !== undefined) updateValues.smtpFrom = (data as any).smtpFrom || null;
   // Announcement bar
   if ((data as any).announcementBarEnabled !== undefined) updateValues.announcementBarEnabled = (data as any).announcementBarEnabled;
   if ((data as any).announcementBarText !== undefined) updateValues.announcementBarText = (data as any).announcementBarText;

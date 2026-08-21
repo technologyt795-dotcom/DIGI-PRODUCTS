@@ -6,7 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface MoyasarPaymentInput {
+export interface EmailOtpVerification {
+  verified: boolean;
+  verificationToken: string;
   /** @minLength 1 */
-  orderNumber: string;
+  callbackUrl?: string;
 }

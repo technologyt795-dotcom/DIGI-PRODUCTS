@@ -95,12 +95,19 @@ export default function PaymentCallback() {
       return;
     }
 
-    // Call backend to verify payment
-    fetch(
-      `/api/payments/callback?id=${encodeURIComponent(paymentId)}&orderNumber=${encodeURIComponent(orderNum)}`,
-    )
-      .then(async (r) => {
-        const data = (await r.json()) as {
+    // Verify the final payment state. Moyasar may return from 3DS while the
+    // payment is still being finalized, so retry a short, bounded number of times.
+    let retryTimer: number | undefined;
+    let cancelled = false;
+    let attempts = 0;
+    const maxVerificationAttempts = 8;
+
+    const verifyPayment = async (): Promise<void> => {
+      try {
+        const response = await fetch(
+          `/api/payments/callback?id=${encodeURIComponent(paymentId)}&orderNumber=${encodeURIComponent(orderNum)}`,
+        );
+        const data = (await response.json()) as {
           status: string;
           orderNumber: string;
           failureMessage?: string;
@@ -108,16 +115,36 @@ export default function PaymentCallback() {
         };
         const resolvedOrder = data.orderNumber || orderNum;
         setOrderNumber(resolvedOrder);
+
+        if (data.status === 'pending' && attempts < maxVerificationAttempts) {
+          attempts += 1;
+          retryTimer = window.setTimeout(() => {
+            if (!cancelled) void verifyPayment();
+          }, 1500);
+          return;
+        }
+
         const isPaid = data.status === 'paid';
         setStatus(isPaid ? 'success' : 'failed');
-        // Use backend failure message, fallback to URL message
-        if (!isPaid) setFailureMessage(data.failureMessage || urlMessage);
+        if (!isPaid) {
+          setFailureMessage(
+            data.status === 'pending'
+              ? 'تعذر تأكيد الدفع تلقائياً. تحقق من حالة طلبك قبل إعادة المحاولة.'
+              : data.failureMessage || urlMessage,
+          );
+        }
         if (isPaid) await fetchDownloads(resolvedOrder);
-      })
-      .catch(() => {
+      } catch {
         setStatus('failed');
         if (urlMessage) setFailureMessage(urlMessage);
-      });
+      }
+    };
+
+    void verifyPayment();
+    return () => {
+      cancelled = true;
+      if (retryTimer) window.clearTimeout(retryTimer);
+    };
   }, []);
 
   if (status === 'loading') {

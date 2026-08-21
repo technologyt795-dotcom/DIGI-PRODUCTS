@@ -128,6 +128,8 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
     const payment = (await verifyRes.json()) as {
       id: string;
       status: string;
+      amount: number;
+      currency: string;
       message?: string;
       metadata?: { orderNumber?: string };
       source?: {
@@ -144,28 +146,100 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
       payment.metadata?.orderNumber ||
       "";
 
-    const isPaid = payment.status === "paid";
+    const [verifiedOrder] = resolvedOrderNumber
+      ? await db
+          .select()
+          .from(ordersTable)
+          .where(eq(ordersTable.orderNumber, resolvedOrderNumber))
+      : [];
+    const expectedAmount = verifiedOrder
+      ? Math.round(Number(verifiedOrder.total) * 100)
+      : null;
+    const metadataMatchesOrder =
+      Boolean(resolvedOrderNumber) &&
+      payment.metadata?.orderNumber === resolvedOrderNumber;
+    const amountMatches = expectedAmount !== null && payment.amount === expectedAmount;
+    const currencyMatches = payment.currency === "SAR";
+    const normalizedPaymentStatus = payment.status.trim().toLowerCase();
+    const isApprovedResponse =
+      payment.source?.response_code?.trim().toLowerCase() === "approved" ||
+      payment.source?.message?.trim().toLowerCase() === "approved";
+    // Moyasar integrations may return an authorized/captured state and some
+    // bank adapters capitalize the status. Treat only a gateway-approved
+    // authorized payment as successful, while still requiring all integrity
+    // checks below.
+    const gatewayPaid =
+      normalizedPaymentStatus === "paid" ||
+      normalizedPaymentStatus === "captured" ||
+      (normalizedPaymentStatus === "authorized" && isApprovedResponse);
+    const isPaid =
+      gatewayPaid &&
+      metadataMatchesOrder &&
+      amountMatches &&
+      currencyMatches;
+    const isVerificationMismatch = gatewayPaid && !isPaid;
+    if (isVerificationMismatch) {
+      req.log?.warn(
+        {
+          paymentId: payment.id,
+          paymentStatus: payment.status,
+          resolvedOrderNumber,
+          metadataOrderNumber: payment.metadata?.orderNumber ?? null,
+          expectedAmount,
+          paymentAmount: payment.amount,
+          paymentCurrency: payment.currency,
+          metadataMatchesOrder,
+          amountMatches,
+          currencyMatches,
+        },
+        "Moyasar paid payment did not match the originating order",
+      );
+    }
+    const isFailed = normalizedPaymentStatus === "failed" || isVerificationMismatch;
+    const resultStatus = isPaid ? "paid" : isFailed ? "failed" : "pending";
 
-    // Extract the best failure message available
-    const failureMessage = payment.source?.message || payment.message || null;
-    const failureCode = payment.source?.response_code || null;
+    // A 3DS redirect can arrive before Moyasar finalizes the payment. Preserve
+    // the order's existing status while the gateway still reports an in-progress state.
+    const failureMessage = isVerificationMismatch
+      ? "Payment verification mismatch"
+      : payment.source?.message || payment.message || null;
+    const failureCode = isVerificationMismatch
+      ? "verification_mismatch"
+      : payment.source?.response_code || null;
 
     if (resolvedOrderNumber) {
-      await db
-        .update(ordersTable)
-        .set({
-          paymentStatus: isPaid ? "paid" : "failed",
-          paymentId: payment.id,
-          ...(isPaid ? { status: "processing" } : {}),
-        })
-        .where(eq(ordersTable.orderNumber, resolvedOrderNumber));
+      const orderWhere = eq(ordersTable.orderNumber, resolvedOrderNumber);
+
+      if (isPaid) {
+        await db
+          .update(ordersTable)
+          .set({
+            paymentStatus: "paid",
+            paymentId: payment.id,
+            status: "processing",
+          })
+          .where(orderWhere);
+      } else if (isFailed) {
+        await db
+          .update(ordersTable)
+          .set({
+            paymentStatus: "failed",
+            paymentId: payment.id,
+          })
+          .where(orderWhere);
+      } else {
+        await db
+          .update(ordersTable)
+          .set({ paymentId: payment.id })
+          .where(orderWhere);
+      }
     }
 
     res.json({
-      status: isPaid ? "paid" : "failed",
+      status: resultStatus,
       orderNumber: resolvedOrderNumber,
-      ...((!isPaid && failureMessage) ? { failureMessage } : {}),
-      ...((!isPaid && failureCode) ? { failureCode } : {}),
+      ...((isFailed && failureMessage) ? { failureMessage } : {}),
+      ...((isFailed && failureCode) ? { failureCode } : {}),
     });
   } catch (err) {
     req.log?.error({ err }, "Payment callback error");

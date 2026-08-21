@@ -2250,14 +2250,14 @@ components:
       properties:
         email:
           type: string
-          format: email
+          pattern: "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
     EmailOtpVerificationInput:
       type: object
       required: [email, code]
       properties:
         email:
           type: string
-          format: email
+          pattern: "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
         code:
           type: string
           pattern: "^[0-9]{6}$"

@@ -80,7 +80,7 @@ router.post("/auth/email-otp/send", async (req, res): Promise<void> => {
   if (!settings?.smtpHost || !settings.smtpUser || !settings.smtpPass) {
     res.status(503).json({ error: "لم يتم إعداد البريد الإلكتروني من لوحة التحكم" }); return;
   }
-  const code = String(Math.floor(100000 + Math.random() * 900000));
+  const code = String(crypto.randomInt(100000, 1000000));
   const storeName = settings.storeName || "المتجر";
   const transporter = nodemailer.createTransport({
     host: settings.smtpHost, port: settings.smtpPort ?? 587, secure: settings.smtpSecure ?? false,

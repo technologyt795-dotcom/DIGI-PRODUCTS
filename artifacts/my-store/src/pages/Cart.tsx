@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Minus, Plus, Trash2, ShoppingBag, Lock, Loader2, CheckCircle, Tag, MapPin, CreditCard, Truck, Phone, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, Lock, Loader2, CheckCircle, Tag, MapPin, CreditCard, Truck, Mail, ShieldCheck, RefreshCw } from 'lucide-react';
 import { useValidateDiscount, useCreateOrder } from '@workspace/api-client-react';
 import { useCustomerAuth } from '@/hooks/use-customer-auth';
 import { toast } from 'sonner';
@@ -15,24 +15,25 @@ import { SEO } from '@/components/SEO';
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '') + '/api';
 
-async function sendOtp(phone: string): Promise<void> {
-  const res = await fetch(`${BASE}/auth/otp/send`, {
+async function sendEmailOtp(email: string): Promise<void> {
+  const res = await fetch(`${BASE}/auth/email-otp/send`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone }),
+    body: JSON.stringify({ email }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'فشل إرسال الكود');
 }
 
-async function verifyOtp(phone: string, code: string): Promise<void> {
-  const res = await fetch(`${BASE}/auth/otp/verify`, {
+async function verifyEmailOtp(email: string, code: string): Promise<string> {
+  const res = await fetch(`${BASE}/auth/email-otp/verify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone, code }),
+    body: JSON.stringify({ email, code }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'الكود غير صحيح');
+  return data.verificationToken;
 }
 
 export default function Cart() {
@@ -54,6 +55,7 @@ export default function Cart() {
   const [otpVerifying, setOtpVerifying] = useState(false);
   const [otpResendTimer, setOtpResendTimer] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const verificationTokenRef = useRef<string | null>(null);
 
   // Pending order payload (saved before OTP step)
   const pendingPayloadRef = useRef<Parameters<typeof createOrder.mutateAsync>[0] | null>(null);
@@ -122,14 +124,14 @@ export default function Cart() {
     }, 1000);
   };
 
-  const handleSendOtp = async (phone: string) => {
+  const handleSendOtp = async (email: string) => {
     setOtpSending(true);
     try {
-      await sendOtp(phone);
+      await sendEmailOtp(email);
       setOtpStep(true);
       setOtpCode('');
       startResendTimer();
-      toast.success(`تم إرسال كود التحقق إلى ${phone}`);
+      toast.success(`تم إرسال كود التحقق إلى ${email}`);
     } catch (err: any) {
       toast.error(err.message || 'فشل إرسال الكود');
     } finally {
@@ -159,18 +161,17 @@ export default function Cart() {
         items: orderItems,
         discountCode: appliedDiscount?.code,
         paymentMethod,
+        emailVerificationToken: verificationTokenRef.current ?? undefined,
       }
     };
 
-    // If customer is already authenticated — skip OTP
-    if (isAuthenticated) {
-      await submitOrder(payload);
+    // Require a fresh email verification before every public checkout.
+    pendingPayloadRef.current = payload;
+    if (!form.customerEmail.trim()) {
+      toast.error('يرجى إدخال البريد الإلكتروني لإرسال رمز التحقق');
       return;
     }
-
-    // Require OTP verification for guests
-    pendingPayloadRef.current = payload;
-    await handleSendOtp(form.customerPhone);
+    await handleSendOtp(form.customerEmail);
   };
 
   const submitOrder = async (payload: Parameters<typeof createOrder.mutateAsync>[0]) => {
@@ -197,7 +198,12 @@ export default function Cart() {
     if (!pendingPayloadRef.current) return;
     setOtpVerifying(true);
     try {
-      await verifyOtp(form.customerPhone, otpCode);
+      const verificationToken = await verifyEmailOtp(form.customerEmail, otpCode);
+      verificationTokenRef.current = verificationToken;
+      pendingPayloadRef.current = {
+        ...pendingPayloadRef.current,
+        data: { ...pendingPayloadRef.current.data, emailVerificationToken: verificationToken },
+      };
       // OTP verified — submit the order
       await submitOrder(pendingPayloadRef.current);
     } catch (err: any) {
@@ -209,7 +215,7 @@ export default function Cart() {
 
   const handleResendOtp = async () => {
     if (otpResendTimer > 0) return;
-    await handleSendOtp(form.customerPhone);
+    await handleSendOtp(form.customerEmail);
   };
 
   if (items.length === 0) {
@@ -371,13 +377,13 @@ export default function Cart() {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/60 to-primary rounded-t-3xl" />
               <div className="flex flex-col items-center text-center mb-6">
                 <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                  <Phone className="h-8 w-8 text-primary" />
+                  <Mail className="h-8 w-8 text-primary" />
                 </div>
-                <h2 className="text-xl font-bold">التحقق من رقم الجوال</h2>
+                <h2 className="text-xl font-bold">التحقق من البريد الإلكتروني</h2>
                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
                   تم إرسال كود التحقق المكون من 6 أرقام إلى
                 </p>
-                <p className="font-bold text-foreground mt-1 dir-ltr" dir="ltr">{form.customerPhone}</p>
+                <p className="font-bold text-foreground mt-1 dir-ltr" dir="ltr">{form.customerEmail}</p>
               </div>
 
               <form onSubmit={handleVerifyOtp} className="space-y-4 max-w-xs mx-auto">
@@ -431,7 +437,7 @@ export default function Cart() {
 
                 <button
                   type="button"
-                  onClick={() => { setOtpStep(false); setOtpCode(''); }}
+                  onClick={() => { setOtpStep(false); setOtpCode(''); verificationTokenRef.current = null; }}
                   className="text-muted-foreground text-sm w-full text-center hover:text-foreground transition-colors"
                 >
                   تعديل بيانات التوصيل

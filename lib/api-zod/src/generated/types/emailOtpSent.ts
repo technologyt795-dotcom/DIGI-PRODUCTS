@@ -6,7 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface MoyasarPaymentInput {
-  /** @minLength 1 */
-  orderNumber: string;
+export interface EmailOtpSent {
+  sent: boolean;
 }

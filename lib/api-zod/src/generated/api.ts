@@ -771,7 +771,8 @@ export const CreateOrderBody = zod.object({
 })).min(1),
   "discountCode": zod.string().optional(),
   "notes": zod.string().optional(),
-  "paymentMethod": zod.enum(['cash', 'online']).optional().describe('Payment method (defaults to cash)')
+  "paymentMethod": zod.enum(['cash', 'online']).optional().describe('Payment method (defaults to cash)'),
+  "emailVerificationToken": zod.string().optional()
 })
 
 export const CreateOrderResponse = zod.object({
@@ -806,6 +807,43 @@ export const CreateOrderResponse = zod.object({
   "paymentStatus": zod.enum(['pending', 'paid', 'failed']).describe('Payment status for online orders'),
   "paymentId": zod.string().nullish().describe('Moyasar payment ID'),
   "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Send an email verification code
+ */
+export const sendEmailOtpBodyEmailRegExp = new RegExp('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
+
+
+export const SendEmailOtpBody = zod.object({
+  "email": zod.string().regex(sendEmailOtpBodyEmailRegExp)
+})
+
+export const SendEmailOtpResponse = zod.object({
+  "sent": zod.boolean()
+})
+
+
+/**
+ * @summary Verify an email verification code
+ */
+export const verifyEmailOtpBodyEmailRegExp = new RegExp('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
+export const verifyEmailOtpBodyCodeRegExp = new RegExp('^[0-9]{6}$');
+
+
+export const VerifyEmailOtpBody = zod.object({
+  "email": zod.string().regex(verifyEmailOtpBodyEmailRegExp),
+  "code": zod.string().regex(verifyEmailOtpBodyCodeRegExp)
+})
+
+
+
+
+export const VerifyEmailOtpResponse = zod.object({
+  "verified": zod.boolean(),
+  "verificationToken": zod.string(),
+  "callbackUrl": zod.string().min(1).optional()
 })
 
 
@@ -1372,10 +1410,8 @@ export const GetFinanceResponse = zod.object({
 
 
 
-
 export const CreateMoyasarPaymentBody = zod.object({
-  "orderNumber": zod.string().min(1),
-  "callbackUrl": zod.string().min(1)
+  "orderNumber": zod.string().min(1)
 })
 
 export const CreateMoyasarPaymentResponse = zod.object({
