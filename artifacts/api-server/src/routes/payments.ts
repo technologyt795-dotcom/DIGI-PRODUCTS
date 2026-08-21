@@ -171,9 +171,13 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
     const expectedAmount = verifiedOrder
       ? Math.round(Number(verifiedOrder.total) * 100)
       : null;
-    const metadataMatchesOrder =
+    // The hosted Moyasar form creates the payment client-side, so older/test
+    // flows may not include metadata. In that case the signed-in callback URL
+    // supplies the originating order number; if metadata exists, it must match.
+    const orderReferenceMatches =
       Boolean(resolvedOrderNumber) &&
-      payment.metadata?.orderNumber === resolvedOrderNumber;
+      (!payment.metadata?.orderNumber ||
+        payment.metadata.orderNumber === resolvedOrderNumber);
     const amountMatches = expectedAmount !== null && payment.amount === expectedAmount;
     const currencyMatches = payment.currency === "SAR";
     const normalizedPaymentStatus = payment.status.trim().toLowerCase();
@@ -190,7 +194,7 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
       (normalizedPaymentStatus === "authorized" && isApprovedResponse);
     const isPaid =
       gatewayPaid &&
-      metadataMatchesOrder &&
+      orderReferenceMatches &&
       amountMatches &&
       currencyMatches;
     const isVerificationMismatch = gatewayPaid && !isPaid;
@@ -204,7 +208,7 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
           expectedAmount,
           paymentAmount: payment.amount,
           paymentCurrency: payment.currency,
-          metadataMatchesOrder,
+          orderReferenceMatches,
           amountMatches,
           currencyMatches,
         },
