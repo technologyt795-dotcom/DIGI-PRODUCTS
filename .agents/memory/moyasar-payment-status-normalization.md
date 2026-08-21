@@ -14,3 +14,9 @@ Moyasar verification returns HTTP 401 with `Invalid authorization credentials` w
 **Why:** Payment creation can still open the hosted form with the publishable key, while server-side retrieval fails with the secret key.
 
 **How to apply:** Confirm the secret is the Moyasar Test Secret Key (not the publishable key), replace/regenerate it in workspace Secrets, restart the API, and create a new payment.
+
+The hosted browser form may return a paid payment without metadata; include the originating order number in the callback URL and accept missing metadata only when the callback order reference, amount, and currency match.
+
+**Why:** Direct Moyasar form initialization does not reliably preserve custom metadata, so requiring metadata alone incorrectly rejected valid paid Test transactions.
+
+**How to apply:** Keep amount and currency checks mandatory and use the callback order reference to resolve the order for client-created payments.
