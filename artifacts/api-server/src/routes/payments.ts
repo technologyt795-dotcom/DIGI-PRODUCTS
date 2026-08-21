@@ -6,10 +6,18 @@ const router: IRouter = Router();
 
 const MOYASAR_API = "https://api.moyasar.com/v1";
 
+function getMoyasarSecretKey() {
+  return (process.env.MOYASAR_SECRET_KEY || "").trim();
+}
+
+function getMoyasarPublishableKey() {
+  return (process.env.MOYASAR_PUBLISHABLE_KEY || "").trim();
+}
+
 // GET /payments/config — return publishable key for frontend
 // Read from process.env at request time so key changes/restarts are picked up
 router.get("/payments/config", (_req, res) => {
-  res.json({ publishableKey: process.env.MOYASAR_PUBLISHABLE_KEY || "" });
+  res.json({ publishableKey: getMoyasarPublishableKey() });
 });
 
 // POST /payments/moyasar — create a Moyasar payment for an existing order
@@ -49,10 +57,10 @@ router.post("/payments/moyasar", async (req, res): Promise<void> => {
         "Content-Type": "application/json",
         Authorization:
           "Basic " +
-          Buffer.from(`${process.env.MOYASAR_SECRET_KEY ?? ""}:`).toString("base64"),
+          Buffer.from(`${getMoyasarSecretKey()}:`).toString("base64"),
       },
       body: JSON.stringify({
-        publishable_api_key: process.env.MOYASAR_PUBLISHABLE_KEY,
+        publishable_api_key: getMoyasarPublishableKey(),
         amount: amountHalalas,
         currency: "SAR",
         description: `طلب رقم ${orderNumber}`,
@@ -110,7 +118,7 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
       headers: {
         Authorization:
           "Basic " +
-          Buffer.from(`${process.env.MOYASAR_SECRET_KEY ?? ""}:`).toString("base64"),
+          Buffer.from(`${getMoyasarSecretKey()}:`).toString("base64"),
       },
     });
 
