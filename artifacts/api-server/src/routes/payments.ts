@@ -115,12 +115,20 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
     });
 
     if (!verifyRes.ok) {
-      req.log?.error({ paymentId }, "Moyasar payment verification failed");
+      const verificationError = await verifyRes.text();
+      req.log?.error(
+        {
+          paymentId,
+          statusCode: verifyRes.status,
+          response: verificationError.slice(0, 500),
+        },
+        "Moyasar payment verification failed",
+      );
       const base = req.headers["x-forwarded-proto"]
         ? `${req.headers["x-forwarded-proto"]}://${req.headers.host}`
         : "";
       res.redirect(
-        `${base}/?payment=failed&orderNumber=${orderNumber ?? ""}`,
+        `${base}/?payment=failed&orderNumber=${encodeURIComponent(orderNumber ?? "")}&message=${encodeURIComponent("تعذر التحقق من حالة الدفع مع بوابة الدفع")}`,
       );
       return;
     }
