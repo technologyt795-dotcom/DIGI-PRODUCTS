@@ -3,6 +3,7 @@ import { useParams, Link } from 'wouter';
 import { ArrowRight, Download, ExternalLink, Loader2, Printer, Package } from 'lucide-react';
 import { useGetMyOrder, getGetMyOrderQueryKey } from '@workspace/api-client-react';
 import { useCustomerAuth } from '@/hooks/use-customer-auth';
+import { useQuery } from '@tanstack/react-query';
 import { useStoreSettings } from '@/contexts/StoreSettingsContext';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,16 @@ const STATUS_MAP: Record<string, { label: string; color: string }> = {
 };
 
 const DOWNLOAD_ALLOWED = new Set(['processing', 'shipped', 'delivered']);
+
+function attachmentTypeLabel(fileUrl: string): string {
+  const extension = fileUrl.split('?')[0].match(/\.([a-z0-9]{1,10})$/i)?.[1]?.toLowerCase();
+  const labels: Record<string, string> = {
+    pdf: 'ملف PDF', png: 'صورة PNG', jpg: 'صورة JPG', jpeg: 'صورة JPEG', webp: 'صورة WEBP',
+    xls: 'ملف Excel', xlsx: 'ملف Excel', csv: 'ملف CSV', doc: 'مستند Word', docx: 'مستند Word',
+    zip: 'ملف ZIP', rar: 'ملف RAR', mp3: 'ملف صوتي MP3', mp4: 'ملف فيديو MP4',
+  };
+  return extension ? (labels[extension] ?? `ملف ${extension.toUpperCase()}`) : 'مرفق رقمي';
+}
 
 // Decorative dots SVG pattern (mimicking the reference invoice)
 function DotPattern({ color, opacity = 0.25 }: { color: string; opacity?: number }) {
@@ -49,10 +60,43 @@ export default function OrderDetail() {
   const { token } = useCustomerAuth();
   const { settings } = useStoreSettings();
 
-  const { data: order, isLoading, isError } = useGetMyOrder(orderNumber!, {
+  // A payment callback can return before the buyer has an account linked to the
+  // order. In that single browser tab, the paid callback sets an invoice marker
+  // for this exact order. Ordinary My Orders access still requires its customer token.
+  const invoiceSessionKey = orderNumber ? `my-store-paid-invoice:${orderNumber}` : null;
+  const hasPaidInvoiceSession = Boolean(
+    typeof window !== 'undefined' &&
+      invoiceSessionKey &&
+      window.sessionStorage.getItem(invoiceSessionKey) === '1',
+  );
+
+  const privateOrderQuery = useGetMyOrder(orderNumber!, {
     request: token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
-    query: { enabled: !!token && !!orderNumber, queryKey: getGetMyOrderQueryKey(orderNumber!) },
+    query: {
+      enabled: !!token && !!orderNumber && !hasPaidInvoiceSession,
+      queryKey: getGetMyOrderQueryKey(orderNumber!),
+    },
   });
+
+  const publicInvoiceQuery = useQuery({
+    queryKey: ['paid-invoice', orderNumber],
+    enabled: hasPaidInvoiceSession && !!orderNumber,
+    queryFn: async () => {
+      const res = await fetch(`${BASE}/orders/${encodeURIComponent(orderNumber!)}/invoice`);
+      if (!res.ok) throw new Error('Paid invoice is unavailable');
+      return res.json();
+    },
+  });
+
+  const order = hasPaidInvoiceSession
+    ? publicInvoiceQuery.data
+    : privateOrderQuery.data;
+  const isLoading = hasPaidInvoiceSession
+    ? publicInvoiceQuery.isLoading
+    : privateOrderQuery.isLoading;
+  const isError = hasPaidInvoiceSession
+    ? publicInvoiceQuery.isError
+    : privateOrderQuery.isError;
 
   // key: `${itemIdx}-${fileIdx}`
   const [downloading, setDownloading] = useState<Record<string, boolean>>({});
@@ -64,6 +108,19 @@ export default function OrderDetail() {
     if (downloading[key]) return;
     setDownloading(prev => ({ ...prev, [key]: true }));
     try {
+      // This route checks payment status server-side and returns the attachment
+      // with Content-Disposition so the browser uses the name from the admin panel.
+      if (hasPaidInvoiceSession) {
+        if (!order?.orderNumber) throw new Error('الطلب غير متاح');
+        const a = document.createElement('a');
+        a.href = `${BASE}/orders/${encodeURIComponent(order.orderNumber)}/downloads/${itemIdx}/${fileIdx}`;
+        a.download = '';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+
       const res = await fetch(
         `${BASE}/customer/downloads/${order?.orderNumber}/${itemIdx}/${fileIdx}`,
         { headers: { Authorization: `Bearer ${token}` } },
@@ -508,7 +565,7 @@ export default function OrderDetail() {
                           return urls.map((fileUrl: string, fIdx: number) => {
                             if (!fileUrl) return null;
                             const key = `${idx}-${fIdx}`;
-                            const dlLabel = labels[fIdx] || `ملف ${fIdx + 1}`;
+                            const dlLabel = labels[fIdx]?.trim() || attachmentTypeLabel(fileUrl);
                             return (
                               <button
                                 key={fIdx}

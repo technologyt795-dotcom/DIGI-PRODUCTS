@@ -53,6 +53,21 @@ import { toast } from 'sonner';
 
 const MAX_DIGITAL_FILES = 4;
 
+function defaultAttachmentLabel(fileName: string, slotIndex: number): string {
+  const cleanName = fileName.split(/[\\/]/).pop()?.trim() ?? '';
+  return cleanName || `مرفق رقمي ${slotIndex + 1}`;
+}
+
+function attachmentTypeLabel(fileNameOrUrl: string): string {
+  const extension = fileNameOrUrl.split('?')[0].match(/\.([a-z0-9]{1,10})$/i)?.[1]?.toLowerCase();
+  const labels: Record<string, string> = {
+    pdf: 'ملف PDF', png: 'صورة PNG', jpg: 'صورة JPG', jpeg: 'صورة JPEG', webp: 'صورة WEBP',
+    xls: 'ملف Excel', xlsx: 'ملف Excel', csv: 'ملف CSV', doc: 'مستند Word', docx: 'مستند Word',
+    zip: 'ملف ZIP', rar: 'ملف RAR', mp3: 'ملف صوتي MP3', mp4: 'ملف فيديو MP4',
+  };
+  return extension ? (labels[extension] ?? `ملف ${extension.toUpperCase()}`) : 'مرفق رقمي';
+}
+
 interface ProductFormState {
   slug: string;
   name: string;
@@ -140,8 +155,16 @@ export default function AdminProducts() {
       const { url } = await res.json();
       setForm((prev) => {
         const urls = [...prev.downloadUrls];
+        const labels = [...prev.downloadLabels];
         urls[slotIndex] = url;
-        return { ...prev, downloadUrls: urls };
+        // Replace only an empty or generated placeholder label. A custom label
+        // entered by the admin remains intact when a file is changed.
+        const currentLabel = String(labels[slotIndex] ?? '').trim();
+        const isGeneratedPlaceholder = !currentLabel || /^مرفق رقمي(?:\s+\d+)?$/.test(currentLabel);
+        if (isGeneratedPlaceholder) {
+          labels[slotIndex] = defaultAttachmentLabel(file.name, slotIndex);
+        }
+        return { ...prev, downloadUrls: urls, downloadLabels: labels };
       });
       setUploadedFileNames((prev) => {
         const names = [...prev];
@@ -156,8 +179,14 @@ export default function AdminProducts() {
     }
   };
 
-  const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: getListProductsQueryKey() });
+  const invalidate = async () => {
+    // The editor reads from this dedicated admin list, so invalidate it as well
+    // as the storefront list after saving a product.
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: getListProductsQueryKey() }),
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] }),
+    ]);
+  };
 
   const openCreate = () => {
     setEditing(null);
@@ -184,7 +213,11 @@ export default function AdminProducts() {
       digitalAvailabilityStatus: product.digitalAvailabilityStatus ?? 'available',
       isHidden: (product as any).isHidden ?? false,
       downloadUrls: product.downloadUrls || [],
-      downloadLabels: product.downloadLabels || [],
+      // Older products may predate per-file labels. Give each empty label a
+      // clear type-based name when the editor opens, ready for the admin to save.
+      downloadLabels: (product.downloadUrls || []).map(
+        (url, idx) => product.downloadLabels?.[idx]?.trim() || attachmentTypeLabel(url),
+      ),
       productUrl: (product as any).productUrl || '',
     });
     setUploadedFileNames([]);
@@ -209,24 +242,32 @@ export default function AdminProducts() {
       isDigital: form.isDigital,
       digitalAvailabilityStatus: form.isDigital ? form.digitalAvailabilityStatus : 'available',
       isHidden: form.isHidden,
-      // Keep only slots that have a URL, and carry their matching label at the same index
-      downloadUrls: form.isDigital ? form.downloadUrls.filter(Boolean) : [],
+      // Store exactly four stable slots. Do not filter empty entries: filtering shifts
+      // a file from slot 2 into slot 1 and prevents an explicit "delete all" save.
+      downloadUrls: form.isDigital
+        ? Array.from({ length: MAX_DIGITAL_FILES }, (_, index) => String(form.downloadUrls[index] ?? '').trim())
+        : [],
       downloadLabels: form.isDigital
-        ? form.downloadUrls
-            .map((url, i) => (url ? form.downloadLabels[i] ?? '' : null))
-            .filter((l): l is string => l !== null)
+        ? Array.from({ length: MAX_DIGITAL_FILES }, (_, index) => String(form.downloadLabels[index] ?? '').trim())
         : [],
       productUrl: form.productUrl.trim() || null,
     };
 
     try {
-      if (editing) {
-        await updateMutation.mutateAsync({ id: editing.id, data: payload });
-        toast.success('تم تحديث المنتج');
-      } else {
-        await createMutation.mutateAsync({ data: payload });
-        toast.success('تم إنشاء المنتج');
-      }
+      const savedProduct = editing
+        ? await updateMutation.mutateAsync({ id: editing.id, data: payload })
+        : await createMutation.mutateAsync({ data: payload });
+
+      // Update the exact cache used by this editor immediately. Previously only
+      // the storefront cache was invalidated, so reopening the dialog showed a
+      // stale version of the product and made saved attachments appear missing.
+      queryClient.setQueryData<Product[]>(['admin', 'products'], (current) => {
+        if (!current) return [savedProduct];
+        return editing
+          ? current.map((product) => product.id === savedProduct.id ? savedProduct : product)
+          : [savedProduct, ...current];
+      });
+      toast.success(editing ? 'تم تحديث المنتج' : 'تم إنشاء المنتج');
       await invalidate();
       setIsDialogOpen(false);
     } catch (err) {
@@ -483,9 +524,12 @@ export default function AdminProducts() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {Array.from({ length: MAX_DIGITAL_FILES }).map((_, idx) => {
                     const url = form.downloadUrls[idx] || '';
-                    const name = uploadedFileNames[idx] || (url ? url.split('/').pop() || 'ملف محفوظ' : '');
-                    const isUploading = uploadingSlot === idx;
                     const label = form.downloadLabels[idx] || '';
+                    // The storage URL deliberately uses an internal generated name. After
+                    // reopening the product, show the saved customer-facing file name instead.
+                    const name = uploadedFileNames[idx] || label || (url ? url.split('/').pop() || 'ملف محفوظ' : '');
+                    const isUploading = uploadingSlot === idx;
+                    const typeLabel = attachmentTypeLabel(uploadedFileNames[idx] || url || name);
                     return (
                       <div key={idx} className="space-y-1.5">
                         {/* Label input */}
@@ -515,7 +559,7 @@ export default function AdminProducts() {
                         {url ? (
                           <div className="flex items-center gap-2 p-3 rounded-lg border border-border bg-muted/40">
                             <FileIcon className="h-4 w-4 text-primary shrink-0" />
-                            <span className="text-xs flex-1 truncate text-muted-foreground">{name}</span>
+                            <div className="flex-1 min-w-0"><span className="block text-xs truncate text-muted-foreground">{name}</span><span className="block text-[10px] text-muted-foreground/70">{typeLabel}</span></div>
                             <div className="flex gap-1 shrink-0">
                               <Button
                                 type="button"
@@ -535,8 +579,10 @@ export default function AdminProducts() {
                                 onClick={() => {
                                   setForm((p) => {
                                     const urls = [...p.downloadUrls];
+                                    const labels = [...p.downloadLabels];
                                     urls[idx] = '';
-                                    return { ...p, downloadUrls: urls };
+                                    labels[idx] = '';
+                                    return { ...p, downloadUrls: urls, downloadLabels: labels };
                                   });
                                   setUploadedFileNames((p) => {
                                     const names = [...p];

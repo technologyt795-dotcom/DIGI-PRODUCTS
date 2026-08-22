@@ -25,7 +25,7 @@ const STATUS_MAP: Record<string, { label: string; variant: 'default' | 'secondar
   pending: { label: 'قيد الانتظار', variant: 'secondary' },
   processing: { label: 'جاري التجهيز', variant: 'default' },
   shipped: { label: 'تم الشحن', variant: 'default' },
-  delivered: { label: 'تم التسليم', variant: 'default' },
+  delivered: { label: 'مكتمل', variant: 'default' },
   cancelled: { label: 'ملغى', variant: 'destructive' },
 };
 

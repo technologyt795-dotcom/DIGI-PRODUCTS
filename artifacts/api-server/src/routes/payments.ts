@@ -171,6 +171,14 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
     const expectedAmount = verifiedOrder
       ? Math.round(Number(verifiedOrder.total) * 100)
       : null;
+    // Digital products are available immediately after a verified payment. Only
+    // mark an order complete when every item is explicitly digital; mixed and
+    // physical orders remain in the normal preparation workflow.
+    const orderItems = Array.isArray(verifiedOrder?.items)
+      ? (verifiedOrder.items as import("@workspace/db").OrderItem[])
+      : [];
+    const isDigitalOnlyOrder =
+      orderItems.length > 0 && orderItems.every((item) => item.isDigital);
     // The hosted Moyasar form creates the payment client-side, so older/test
     // flows may not include metadata. In that case the signed-in callback URL
     // supplies the originating order number; if metadata exists, it must match.
@@ -236,7 +244,7 @@ router.get("/payments/callback", async (req, res): Promise<void> => {
           .set({
             paymentStatus: "paid",
             paymentId: payment.id,
-            status: "processing",
+            status: isDigitalOnlyOrder ? "delivered" : "processing",
           })
           .where(orderWhere);
       } else if (isFailed) {

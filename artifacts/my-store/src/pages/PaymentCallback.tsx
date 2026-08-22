@@ -48,6 +48,36 @@ export default function PaymentCallback() {
   const [digitalItems, setDigitalItems] = useState<DigitalItem[]>([]);
   const [loadingDownloads, setLoadingDownloads] = useState(false);
   const [failureMessage, setFailureMessage] = useState<string | null>(null);
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
+
+  // Let the customer see an explicit success confirmation before taking them to
+  // the invoice page. The manual invoice button remains available immediately.
+  useEffect(() => {
+    if (status !== 'success' || !orderNumber) {
+      setRedirectCountdown(null);
+      return;
+    }
+
+    const redirectAfterSeconds = 5;
+    setRedirectCountdown(redirectAfterSeconds);
+    const interval = window.setInterval(() => {
+      setRedirectCountdown((current) =>
+        current !== null && current > 1 ? current - 1 : current,
+      );
+    }, 1000);
+    const redirectTimer = window.setTimeout(() => {
+      // Use a full navigation here rather than an in-app route update. The
+      // payment callback can be restored after a 3DS return, and a direct
+      // navigation reliably opens the protected invoice page in that case.
+      window.sessionStorage.setItem(`my-store-paid-invoice:${orderNumber}`, '1');
+      window.location.assign(`/my-orders/${encodeURIComponent(orderNumber)}`);
+    }, redirectAfterSeconds * 1000);
+
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(redirectTimer);
+    };
+  }, [status, orderNumber]);
 
   // Fetch download links after confirmed payment
   async function fetchDownloads(orderNum: string) {
@@ -186,6 +216,14 @@ export default function PaymentCallback() {
                 ? 'ملفاتك جاهزة للتحميل الآن'
                 : 'تم تأكيد طلبك وسيتم معالجته قريباً'}
             </p>
+            {redirectCountdown !== null && (
+              <div
+                role="status"
+                className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-800"
+              >
+                تم الدفع بنجاح. سيتم توجيهك إلى صفحة الفاتورة خلال {redirectCountdown} ثوانٍ.
+              </div>
+            )}
             {orderNumber && (
               <p className="font-bold text-primary text-lg">رقم الطلب: #{orderNumber}</p>
             )}
@@ -256,9 +294,12 @@ export default function PaymentCallback() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             {orderNumber && (
               <Button asChild size="lg" className="rounded-xl font-bold">
-                <Link href={`/my-orders/${orderNumber}`}>
+                <Link
+                  href={`/my-orders/${orderNumber}`}
+                  onClick={() => window.sessionStorage.setItem(`my-store-paid-invoice:${orderNumber}`, '1')}
+                >
                   <Package className="h-4 w-4 ml-2" />
-                  {digitalItems.length > 0 ? 'تفاصيل الطلب' : 'تتبع الطلب'}
+                  {digitalItems.length > 0 ? 'عرض الفاتورة والمرفقات' : 'عرض الفاتورة'}
                 </Link>
               </Button>
             )}
